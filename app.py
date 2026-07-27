@@ -5,7 +5,9 @@ import secrets
 import json
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, g
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, g, abort
+from functools import wraps
+import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 
@@ -14,6 +16,9 @@ app.secret_key = secrets.token_hex(32)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max
 app.config['DATABASE'] = 'mazoun_hediye.db'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 hours
 
 # ZarinPal Settings (TODO: Fill with your merchant ID)
 ZARINPAL_MERCHANT_ID = os.environ.get('ZARINPAL_MERCHANT', 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX')
@@ -201,6 +206,45 @@ def admin_required(f):
             return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
+
+
+# ==================== RATE LIMITING ====================
+login_attempts = {}
+
+def rate_limit(max_attempts=5, window=300):
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            ip = request.remote_addr
+            now = time.time()
+            if ip not in login_attempts:
+                login_attempts[ip] = []
+            login_attempts[ip] = [t for t in login_attempts[ip] if now - t < window]
+            if len(login_attempts[ip]) >= max_attempts:
+                flash('تعداد تلاش‌های ورود بیش از حد مجاز است. لطفاً ۵ دقیقه صبر کنید.', 'danger')
+                return redirect(url_for('login'))
+            login_attempts[ip].append(now)
+            return f(*args, **kwargs)
+        return decorated
+    return decorator
+
+# ==================== ERROR HANDLERS ====================
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('index.html', categories=[], featured=[], products=[], settings={}), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return 'خطای سرور', 500
+
+# ==================== SECURITY MIDDLEWARE ====================
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    return response
+
 
 # ==================== MAIN ROUTES ====================
 @app.route('/')
@@ -478,6 +522,7 @@ def orders():
 
 # ==================== AUTH ====================
 @app.route('/login', methods=['GET', 'POST'])
+@rate_limit(max_attempts=5, window=300)
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '')
@@ -511,6 +556,8 @@ def register():
         
         if not username or not email or not password:
             flash('لطفاً تمام فیلدها را پر کنید', 'warning')
+        elif len(password) < 6:
+            flash('رمز عبور باید حداقل ۶ کاراکتر باشد', 'warning')
             return render_template('register.html')
         
         db = get_db()

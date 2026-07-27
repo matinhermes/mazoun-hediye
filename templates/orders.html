@@ -1,0 +1,10 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>سفارشات | مزون هدیه</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
+<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a></div></div></header>
+<div class="container">{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin:30px 0">سفارشات من</h1>
+{% if orders %}{% for o in orders %}
+<a href="/order/{{ o.id }}" style="display:block;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;text-decoration:none;color:var(--text)">
+<div style="display:flex;justify-content:space-between;align-items:center"><div><strong>سفارش #{{ o.id }}</strong> <span style="color:var(--text-sec);font-size:13px">{{ o.created_at }}</span></div><div style="color:var(--primary);font-weight:700">{{ "{:,}".format(o.total_amount) }} تومان</div></div>
+<div style="margin-top:8px;font-size:13px;color:var(--text-sec)">وضعیت: {{ o.status }}</div></a>{% endfor %}
+{% else %}<div style="text-align:center;padding:60px;color:var(--text-sec)"><p>هنوز سفارشی ثبت نکرده‌اید</p><a href="/products" style="color:var(--primary)">مشاهده محصولات</a></div>{% endif %}</div>
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>داشبورد | ادمین</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
+<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>ادمین</span></div></a><div class="header-actions"><a href="/" class="hdr-btn" title="سایت">🏠</a></div></div></div></header>
+<div class="container"><div style="display:grid;grid-template-columns:220px 1fr;gap:30px;padding:30px 0">
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px">
+<h3 style="color:var(--primary);margin-bottom:20px">منو</h3>
+<a href="/admin" style="display:block;padding:10px;color:var(--primary);text-decoration:none;background:var(--bg-lighter);border-radius:6px;margin-bottom:4px">داشبورد</a>
+<a href="/admin/products" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">محصولات</a>
+<a href="/admin/orders" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">سفارشات</a>
+<a href="/admin/users" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">کاربران</a>
+<a href="/admin/settings" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">تنظیمات</a>
+<a href="/" style="display:block;padding:10px;color:var(--rose);text-decoration:none;border-radius:6px;margin-top:20px;border-top:1px solid var(--border);padding-top:16px">بازگشت به سایت</a></div>
+<div>{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:30px">داشبورد</h1>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:30px">
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--primary)">{{ stats.total_orders }}</div><div style="color:var(--text-sec);font-size:13px">کل سفارشات</div></div>
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:#ff9800">{{ stats.pending_orders }}</div><div style="color:var(--text-sec);font-size:13px">در انتظار</div></div>
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--primary)">{{ stats.total_products }}</div><div style="color:var(--text-sec);font-size:13px">محصولات</div></div>
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--rose)">{{ stats.total_users }}</div><div style="color:var(--text-sec);font-size:13px">کاربران</div></div>
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;grid-column:1/-1"><div style="font-size:28px;font-weight:700;color:#28a745">{{ "{:,}".format(stats.total_revenue) }} تومان</div><div style="color:var(--text-sec);font-size:13px">درآمد کل</div></div></div>
+<h2 style="color:var(--primary);margin-bottom:16px">آخرین سفارشات</h2>
+{% for o in recent_orders %}<a href="/admin/orders/{{ o.id }}" style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;text-decoration:none;color:var(--text)"><div><strong>#{{ o.id }}</strong> - {{ o.full_name }}</div><div style="color:var(--primary)">{{ "{:,}".format(o.total_amount) }} تومان</div><div style="color:var(--text-sec);font-size:12px">{{ o.status }}</div></a>{% endfor %}
+</div></div></div>
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>

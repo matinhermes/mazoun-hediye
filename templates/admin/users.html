@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>کاربران | ادمین</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
+<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>ادمین</span></div></a></div></div></header>
+<div class="container"><div style="display:grid;grid-template-columns:220px 1fr;gap:30px;padding:30px 0">
+<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px">
+<a href="/admin" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">داشبورد</a>
+<a href="/admin/products" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">محصولات</a>
+<a href="/admin/orders" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">سفارشات</a>
+<a href="/admin/users" style="display:block;padding:10px;color:var(--primary);text-decoration:none;background:var(--bg-lighter);border-radius:6px;margin-bottom:4px">کاربران</a>
+<a href="/admin/settings" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">تنظیمات</a></div>
+<div>{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:30px">کاربران</h1>
+<table style="width:100%;border-collapse:collapse;background:var(--bg-card);border-radius:12px;overflow:hidden;border:1px solid var(--border)">
+<tr style="border-bottom:1px solid var(--border);background:var(--bg-lighter)"><th style="padding:12px;text-align:right">نام</th><th>ایمیل</th><th>تلفن</th><th>تاریخ</th></tr>
+{% for u in users %}<tr style="border-bottom:1px solid var(--border)"><td style="padding:12px">{{ u.full_name or u.username }}</td><td style="text-align:center">{{ u.email }}</td><td style="text-align:center">{{ u.phone or '-' }}</td><td style="text-align:center;font-size:12px;color:var(--text-sec)">{{ u.created_at }}</td></tr>{% endfor %}</table>
+</div></div></div>
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>
