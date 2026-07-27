@@ -745,10 +745,12 @@ def api_cart_add():
     session['cart'] = cart
     return jsonify({'success': True, 'count': sum(i['quantity'] for i in cart)})
 
+# ==================== INIT DB ON STARTUP ====================
+with app.app_context():
+    init_db()
+
 # ==================== MAIN ====================
 import os
 if __name__ == '__main__':
-    with app.app_context():
-        init_db()
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
