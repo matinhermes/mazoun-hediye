@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محصولات | مزون هدیه</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root{--primary:#c9a96e;--rose:#b76e79;--bg:#0a0a0a;--bg-card:#111;--bg-lighter:#1a1a1a;--text:#e8e8e8;--text-sec:#888;--border:#222;--danger:#dc3545;--success:#28a745}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.container{max-width:1300px;margin:0 auto;padding:0 20px}.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:15px 0;position:sticky;top:0;z-index:1000}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--primary);text-decoration:none}.logo span{color:var(--rose)}.search-bar{flex:1;max-width:500px;position:relative}.search-bar input{width:100%;padding:12px 50px 12px 20px;background:var(--bg-lighter);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14px}.search-bar input:focus{outline:none;border-color:var(--primary)}.search-bar button{position:absolute;left:5px;top:50%;transform:translateY(-50%);background:var(--primary);border:none;width:38px;height:38px;border-radius:6px;color:#fff;cursor:pointer}.header-actions{display:flex;gap:12px}.header-btn{background:var(--bg-lighter);border:1px solid var(--border);width:42px;height:42px;border-radius:8px;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;font-size:18px}.header-btn:hover{border-color:var(--primary);color:var(--primary)}.nav{background:var(--bg-lighter);border-bottom:1px solid var(--border);padding:12px 0}.nav-list{display:flex;gap:30px;justify-content:center;flex-wrap:wrap}.nav-link{color:var(--text-sec);text-decoration:none;font-size:14px;padding:8px 0;border-bottom:2px solid transparent;transition:.3s}.nav-link:hover,.nav-link.active{color:var(--primary);border-bottom-color:var(--primary)}.page-header{padding:30px 0}.page-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--primary)}.main-layout{display:flex;gap:24px;padding:10px 0 60px}.sidebar{width:260px;flex-shrink:0}.filter-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}.filter-title{font-size:15px;font-weight:600;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}.color-dots{display:flex;gap:8px;flex-wrap:wrap}.color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.3s}.color-dot:hover,.color-dot.active{border-color:var(--primary);transform:scale(1.1)}.size-btns{display:flex;gap:6px;flex-wrap:wrap}.size-btn{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;transition:.3s}.size-btn:hover,.size-btn.active{border-color:var(--primary);color:var(--primary)}.price-range{width:100%;accent-color:var(--primary)}.sort-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px}.sort-bar select{padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:13px}.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}.product-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:.3s}.product-card:hover{border-color:var(--primary);transform:translateY(-4px)}.product-img{height:280px;display:flex;align-items:center;justify-content:center;font-size:50px}.product-info{padding:16px}.product-name{font-size:15px;font-weight:600;margin-bottom:6px}.product-rating{color:var(--primary);font-size:13px;margin-bottom:8px}.product-price{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}.price-current{font-size:18px;font-weight:700;color:var(--primary)}.price-old{font-size:13px;color:var(--text-sec);text-decoration:line-through}.discount-badge{background:var(--danger);color:#fff;font-size:11px;padding:3px 7px;border-radius:4px}.add-cart-btn{width:100%;padding:10px;background:var(--primary);border:none;border-radius:8px;color:#000;font-weight:600;font-family:inherit;cursor:pointer;transition:.3s}.add-cart-btn:hover{background:var(--primary-dark,#b8956a)}.footer{background:var(--bg-card);border-top:1px solid var(--border);padding:40px 0 20px;margin-top:40px}.footer-bottom{text-align:center;padding-top:20px;border-top:1px solid var(--border);color:var(--text-sec);font-size:13px}.flash{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px}.flash-success{background:rgba(40,167,69,0.15);border:1px solid #28a745;color:#28a745}.flash-danger{background:rgba(220,53,69,0.15);border:1px solid #dc3545;color:#dc3545}.flash-warning{background:rgba(201,169,110,0.15);border:1px solid var(--primary);color:var(--primary)}.flash-info{background:rgba(183,110,121,0.15);border:1px solid var(--rose);color:var(--rose)}
+        @media(max-width:1024px){.sidebar{display:none}.products-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}@media(max-width:768px){.header-inner{flex-wrap:wrap}.search-bar{order:3;max-width:100%;width:100%}.products-grid{grid-template-columns:repeat(2,1fr);gap:12px}.product-img{height:180px}}
+    </style>
+</head>
+<body>
+<header class="header"><div class="container"><div class="header-inner">
+    <a href="{{ url_for('home') }}" class="logo">مزون <span>هدیه</span></a>
+    <form class="search-bar" action="{{ url_for('products_page') }}" method="GET"><input type="text" name="search" placeholder="جستجو..." value="{{ current_search }}"><button type="submit">🔍</button></form>
+    <div class="header-actions">
+        <a href="{{ url_for('cart') }}" class="header-btn">🛒</a>
+        {% if session.get('user_id') %}<a href="{{ url_for('profile') }}" class="header-btn">👤</a>{% else %}<a href="{{ url_for('login') }}" class="header-btn">🔑</a>{% endif %}
+    </div>
+</div></div></header>
+<nav class="nav"><div class="container"><div class="nav-list">
+    <a href="{{ url_for('products_page') }}" class="nav-link {% if not current_category %}active{% endif %}">همه</a>
+    {% for cat in categories %}<a href="{{ url_for('products_page', category=cat.slug) }}" class="nav-link {% if current_category == cat.slug %}active{% endif %}">{{ cat.icon }} {{ cat.name }}</a>{% endfor %}
+</div></div></nav>
+<div class="container">{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}" style="margin-top:16px">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}</div>
+<div class="container"><div class="page-header"><h1 class="page-title">🛍️ محصولات</h1></div>
+<div class="main-layout">
+<aside class="sidebar">
+    <div class="filter-card"><div class="filter-title">💰 فیلتر قیمت</div><input type="range" class="price-range" min="0" max="2000000" value="2000000"></div>
+    <div class="filter-card"><div class="filter-title">📐 سایز</div><div class="size-btns">
+        <button class="size-btn" onclick="this.classList.toggle('active')">S</button><button class="size-btn" onclick="this.classList.toggle('active')">M</button><button class="size-btn" onclick="this.classList.toggle('active')">L</button><button class="size-btn" onclick="this.classList.toggle('active')">XL</button>
+    </div></div>
+    <div class="filter-card"><div class="filter-title">🎨 رنگ</div><div class="color-dots">
+        <div class="color-dot" style="background:#000"></div><div class="color-dot" style="background:#fff;border:1px solid #444"></div><div class="color-dot" style="background:#e91e63"></div><div class="color-dot" style="background:#4caf50"></div><div class="color-dot" style="background:#2196f3"></div><div class="color-dot" style="background:#ffd700"></div>
+    </div></div>
+</aside>
+<main style="flex:1">
+    <div class="sort-bar"><span>{{ products|length }} محصول</span>
+    <select onchange="window.location='?sort='+this.value"><option value="default">مرتب‌سازی</option><option value="cheapest">ارزان‌ترین</option><option value="expensive">گران‌ترین</option><option value="popular">محبوب‌ترین</option></select></div>
+    <div class="products-grid">
+    {% for p in products %}
+    <div class="product-card"><div class="product-img" style="background:{{ p.image or 'linear-gradient(135deg,#333,#111)' }}">👗</div>
+    <div class="product-info"><h3 class="product-name">{{ p.name }}</h3><div class="product-rating">⭐ {{ p.rating }} ({{ p.reviews_count }})</div>
+    <div class="product-price"><span class="price-current">{{ "{:,}".format(p.price) }} تومان</span>{% if p.old_price %}<span class="price-old">{{ "{:,}".format(p.old_price) }}</span><span class="discount-badge">-{{ p.discount }}٪</span>{% endif %}</div>
+    <button class="add-cart-btn" onclick="addToCart({{ p.id }})">افزودن به سبد</button></div></div>
+    {% endfor %}
+    </div>
+</main></div></div>
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer>
+<script>
+function addToCart(id){fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,quantity:1})}).then(r=>r.json()).then(d=>{if(d.success){const t=document.createElement('div');t.className='flash flash-success';t.textContent=d.message;t.style.cssText='position:fixed;bottom:20px;left:20px;z-index:9999';document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}})}
+</script>
+</body></html>
