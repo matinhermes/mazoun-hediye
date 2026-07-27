@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سبد خرید | مزون هدیه</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.cart-page{padding:40px 0}.cart-items{margin-bottom:30px}
+.cart-item{display:flex;gap:20px;padding:20px;border:1px solid var(--border);border-radius:12px;margin-bottom:16px;background:var(--bg-card)}
+.cart-item-img{width:100px;height:100px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
+.cart-item-info{flex:1}.cart-item-name{font-weight:600;margin-bottom:4px}.cart-item-price{color:var(--primary);font-weight:700;margin-bottom:8px}
+.cart-item-controls{display:flex;align-items:center;gap:12px}
+.qty-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:16px}
+.remove-btn{color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit}
+.cart-summary{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.cart-summary h3{font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:16px}
+.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;font-size:15px}
+.summary-total{font-size:22px;font-weight:700;color:var(--primary);border-top:1px solid var(--border);padding-top:16px;margin-top:16px}
+.checkout-btn{width:100%;padding:16px;background:var(--primary);border:none;border-radius:8px;color:#000;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:20px;text-decoration:none;display:block;text-align:center}
+.empty-cart{text-align:center;padding:60px;color:var(--text-sec)}.empty-cart .icon{font-size:80px;margin-bottom:20px;opacity:.3}
+@media(max-width:768px){.cart-page>div{grid-template-columns:1fr!important}.cart-item{flex-direction:column}}
+</style>
+</head><body>
+<header class="header"><div class="container"><div class="header-inner">
+<a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a>
+<div class="header-actions"><a href="/" class="hdr-btn">🏠</a><a href="/products" class="hdr-btn">🛍</a></div>
+</div></div></header>
+
+<div class="container">
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+
+<div class="cart-page">
+<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:30px">🛒 سبد خرید</h1>
+
+{% if items %}
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:30px">
+<div class="cart-items">
+{% for item in items %}
+<div class="cart-item">
+<div class="cart-item-img" style="background:linear-gradient(135deg,#333,#111)">👗</div>
+<div class="cart-item-info">
+<div class="cart-item-name">{{ item.product.name }} ({{ item.size }})</div>
+<div class="cart-item-price">{{ "{:,}".format(item.product.price) }} تومان</div>
+<div class="cart-item-controls">
+<button class="qty-btn" onclick="updateCart({{ item.product.id }},'decrease')">−</button>
+<span>{{ item.quantity }}</span>
+<button class="qty-btn" onclick="updateCart({{ item.product.id }},'increase')">+</button>
+<button class="remove-btn" onclick="updateCart({{ item.product.id }},'remove')">🗑 حذف</button>
+</div></div></div>
+{% endfor %}
+</div>
+
+<div class="cart-summary">
+<h3>خلاصه سفارش</h3>
+<div class="summary-row"><span>جمع کل:</span><span>{{ "{:,}".format(total) }} تومان</span></div>
+<div class="summary-row"><span>هزینه ارسال:</span><span>{% if shipping == 0 %}رایگان ✨{% else %}{{ "{:,}".format(shipping) }} تومان{% endif %}</span></div>
+<div class="summary-row summary-total"><span>جمع نهایی:</span><span>{{ "{:,}".format(total + shipping) }} تومان</span></div>
+{% if session.get('user_id') %}
+<a href="/checkout" class="checkout-btn">تکمیل خرید</a>
+{% else %}
+<a href="/login" class="checkout-btn">برای خرید وارد شوید</a>
+{% endif %}
+</div>
+</div>
+{% else %}
+<div class="empty-cart"><div class="icon">🛒</div><h2>سبد خرید شما خالی است</h2><p style="margin-top:10px"><a href="/products" style="color:var(--primary)">محصولات ما را ببینید</a></p></div>
+{% endif %}
+</div></div>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer>
+<script>
+function updateCart(id,action){fetch('/cart/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,action:action})}).then(()=>location.reload())}
+</script></body></html>
