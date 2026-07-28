@@ -1,16 +1,25 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>محصولات | ادمین</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
-<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>ادمین</span></div></a></div></div></header>
-<div class="container"><div style="display:grid;grid-template-columns:220px 1fr;gap:30px;padding:30px 0">
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px">
-<a href="/admin" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">داشبورد</a>
-<a href="/admin/products" style="display:block;padding:10px;color:var(--primary);text-decoration:none;background:var(--bg-lighter);border-radius:6px;margin-bottom:4px">محصولات</a>
-<a href="/admin/orders" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">سفارشات</a>
-<a href="/admin/users" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">کاربران</a>
-<a href="/admin/settings" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">تنظیمات</a></div>
-<div>{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h1 style="font-family:'Playfair Display',serif;color:var(--primary)">محصولات</h1><a href="/admin/products/add" style="background:var(--primary);color:#000;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:600">+ محصول جدید</a></div>
-<table style="width:100%;border-collapse:collapse;background:var(--bg-card);border-radius:12px;overflow:hidden;border:1px solid var(--border)">
-<tr style="border-bottom:1px solid var(--border);background:var(--bg-lighter)"><th style="padding:12px;text-align:right">نام</th><th>دسته</th><th>قیمت</th><th>موجودی</th><th>عملیات</th></tr>
-{% for p in products %}<tr style="border-bottom:1px solid var(--border)"><td style="padding:12px">{{ p.name }}</td><td style="text-align:center">{{ p.category_name or '-' }}</td><td style="color:var(--primary)">{{ "{:,}".format(p.price) }}</td><td style="text-align:center">{{ p.stock }}</td><td style="text-align:center"><a href="/admin/products/edit/{{ p.id }}" style="color:var(--primary);margin:0 6px">ویرایش</a><form method="POST" action="/admin/products/delete/{{ p.id }}" style="display:inline" onsubmit="return confirm('حذف شود؟')"><button type="submit" style="background:none;border:none;color:var(--danger);cursor:pointer">حذف</button></form></td></tr>{% endfor %}</table>
-</div></div></div>
-<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>
+{% extends "admin/base.html" %}
+{% block title %}محصولات{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+<h1 class="page-title" style="margin:0">محصولات</h1>
+<a href="/admin/products/add" class="btn btn-primary">+ محصول جدید</a>
+</div>
+
+<div class="card" style="overflow-x:auto">
+<table class="table">
+<tr><th>تصویر</th><th>نام</th><th>دسته</th><th>قیمت</th><th>موجودی</th><th>عملیات</th></tr>
+{% for p in products %}
+<tr>
+<td>{% if p.image %}<img src="{{ p.image }}" style="width:50px;height:50px;border-radius:6px;object-fit:cover">{% else %}<div style="width:50px;height:50px;border-radius:6px;background:#1a1a1a;display:flex;align-items:center;justify-content:center">👗</div>{% endif %}</td>
+<td>{{ p.name }}</td>
+<td><span class="badge badge-info">{{ p.category_name or '-' }}</span></td>
+<td style="color:#c9a96e;font-weight:600">{{ "{:,}".format(p.price) }}</td>
+<td>{{ p.stock }}</td>
+<td style="white-space:nowrap">
+<a href="/admin/products/edit/{{ p.id }}" class="btn btn-sm" style="background:rgba(201,169,110,0.15);color:#c9a96e">ویرایش</a>
+<form method="POST" action="/admin/products/delete/{{ p.id }}" style="display:inline" onsubmit="return confirm('حذف شود؟')">
+<button type="submit" class="btn btn-sm btn-danger">حذف</button></form></td></tr>
+{% endfor %}
+</table></div>
+{% endblock %}
