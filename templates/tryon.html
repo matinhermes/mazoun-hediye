@@ -4,7 +4,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#e8e8e8}
+body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height:100vh}
 
 .topbar{background:#111;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 .topbar a{color:#c9a96e;text-decoration:none;font-size:13px}
@@ -12,64 +12,72 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#e8e8e8}
 .page{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 48px)}
 @media(max-width:800px){.page{grid-template-columns:1fr}}
 
-/* Left: Mannequin */
-.preview{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0d0d0d,#141414,#0d0d0d);position:relative;overflow:hidden;perspective:1000px}
-@media(max-width:800px){.preview{min-height:70vh}}
+/* === 3D PRODUCT DISPLAY === */
+.display{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center 40%,#151515,#0a0a0a);position:relative;overflow:hidden;perspective:1200px}
+@media(max-width:800px){.display{min-height:70vh}}
 
-.mannequin{position:relative;width:260px;height:440px;transition:transform 0.15s;transform-style:preserve-3d}
-@media(max-width:480px){.mannequin{width:210px;height:370px}}
+/* The 3D card */
+.card-3d{position:relative;transform-style:preserve-3d;transition:transform 0.12s ease-out;will-change:transform}
 
-/* SVG mannequin */
-.mannequin svg{width:100%;height:100%;filter:drop-shadow(0 15px 40px rgba(0,0,0,0.6))}
+/* Product image with 3D card effect */
+.card-face{position:relative;width:280px;border-radius:12px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,169,110,0.1);backface-visibility:hidden}
+@media(max-width:480px){.card-face{width:230px}}
 
-/* Product image on mannequin body */
-.product-on-body{position:absolute;top:18%;left:50%;transform:translateX(-50%);width:52%;height:34%;overflow:hidden;border-radius:4px}
-.product-on-body img{width:100%;height:100%;object-fit:cover}
-.product-tint{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:0;transition:opacity 0.3s}
+.card-face img{width:100%;height:auto;display:block;transition:transform 0.4s}
+.card-face:hover img{transform:scale(1.02)}
 
-/* Floor shadow */
-.shadow{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);width:140px;height:16px;background:radial-gradient(ellipse,rgba(0,0,0,0.5),transparent 70%);border-radius:50%}
+/* 3D side effect */
+.card-3d::before{content:'';position:absolute;top:4px;right:-8px;width:8px;height:calc(100% - 8px);background:linear-gradient(to right,#1a1a1a,#111);border-radius:0 4px 4px 0;transform:rotateY(90deg);transform-origin:right}
+.card-3d::after{content:'';position:absolute;bottom:-8px;left:4px;width:calc(100% - 8px);height:8px;background:linear-gradient(to bottom,#1a1a1a,#111);border-radius:0 0 4px 4px;transform:rotateX(90deg);transform-origin:bottom}
 
-.hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.2)}
+/* Hanger */
+.hanger{position:absolute;top:-30px;left:50%;transform:translateX(-50%);z-index:2}
+.hanger svg{width:120px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}
 
-/* Right: Controls */
-.controls{background:#111;border-right:1px solid #222;display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 48px)}
-@media(max-width:800px){.controls{max-height:none;border-right:none;border-top:1px solid #222}}
+/* Gold ring glow */
+.glow{position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.06),transparent 60%);pointer-events:none}
 
-.ctrl-head{padding:20px;border-bottom:1px solid #222}
-.ctrl-head h2{font-size:18px;color:#c9a96e;line-height:1.5}
-.ctrl-head .price{font-size:20px;font-weight:700;color:#c9a96e;margin-top:6px}
+/* Color tint overlay */
+.tint{position:absolute;inset:0;background:#fff;mix-blend-mode:multiply;opacity:0;transition:opacity 0.3s;pointer-events:none;border-radius:12px}
 
-.ctrl-body{flex:1;padding:16px 20px}
+/* Floor reflection */
+.reflection{position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleY(-1);width:280px;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.02),transparent);opacity:0.3;filter:blur(2px);pointer-events:none;border-radius:12px;overflow:hidden}
+@media(max-width:480px){.reflection{width:230px}}
 
-.group{margin-bottom:20px}
-.group-title{font-size:12px;color:#666;margin-bottom:8px}
+.hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.2)}
 
+/* === SIDEBAR === */
+.sidebar{background:#111;border-right:1px solid #222;display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 48px)}
+@media(max-width:800px){.sidebar{max-height:none;border-right:none;border-top:1px solid #222}}
+
+.sb-hd{padding:20px;border-bottom:1px solid #222}
+.sb-hd h2{font-size:18px;color:#c9a96e;line-height:1.5}
+.sb-hd .price{font-size:20px;font-weight:700;color:#c9a96e;margin-top:6px}
+
+.sb-bd{flex:1;padding:16px 20px}
+
+.grp{margin-bottom:20px}
+.grp-l{font-size:12px;color:#666;margin-bottom:8px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 
-/* Color buttons */
-.cbtn{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all 0.2s}
-.cbtn:hover{transform:scale(1.1)}
-.cbtn.on{border-color:#c9a96e;box-shadow:0 0 0 3px rgba(201,169,110,0.25)}
+.cb{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all 0.2s}
+.cb:hover{transform:scale(1.1)}
+.cb.on{border-color:#c9a96e;box-shadow:0 0 0 3px rgba(201,169,110,0.25)}
 
-/* Size buttons */
-.sbtn{padding:9px 16px;background:#0a0a0a;border:1px solid #333;border-radius:20px;color:#e8e8e8;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s}
-.sbtn:hover{border-color:#c9a96e}
-.sbtn.on{background:#c9a96e;color:#000;border-color:#c9a96e;font-weight:600}
+.sb{padding:9px 16px;background:#0a0a0a;border:1px solid #333;border-radius:20px;color:#eee;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s}
+.sb:hover{border-color:#c9a96e}
+.sb.on{background:#c9a96e;color:#000;border-color:#c9a96e;font-weight:600}
 
-/* View buttons */
-.vbtn{flex:1;padding:8px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#888;cursor:pointer;font-family:inherit;font-size:12px;transition:all 0.2s}
-.vbtn:hover{color:#e8e8e8}
-.vbtn.on{background:#1a1a1a;border-color:#c9a96e;color:#c9a96e}
+.vb{flex:1;padding:8px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#888;cursor:pointer;font-family:inherit;font-size:12px;transition:all 0.2s}
+.vb:hover{color:#eee}
+.vb.on{background:#1a1a1a;border-color:#c9a96e;color:#c9a96e}
 
-/* Cart button */
-.cart{width:100%;padding:14px;background:linear-gradient(135deg,#c9a96e,#b8956a);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:auto;transition:all 0.3s}
-.cart:hover{box-shadow:0 6px 20px rgba(201,169,110,0.3)}
+.cta{width:100%;padding:14px;background:linear-gradient(135deg,#c9a96e,#b8956a);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:auto;transition:all 0.3s}
+.cta:hover{box-shadow:0 6px 20px rgba(201,169,110,0.3)}
 
-.ctrl-foot{padding:16px 20px;border-top:1px solid #222}
+.sb-ft{padding:16px 20px;border-top:1px solid #222}
 
-/* Mobile */
-@media(max-width:480px){.ctrl-head{padding:14px}.ctrl-body{padding:12px 16px}.ctrl-foot{padding:12px 16px}}
+@media(max-width:480px){.sb-hd{padding:14px}.sb-bd{padding:12px 16px}.sb-ft{padding:12px 16px}}
 </style>
 </head><body>
 
@@ -80,120 +88,113 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#e8e8e8}
 </div>
 
 <div class="page">
-<!-- Mannequin -->
-<div class="preview" id="preview">
-<div class="mannequin" id="mannequin">
-<svg viewBox="0 0 220 440">
-<!-- Shadow -->
-<ellipse cx="110" cy="425" rx="50" ry="8" fill="rgba(0,0,0,0.4)"/>
-<!-- Legs -->
-<rect x="80" y="300" width="22" height="115" rx="11" fill="#2d2d2d"/>
-<rect x="118" y="300" width="22" height="115" rx="11" fill="#2d2d2d"/>
-<!-- Feet -->
-<ellipse cx="91" cy="415" rx="14" ry="7" fill="#2d2d2d"/>
-<ellipse cx="129" cy="415" rx="14" ry="7" fill="#2d2d2d"/>
-<!-- Body -->
-<path d="M62 100 Q110 85 158 100 L166 300 Q110 315 54 300 Z" fill="#2d2d2d"/>
-<!-- Arms -->
-<path d="M62 100 Q45 115 42 175 Q40 210 46 235 Q50 240 54 235 Q58 210 62 175 Q64 130 68 110" fill="#2d2d2d"/>
-<path d="M158 100 Q175 115 178 175 Q180 210 174 235 Q170 240 166 235 Q162 210 158 175 Q156 130 152 110" fill="#2d2d2d"/>
-<!-- Hands -->
-<ellipse cx="49" cy="238" rx="9" ry="11" fill="#2d2d2d"/>
-<ellipse cx="171" cy="238" rx="9" ry="11" fill="#2d2d2d"/>
-<!-- Neck -->
-<rect x="100" y="68" width="20" height="20" rx="10" fill="#2d2d2d"/>
-<!-- Head -->
-<ellipse cx="110" cy="45" rx="28" ry="34" fill="#2d2d2d"/>
+<!-- 3D Display -->
+<div class="display" id="display">
+<div class="glow"></div>
+
+<div class="card-3d" id="card3d">
+<!-- Hanger -->
+<div class="hanger">
+<svg viewBox="0 0 120 40" fill="none">
+<path d="M60 5 L60 15" stroke="#c9a96e" stroke-width="2.5"/>
+<path d="M60 5 L85 5 Q95 5 95 12 Q95 18 85 18 L60 15" stroke="#c9a96e" stroke-width="1.8" fill="none"/>
+<path d="M60 5 L35 5 Q25 5 25 12 Q25 18 35 18 L60 15" stroke="#c9a96e" stroke-width="1.8" fill="none"/>
+<path d="M60 15 L15 35 Q10 37 15 38 L105 38 Q110 37 105 35 L60 15" stroke="#c9a96e" stroke-width="1.8" fill="none"/>
 </svg>
+</div>
 
 <!-- Product image -->
-<div class="product-on-body">
+<div class="card-face">
 {% if product.image %}
-<img src="{{ product.image }}" alt="{{ product.name }}">
-<div class="product-tint" id="tint"></div>
+<img src="{{ product.image }}" alt="{{ product.name }}" id="productImg">
+<div class="tint" id="tint"></div>
+{% else %}
+<div style="width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#222,#111);display:flex;align-items:center;justify-content:center;color:#555;font-size:14px;border-radius:12px">عکس محصول</div>
+{% endif %}
+</div>
+
+<!-- Reflection -->
+<div class="reflection">
+{% if product.image %}
+<img src="{{ product.image }}" alt="" style="width:100%;height:auto;display:block;opacity:0.15">
 {% endif %}
 </div>
 </div>
-<div class="shadow"></div>
+
 <div class="hint">↔ بکش تا بچرخه</div>
 </div>
 
-<!-- Controls -->
-<div class="controls">
-<div class="ctrl-head">
+<!-- Sidebar -->
+<div class="sidebar">
+<div class="sb-hd">
 <h2>{{ product.name }}</h2>
 <div class="price">{{ "{:,}".format(product.price) }} تومان</div>
 </div>
-
-<div class="ctrl-body">
-<div class="group">
-<div class="group-title">🎨 رنگ لباس</div>
+<div class="sb-bd">
+<div class="grp">
+<div class="grp-l">🎨 رنگ لباس</div>
 <div class="row">
-<button class="cbtn on" style="background:#fff" onclick="setColor('#fff',this)"></button>
-<button class="cbtn" style="background:#111;border-color:#444" onclick="setColor('#111',this)"></button>
-<button class="cbtn" style="background:#FFB6C1" onclick="setColor('#FFB6C1',this)"></button>
-<button class="cbtn" style="background:#c9a96e" onclick="setColor('#c9a96e',this)"></button>
-<button class="cbtn" style="background:#8B0000" onclick="setColor('#8B0000',this)"></button>
-<button class="cbtn" style="background:#4A6741" onclick="setColor('#4A6741',this)"></button>
-<button class="cbtn" style="background:#1B3A5C" onclick="setColor('#1B3A5C',this)"></button>
-<button class="cbtn" style="background:#F5E6D3" onclick="setColor('#F5E6D3',this)"></button>
+<button class="cb on" style="background:#fff" onclick="setColor(this)"></button>
+<button class="cb" style="background:#111;border-color:#444" onclick="setColor(this)"></button>
+<button class="cb" style="background:#FFB6C1" onclick="setColor(this)"></button>
+<button class="cb" style="background:#c9a96e" onclick="setColor(this)"></button>
+<button class="cb" style="background:#8B0000" onclick="setColor(this)"></button>
+<button class="cb" style="background:#4A6741" onclick="setColor(this)"></button>
+<button class="cb" style="background:#1B3A5C" onclick="setColor(this)"></button>
+<button class="cb" style="background:#F5E6D3" onclick="setColor(this)"></button>
 </div>
 </div>
-
-<div class="group">
-<div class="group-title">👁️ نمای لباس</div>
+<div class="grp">
+<div class="grp-l">👁️ نمای لباس</div>
 <div class="row">
-<button class="vbtn on" onclick="setView('front',this)">جلو</button>
-<button class="vbtn" onclick="setView('side',this)">بغل</button>
-<button class="vbtn" onclick="setView('back',this)">پشت</button>
+<button class="vb on" onclick="setView('front',this)">جلو</button>
+<button class="vb" onclick="setView('side',this)">بغل</button>
+<button class="vb" onclick="setView('back',this)">پشت</button>
 </div>
 </div>
-
-<div class="group">
-<div class="group-title">📐 سایز</div>
+<div class="grp">
+<div class="grp-l">📐 سایز</div>
 <div class="row">
 {% set sizes = product.sizes.split(',') if product.sizes else ['36','38','40','42','44','46'] %}
 {% for s in sizes %}
-<button class="sbtn {% if loop.first %}on{% endif %}" onclick="setSize('{{ s }}',this)">{{ s }}</button>
+<button class="sb {% if loop.first %}on{% endif %}" onclick="setSize('{{ s }}',this)">{{ s }}</button>
 {% endfor %}
 </div>
 </div>
 </div>
-
-<div class="ctrl-foot">
-<button class="cart" onclick="addToCart()">🛒 افزودن به سبد خرید</button>
+<div class="sb-ft">
+<button class="cta" onclick="addToCart()">🛒 افزودن به سبد خرید</button>
 </div>
 </div>
 </div>
 
 <script>
-var sz='{{ sizes[0] if sizes else "36" }}';
+var curSize='{{ sizes[0] if sizes else "36" }}';
 
-function setColor(c,el){
-    document.querySelectorAll('.cbtn').forEach(function(b){b.classList.remove('on')});
+function setColor(el){
+    document.querySelectorAll('.cb').forEach(b=>b.classList.remove('on'));
     el.classList.add('on');
     var t=document.getElementById('tint');
-    if(t){t.style.background=c;t.style.opacity='0.3'}
+    if(t){t.style.background=getComputedStyle(el).background;t.style.opacity='0.25'}
 }
 
 function setView(v,el){
-    document.querySelectorAll('.vbtn').forEach(function(b){b.classList.remove('on')});
+    document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
     el.classList.add('on');
-    var m=document.getElementById('mannequin');
-    var img=document.querySelector('.product-on-body');
-    if(v==='front'){m.style.transform='rotateY(0)';img.style.transform='translateX(-50%) scaleX(1)'}
-    else if(v==='side'){m.style.transform='rotateY(20deg)';img.style.transform='translateX(-50%) scaleX(0.6) skewY(2deg)'}
-    else{m.style.transform='rotateY(180deg)';img.style.opacity='0.3'}
+    var c=document.getElementById('card3d');
+    if(v==='front')c.style.transform='rotateY(0) rotateX(0)';
+    else if(v==='side')c.style.transform='rotateY(25deg) rotateX(2deg)';
+    else c.style.transform='rotateY(180deg) rotateX(0)';
 }
 
 function setSize(s,el){
-    sz=s;
-    document.querySelectorAll('.sbtn').forEach(function(b){b.classList.remove('on')});
+    curSize=s;
+    document.querySelectorAll('.sb').forEach(b=>b.classList.remove('on'));
     el.classList.add('on');
 }
 
 function addToCart(){
-    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:sz,quantity:1})}).then(r=>r.json()).then(d=>{
+    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:curSize,quantity:1})}).then(r=>r.json()).then(d=>{
         if(d.success){
             var t=document.createElement('div');
             t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn';
@@ -204,13 +205,20 @@ function addToCart(){
 }
 
 // 3D drag rotation
-var p=document.getElementById('preview'),m=document.getElementById('mannequin');
-var drag=false,sx=0,rot=0;
-p.addEventListener('mousedown',e=>{drag=true;sx=e.clientX});
-document.addEventListener('mousemove',e=>{if(!drag)return;rot+=(e.clientX-sx)*0.2;rot=Math.max(-30,Math.min(30,rot));m.style.transform='rotateY('+rot+'deg)';sx=e.clientX});
+var d=document.getElementById('display'),c=document.getElementById('card3d');
+var drag=false,sx=0,rotY=0,rotX=0;
+d.addEventListener('mousedown',e=>{drag=true;sx=e.clientX});
+document.addEventListener('mousemove',e=>{
+    if(!drag)return;
+    rotY+=(e.clientX-sx)*0.25;
+    rotY=Math.max(-30,Math.min(30,rotY));
+    rotX=Math.max(-8,Math.min(8,rotY*0.1));
+    c.style.transform='rotateY('+rotY+'deg) rotateX('+(-rotX)+'deg)';
+    sx=e.clientX;
+});
 document.addEventListener('mouseup',()=>{drag=false});
-p.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true});
-p.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();rot+=(e.touches[0].clientX-sx)*0.2;rot=Math.max(-30,Math.min(30,rot));m.style.transform='rotateY('+rot+'deg)';sx=e.touches[0].clientX},{passive:false});
-p.addEventListener('touchend',()=>{drag=false});
+d.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true});
+d.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();rotY+=(e.touches[0].clientX-sx)*0.25;rotY=Math.max(-30,Math.min(30,rotY));rotX=Math.max(-8,Math.min(8,rotY*0.1));c.style.transform='rotateY('+rotY+'deg) rotateX('+(-rotX)+'deg)';sx=e.touches[0].clientX},{passive:false});
+d.addEventListener('touchend',()=>{drag=false});
 </script>
 </body></html>
