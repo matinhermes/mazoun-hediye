@@ -674,11 +674,10 @@ def admin_product_add():
             if file and file.filename:
                 ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
                 if ext in ALLOWED_EXTENSIONS:
-                    filename = f"product_{secrets.token_hex(8)}.{ext}"
-                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                    file.save(filepath)
-                    image_url = f'/uploads/{filename}'
+                    import base64 as b64
+                    file_data = file.read()
+                    b64_string = b64.b64encode(file_data).decode('utf-8')
+                    image_url = f'data:image/{ext};base64,{b64_string}'
         
         discount = 0
         if old_price > 0 and price > 0:
@@ -722,11 +721,10 @@ def admin_product_edit(product_id):
             if file and file.filename:
                 ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
                 if ext in ALLOWED_EXTENSIONS:
-                    filename = f"product_{secrets.token_hex(8)}.{ext}"
-                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-                    file.save(filepath)
-                    image_url = f'/uploads/{filename}'
+                    import base64 as b64
+                    file_data = file.read()
+                    b64_string = b64.b64encode(file_data).decode('utf-8')
+                    image_url = f'data:image/{ext};base64,{b64_string}'
         
         discount = 0
         if old_price > 0 and price > 0:
