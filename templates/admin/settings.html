@@ -119,6 +119,114 @@
 </div>
 </div>
 
+
+<!-- Shipping Methods -->
+<div class="settings-section">
+<h2 class="settings-title">🚚 روش‌های ارسال</h2>
+<form method="POST" action="/admin/shipping-methods">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="shipping_tipax_enabled" value="1" {{ 'checked' if settings.get('shipping_tipax_enabled', '0') == '1' }}> تیپاکس</label>
+</div>
+<div class="form-group"><label class="form-label">هزینه (تومان)</label><input name="shipping_tipax_cost" type="number" class="form-input" value="{{ settings.get('shipping_tipax_cost', '25000') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="shipping_post_enabled" value="1" {{ 'checked' if settings.get('shipping_post_enabled', '0') == '1' }}> پست پیشتاز</label>
+</div>
+<div class="form-group"><label class="form-label">هزینه (تومان)</label><input name="shipping_post_cost" type="number" class="form-input" value="{{ settings.get('shipping_post_cost', '15000') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="shipping_motor_enabled" value="1" {{ 'checked' if settings.get('shipping_motor_enabled', '0') == '1' }}> پیک موتوری</label>
+</div>
+<div class="form-group"><label class="form-label">هزینه (تومان)</label><input name="shipping_motor_cost" type="number" class="form-input" value="{{ settings.get('shipping_motor_cost', '30000') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="shipping_tnt_enabled" value="1" {{ 'checked' if settings.get('shipping_tnt_enabled', '0') == '1' }}> TNT</label>
+</div>
+<div class="form-group"><label class="form-label">هزینه (تومان)</label><input name="shipping_tnt_cost" type="number" class="form-input" value="{{ settings.get('shipping_tnt_cost', '20000') }}"></div>
+</div>
+</div>
+<button type="submit" class="btn btn-primary" style="margin-top:16px">ذخیره روش‌های ارسال</button>
+</form>
+</div>
+
+<!-- Payment Gateways -->
+<div class="settings-section">
+<h2 class="settings-title">💳 درگاه‌های پرداخت</h2>
+<form method="POST" action="/admin/payment-gateways">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="gateway_zarinpal_enabled" value="1" {{ 'checked' if settings.get('gateway_zarinpal_enabled', '0') == '1' }}> زرین‌پال</label>
+</div>
+<div class="form-group"><label class="form-label">MERCHANT ID</label><input name="gateway_zarinpal_merchant" class="form-input" value="{{ settings.get('gateway_zarinpal_merchant', '') }}" placeholder="XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="gateway_snapp_enabled" value="1" {{ 'checked' if settings.get('gateway_snapp_enabled', '0') == '1' }}> اسنپ‌پی</label>
+</div>
+<div class="form-group"><label class="form-label">MERCHANT ID</label><input name="gateway_snapp_merchant" class="form-input" value="{{ settings.get('gateway_snapp_merchant', '') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="gateway_digipay_enabled" value="1" {{ 'checked' if settings.get('gateway_digipay_enabled', '0') == '1' }}> دیجی‌پی</label>
+</div>
+<div class="form-group"><label class="form-label">MERCHANT ID</label><input name="gateway_digipay_merchant" class="form-input" value="{{ settings.get('gateway_digipay_merchant', '') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="gateway_idpay_enabled" value="1" {{ 'checked' if settings.get('gateway_idpay_enabled', '0') == '1' }}> آیدی‌پی</label>
+</div>
+<div class="form-group"><label class="form-label">MERCHANT ID</label><input name="gateway_idpay_merchant" class="form-input" value="{{ settings.get('gateway_idpay_merchant', '') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="gateway_nextpay_enabled" value="1" {{ 'checked' if settings.get('gateway_nextpay_enabled', '0') == '1' }}> نکست‌پی</label>
+</div>
+<div class="form-group"><label class="form-label">MERCHANT ID</label><input name="gateway_nextpay_merchant" class="form-input" value="{{ settings.get('gateway_nextpay_merchant', '') }}"></div>
+</div>
+<div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<label class="checkbox-label"><input type="checkbox" name="gateway_cod_enabled" value="1" {{ 'checked' if settings.get('gateway_cod_enabled', '0') == '1' }}> پرداخت درب منزل</label>
+</div>
+<div style="color:var(--text-sec);font-size:12px">بدون نیاز به مerchant ID</div>
+</div>
+</div>
+<button type="submit" class="btn btn-primary" style="margin-top:16px">ذخیره درگاه‌های پرداخت</button>
+</form>
+</div>
+
+<!-- Cover Image -->
+<div class="settings-section">
+<h2 class="settings-title">🖼️ کاور صفحه اصلی</h2>
+<form method="POST" action="/admin/cover" enctype="multipart/form-data">
+<div style="display:flex;gap:20px;align-items:start">
+<div>
+{% if settings.get('cover_image') %}
+<div style="margin-bottom:12px"><img src="{{ settings.get('cover_image') }}" style="max-width:300px;border-radius:8px;border:1px solid var(--border)"></div>
+{% endif %}
+<div class="image-upload" style="width:300px;height:150px">
+<input type="file" name="cover_image" accept="image/*">
+<div style="text-align:center"><div style="font-size:32px">📷</div><div style="color:var(--text-sec);font-size:12px">انتخاب عکس کاور</div></div>
+</div>
+</div>
+<div style="flex:1">
+<p style="color:var(--text-sec);font-size:13px;line-height:2">
+• ابعاد پیشنهادی: 1920×600 پیکسل<br>
+• فرمت: JPG یا PNG<br>
+• حداکثر حجم: 2 مگابایت<br>
+• کاور در بالای صفحه اصلی نمایش داده می‌شود
+</p>
+<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره کاور</button>
+</div>
+</div>
+</form>
+</div>
+
 <!-- Account Settings -->
 <div class="settings-section">
 <h2 class="settings-title">👤 تغییر نام کاربری</h2>

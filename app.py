@@ -882,6 +882,100 @@ def admin_delete_category(cat_id):
     flash('دسته‌بندی حذف شد ✓', 'success')
     return redirect(url_for('admin_settings'))
 
+
+@app.route('/admin/shipping-methods', methods=['POST'])
+@admin_required
+def admin_shipping_methods():
+    db = get_db()
+    
+    # Get all shipping method data
+    methods = [
+        {'key': 'shipping_tipax', 'name': 'تیپاکس'},
+        {'key': 'shipping_post', 'name': 'پست پیشتاز'},
+        {'key': 'shipping_motor', 'name': 'پیک موتوری'},
+        {'key': 'shipping_tnt', 'name': 'TNT'},
+    ]
+    
+    for method in methods:
+        enabled = request.form.get(f"{method['key']}_enabled", '0')
+        cost = request.form.get(f"{method['key']}_cost", '0')
+        
+        # Check if exists
+        existing = db.execute('SELECT key FROM settings WHERE key = ?', (f"{method['key']}_enabled",)).fetchone()
+        if existing:
+            db.execute('UPDATE settings SET value = ? WHERE key = ?', (enabled, f"{method['key']}_enabled"))
+            db.execute('UPDATE settings SET value = ? WHERE key = ?', (cost, f"{method['key']}_cost"))
+        else:
+            db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (f"{method['key']}_enabled", enabled))
+            db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (f"{method['key']}_cost", cost))
+    
+    db.commit()
+    flash('روش‌های ارسال بروزرسانی شد ✓', 'success')
+    return redirect(url_for('admin_settings'))
+
+@app.route('/admin/payment-gateways', methods=['POST'])
+@admin_required
+def admin_payment_gateways():
+    db = get_db()
+    
+    gateways = [
+        {'key': 'gateway_zarinpal', 'name': 'زرین‌پال'},
+        {'key': 'gateway_snapp', 'name': 'اسنپ‌پی'},
+        {'key': 'gateway_digipay', 'name': 'دیجی‌پی'},
+        {'key': 'gateway_idpay', 'name': 'آیدی‌پی'},
+        {'key': 'gateway_nextpay', 'name': 'نکست‌پی'},
+        {'key': 'gateway_cod', 'name': 'پرداخت درب منزل'},
+    ]
+    
+    for gw in gateways:
+        enabled = request.form.get(f"{gw['key']}_enabled", '0')
+        merchant = request.form.get(f"{gw['key']}_merchant", '')
+        
+        existing = db.execute('SELECT key FROM settings WHERE key = ?', (f"{gw['key']}_enabled",)).fetchone()
+        if existing:
+            db.execute('UPDATE settings SET value = ? WHERE key = ?', (enabled, f"{gw['key']}_enabled"))
+            db.execute('UPDATE settings SET value = ? WHERE key = ?', (merchant, f"{gw['key']}_merchant"))
+        else:
+            db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (f"{gw['key']}_enabled", enabled))
+            db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', (f"{gw['key']}_merchant", merchant))
+    
+    db.commit()
+    flash('درگاه‌های پرداخت بروزرسانی شد ✓', 'success')
+    return redirect(url_for('admin_settings'))
+
+@app.route('/admin/cover', methods=['POST'])
+@admin_required
+def admin_cover():
+    if 'cover_image' not in request.files:
+        flash('فایلی انتخاب نشد', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    file = request.files['cover_image']
+    if file.filename == '':
+        flash('فایلی انتخاب نشد', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if ext not in ALLOWED_EXTENSIONS:
+        flash('فرمت فایل مجاز نیست', 'danger')
+        return redirect(url_for('admin_settings'))
+    
+    filename = f"cover_{secrets.token_hex(8)}.{ext}"
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    file.save(filepath)
+    
+    db = get_db()
+    existing = db.execute('SELECT key FROM settings WHERE key = ?', ('cover_image',)).fetchone()
+    if existing:
+        db.execute('UPDATE settings SET value = ? WHERE key = ?', (f'/uploads/{filename}', 'cover_image'))
+    else:
+        db.execute('INSERT INTO settings (key, value) VALUES (?, ?)', ('cover_image', f'/uploads/{filename}'))
+    db.commit()
+    
+    flash('کاور صفحه اصلی بروزرسانی شد ✓', 'success')
+    return redirect(url_for('admin_settings'))
+
 # ==================== API ====================
 @app.route('/api/cart/add', methods=['POST'])
 def api_cart_add():
