@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پروژه لباس روی مانکن | {{ product.name }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.tryon-page{padding:40px 0}
+.tryon-layout{display:grid;grid-template-columns:1fr 400px;gap:40px;align-items:start}
+.mannequin-container{position:relative;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);border-radius:16px;overflow:hidden;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center}
+.mannequin-svg{width:80%;height:80%;position:relative;z-index:2}
+.mannequin-body{fill:#D4A574;transition:fill 0.3s}
+.clothing-overlay{position:absolute;top:15%;left:10%;width:80%;height:50%;z-index:3;opacity:0.9;transition:all 0.3s;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:8px}
+.clothing-overlay img{width:100%;height:100%;object-fit:contain}
+.clothing-color-overlay{position:absolute;top:0;left:0;width:100%;height:100%;mix-blend-mode:multiply;opacity:0.6;transition:background 0.3s}
+.control-panel{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px}
+.product-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--primary);margin-bottom:16px}
+.color-section{margin-bottom:24px}
+.color-section-title{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--text-sec)}
+.color-options{display:flex;gap:10px;flex-wrap:wrap}
+.color-btn{width:40px;height:40px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:all 0.3s;position:relative}
+.color-btn:hover{transform:scale(1.1)}
+.color-btn.active{border-color:var(--primary);box-shadow:0 0 10px rgba(201,169,110,0.5)}
+.color-btn::after{content:'';position:absolute;inset:3px;border-radius:50%;border:2px solid rgba(255,255,255,0.3)}
+.mannequin-colors{display:flex;gap:8px;flex-wrap:wrap}
+.mannequin-btn{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:12px;transition:all 0.3s}
+.mannequin-btn:hover,.mannequin-btn.active{border-color:var(--primary);color:var(--primary);background:rgba(201,169,110,0.1)}
+.size-selector{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.size-btn{padding:10px 18px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;transition:all 0.3s}
+.size-btn:hover,.size-btn.active{border-color:var(--primary);color:var(--primary)}
+.product-info-card{background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.price-tag{font-size:24px;font-weight:700;color:var(--primary)}
+.add-to-cart{width:100%;padding:16px;background:var(--primary);border:none;border-radius:12px;color:#000;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.3s}
+.add-to-cart:hover{background:var(--primary-dark);transform:translateY(-2px)}
+.view-toggle{display:flex;gap:8px;margin-bottom:20px}
+.view-btn{flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;text-align:center;transition:all 0.3s}
+.view-btn.active{border-color:var(--primary);color:var(--primary);background:rgba(201,169,110,0.1)}
+@keyframes fadeIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+.mannequin-container{animation:fadeIn 0.5s ease}
+@media(max-width:768px){.tryon-layout{grid-template-columns:1fr}.mannequin-container{aspect-ratio:1/1.2}}
+</style>
+</head><body>
+<header class="header"><div class="container"><div class="header-inner">
+<a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a>
+<div class="header-actions"><a href="/product/{{ product.id }}" class="hdr-btn">↩️</a><a href="/cart" class="hdr-btn">🛒</a></div>
+</div></div></header>
+
+<div class="container"><div class="tryon-page">
+<div class="tryon-layout">
+<!-- Mannequin Display -->
+<div>
+<div class="mannequin-container" id="mannequinContainer">
+<!-- Mannequin SVG -->
+<svg class="mannequin-svg" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+<!-- Head -->
+<ellipse cx="100" cy="45" rx="28" ry="35" class="mannequin-body" id="mannequinHead"/>
+<!-- Neck -->
+<rect x="90" y="75" width="20" height="20" class="mannequin-body" id="mannequinNeck"/>
+<!-- Body -->
+<path d="M60 95 Q100 85 140 95 L150 200 Q100 210 50 200 Z" class="mannequin-body" id="mannequinBody"/>
+<!-- Arms -->
+<ellipse cx="45" cy="150" rx="18" ry="60" class="mannequin-body" id="mannequinArmL"/>
+<ellipse cx="155" cy="150" rx="18" ry="60" class="mannequin-body" id="mannequinArmR"/>
+<!-- Legs -->
+<rect x="65" y="200" width="25" height="120" rx="10" class="mannequin-body" id="mannequinLegL"/>
+<rect x="110" y="200" width="25" height="120" rx="10" class="mannequin-body" id="mannequinLegR"/>
+<!-- Feet -->
+<ellipse cx="77" cy="325" rx="18" ry="10" class="mannequin-body" id="mannequinFootL"/>
+<ellipse cx="122" cy="325" rx="18" ry="10" class="mannequin-body" id="mannequinFootR"/>
+</svg>
+
+<!-- Clothing Overlay -->
+<div class="clothing-overlay" id="clothingOverlay">
+{% if product.image %}
+<img src="{{ product.image }}" alt="{{ product.name }}" id="productImage">
+{% endif %}
+<div class="clothing-color-overlay" id="colorOverlay"></div>
+</div>
+</div>
+
+<!-- View Toggle -->
+<div class="view-toggle">
+<button class="view-btn active" onclick="setView('front')">نمای جلو</button>
+<button class="view-btn" onclick="setView('side')">نمای بغل</button>
+<button class="view-btn" onclick="setView('back')">نمای پشت</button>
+</div>
+</div>
+
+<!-- Control Panel -->
+<div class="control-panel">
+<h1 class="product-title">{{ product.name }}</h1>
+
+<div class="product-info-card">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div class="price-tag">{{ "{:,}".format(product.price) }} تومان</div>
+{% if product.old_price %}
+<div style="color:var(--text-sec);text-decoration:line-through">{{ "{:,}".format(product.old_price) }}</div>
+{% endif %}
+</div>
+</div>
+
+<!-- Clothing Colors -->
+{% if colors %}
+<div class="color-section">
+<div class="color-section-title">🎨 رنگ لباس</div>
+<div class="color-options">
+{% for color in colors %}
+<button class="color-btn {% if loop.first %}active{% endif %}" 
+        style="background:{{ color }}" 
+        onclick="setClothingColor('{{ color }}', this)"
+        title="{{ color }}"></button>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
+<!-- Mannequin Skin Color -->
+<div class="color-section">
+<div class="color-section-title">👤 رنگ پوست مانکن</div>
+<div class="mannequin-colors">
+{% for mc in mannequin_colors %}
+<button class="mannequin-btn {% if loop.first %}active{% endif %}" 
+        onclick="setMannequinColor('{{ mc.hex }}', this)">{{ mc.name }}</button>
+{% endfor %}
+</div>
+</div>
+
+<!-- Sizes -->
+<div class="color-section">
+<div class="color-section-title">📏 انتخاب سایز</div>
+<div class="size-selector">
+{% set size_list = product.sizes.split(',') if product.sizes else ['36','38','40','42','44','46'] %}
+{% for size in size_list %}
+<button class="size-btn {% if loop.first %}active{% endif %}" onclick="selectSize('{{ size }}', this)">{{ size }}</button>
+{% endfor %}
+</div>
+</div>
+
+<!-- Add to Cart -->
+<button class="add-to-cart" onclick="addToCart({{ product.id }})">
+🛒 افزودن به سبد خرید
+</button>
+
+<div style="margin-top:16px;text-align:center">
+<a href="/product/{{ product.id }}" style="color:var(--text-sec);font-size:13px">مشاهده جزئیات محصول</a>
+</div>
+</div>
+</div></div>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer>
+
+<script>
+let selectedSize = '{{ product.sizes.split(",")[0] if product.sizes else "36" }}';
+let selectedColor = '';
+
+function setClothingColor(color, btn) {
+    document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const overlay = document.getElementById('colorOverlay');
+    overlay.style.background = color;
+    overlay.style.opacity = '0.4';
+    selectedColor = color;
+}
+
+function setMannequinColor(color, btn) {
+    document.querySelectorAll('.mannequin-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.mannequin-body').forEach(el => {
+        el.style.fill = color;
+    });
+}
+
+function selectSize(size, btn) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedSize = size;
+}
+
+function setView(view) {
+    document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    // In a real app, this would show different angles
+    const overlay = document.getElementById('clothingOverlay');
+    if(view === 'side') overlay.style.transform = 'scaleX(-1)';
+    else overlay.style.transform = 'scaleX(1)';
+}
+
+function addToCart(productId) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            product_id: productId,
+            size: selectedSize,
+            color: selectedColor,
+            quantity: 1
+        })
+    }).then(r => r.json()).then(d => {
+        if(d.success) {
+            const msg = document.createElement('div');
+            msg.className = 'flash flash-success';
+            msg.textContent = 'به سبد خرید اضافه شد ✓';
+            msg.style.cssText = 'position:fixed;bottom:20px;left:20px;z-index:9999';
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 3000);
+        }
+    });
+}
+</script></body></html>

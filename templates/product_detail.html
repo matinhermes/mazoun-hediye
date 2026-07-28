@@ -1,0 +1,116 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ product.name }} | مزون هدیه</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.product-detail{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:40px 0}
+.product-image{height:500px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#333,#111)}
+.product-image img{width:100%;height:100%;object-fit:cover}
+.product-info{padding:20px}
+.product-title{font-family:'Playfair Display',serif;font-size:28px;margin-bottom:16px}
+.price-row{display:flex;gap:16px;align-items:center;margin:20px 0;font-size:24px}
+.price-current{color:var(--primary);font-weight:700}
+.price-old{color:var(--text-sec);text-decoration:line-through;font-size:18px}
+.sizes{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+.size-btn{padding:10px 20px;border:1px solid var(--border);border-radius:8px;cursor:pointer;background:var(--bg);color:var(--text);transition:.3s}
+.size-btn:hover,.size-btn.active{border-color:var(--primary);color:var(--primary)}
+.qty-row{display:flex;align-items:center;gap:16px;margin:20px 0}
+.qty-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:20px;cursor:pointer}
+.add-cart{width:100%;padding:16px;background:var(--primary);border:none;border-radius:8px;color:#000;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px}
+.add-cart:hover{background:var(--primary-dark)}
+.tryon-btn{display:block;width:100%;padding:14px;background:var(--rose);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:700;text-align:center;text-decoration:none;margin-bottom:12px;transition:.3s}
+.tryon-btn:hover{opacity:0.9;transform:translateY(-2px)}
+.features{margin-top:30px;padding-top:20px;border-top:1px solid var(--border)}
+.feature{display:flex;gap:10px;margin-bottom:10px;color:var(--text-sec);font-size:14px}
+.feature span{color:var(--primary)}
+.related{padding:40px 0}
+.related-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--primary);margin-bottom:24px}
+.related-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.related-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;text-decoration:none;color:var(--text);transition:.3s}
+.related-card:hover{border-color:var(--primary)}
+@media(max-width:768px){.product-detail{grid-template-columns:1fr}.product-image{height:300px}.related-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head><body>
+<header class="header"><div class="container"><div class="header-inner">
+<a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a>
+<div class="header-actions"><a href="/products" class="hdr-btn">🛍️</a><a href="/cart" class="hdr-btn">🛒</a></div>
+</div></div></header>
+
+<div class="container">
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+
+<div class="product-detail">
+<div class="product-image">
+{% if product.image %}
+<img src="{{ product.image }}" alt="{{ product.name }}">
+{% else %}
+<div style="font-size:80px">👗</div>
+{% endif %}
+</div>
+
+<div class="product-info">
+<h1 class="product-title">{{ product.name }}</h1>
+<div style="color:var(--primary)">⭐ {{ product.rating }} ({{ product.reviews_count }} نظر)</div>
+
+<div class="price-row">
+<span class="price-current">{{ "{:,}".format(product.price) }} تومان</span>
+{% if product.old_price %}
+<span class="price-old">{{ "{:,}".format(product.old_price) }}</span>
+<span style="background:var(--danger);color:#fff;padding:4px 8px;border-radius:4px;font-size:14px">-{{ product.discount }}٪</span>
+{% endif %}
+</div>
+
+<p style="color:var(--text-sec);line-height:2">{{ product.description }}</p>
+
+<div style="margin:20px 0"><strong>انتخاب سایز:</strong></div>
+<div class="sizes">
+{% set size_list = product.sizes.split(',') if product.sizes else ['36','38','40','42','44','46'] %}
+{% for s in size_list %}
+<button class="size-btn {% if loop.first %}active{% endif %}" onclick="selectSize(this,'{{ s }}')">{{ s }}</button>
+{% endfor %}
+</div>
+
+<div class="qty-row">
+<strong>تعداد:</strong>
+<button class="qty-btn" onclick="changeQty(-1)">−</button>
+<span id="qty" style="font-size:18px;font-weight:600">1</span>
+<button class="qty-btn" onclick="changeQty(1)">+</button>
+</div>
+
+<a href="/tryon/{{ product.id }}" class="tryon-btn">👗 پروژه لباس روی مانکن</a>
+<button class="add-cart" onclick="addToCart({{ product.id }})">🛒 افزودن به سبد خرید</button>
+
+<div class="features">
+<div class="feature"><span>✓</span> ارسال رایگان بالای ۵۰۰ هزار تومان</div>
+<div class="feature"><span>✓</span> تضمین کیفیت</div>
+<div class="feature"><span>✓</span> امکان مرجوعی تا ۷ روز</div>
+</div>
+</div></div>
+
+{% if related %}
+<div class="related">
+<h2 class="related-title">محصولات مرتبط</h2>
+<div class="related-grid">
+{% for r in related %}
+<a href="/product/{{ r.id }}" class="related-card">
+<div style="height:150px;background:linear-gradient(135deg,#333,#111);border-radius:8px;display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+{% if r.image %}<img src="{{ r.image }}" style="width:100%;height:100%;object-fit:cover;border-radius:8px" alt="{{ r.name }}">{% else %}<span style="font-size:40px">👗</span>{% endif %}
+</div>
+<div style="font-size:13px;font-weight:600">{{ r.name }}</div>
+<div style="color:var(--primary);font-size:14px;font-weight:700">{{ "{:,}".format(r.price) }} تومان</div>
+</a>
+{% endfor %}
+</div></div>
+{% endif %}
+</div>
+
+<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer>
+
+<script>
+var selectedSize="{{ product.sizes.split(',')[0] if product.sizes else '36' }}";
+var qty=1;
+function selectSize(el,s){document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');selectedSize=s}
+function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty').textContent=qty}
+function addToCart(id){fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,size:selectedSize,quantity:qty})}).then(r=>r.json()).then(d=>{if(d.success){const t=document.createElement('div');t.className='flash flash-success';t.textContent='به سبد خرید اضافه شد ✓';t.style.cssText='position:fixed;bottom:20px;left:20px;z-index:9999';document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}})}
+</script></body></html>
