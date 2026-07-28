@@ -217,6 +217,7 @@ body{font-size:14px}
                             {% endif %}
                         </div>
                         <button class="add-cart-btn" onclick="addToCart({{ product.id }}, '{{ product.sizes.split(',')[0] if product.sizes else '' }}')">افزودن به سبد</button>
+                    <a href="/tryon/{{ product.id }}" style="display:block;text-align:center;padding:10px;background:#b76e79;border-radius:8px;color:#fff;font-size:13px;font-weight:600;text-decoration:none;margin-top:8px">👗 پرویو روی مانکن</a>
                     </div>
                 </div>
                 {% endfor %}
@@ -244,6 +245,7 @@ body{font-size:14px}
                             {% endif %}
                         </div>
                         <button class="add-cart-btn" onclick="addToCart({{ product.id }}, '{{ product.sizes.split(',')[0] if product.sizes else '' }}')">افزودن به سبد</button>
+                    <a href="/tryon/{{ product.id }}" style="display:block;text-align:center;padding:10px;background:#b76e79;border-radius:8px;color:#fff;font-size:13px;font-weight:600;text-decoration:none;margin-top:8px">👗 پرویو روی مانکن</a>
                     </div>
                 </div>
                 {% endfor %}
@@ -328,6 +330,15 @@ body{font-size:14px}
 <script>
 function openModal(src){document.getElementById("modalImg").src=src;document.getElementById("imageModal").style.display="flex"}
 function closeModal(){document.getElementById("imageModal").style.display="none"}
+</script>
+
+<div id="imgModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;justify-content:center;align-items:center" onclick="closeModal()">
+<img id="modalImg" style="max-width:90%;max-height:90%;border-radius:8px" onclick="event.stopPropagation()">
+<button onclick="closeModal()" style="position:absolute;top:20px;left:20px;background:none;border:none;color:#fff;font-size:30px;cursor:pointer">✕</button>
+</div>
+<script>
+function openModal(src){document.getElementById("modalImg").src=src;document.getElementById("imgModal").style.display="flex"}
+function closeModal(){document.getElementById("imgModal").style.display="none"}
 </script>
 </body>
 </html>
