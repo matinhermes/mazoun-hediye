@@ -319,5 +319,15 @@ body{font-size:14px}
         // Initialize
         updateCartCount();
     </script>
+
+<!-- Image Modal -->
+<div id="imageModal" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;justify-content:center;align-items:center" onclick="closeModal()">
+<img id="modalImg" style="max-width:90%;max-height:90%;border-radius:8px" onclick="event.stopPropagation()">
+<button onclick="closeModal()" style="position:absolute;top:20px;left:20px;background:none;border:none;color:#fff;font-size:30px;cursor:pointer">✕</button>
+</div>
+<script>
+function openModal(src){document.getElementById("modalImg").src=src;document.getElementById("imageModal").style.display="flex"}
+function closeModal(){document.getElementById("imageModal").style.display="none"}
+</script>
 </body>
 </html>
