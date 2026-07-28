@@ -1,305 +1,216 @@
 <!DOCTYPE html><html lang="fa" dir="rtl"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پرویو لباس | {{ product.name }}</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>پرویو | {{ product.name }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#c9a96e;--bg:#0a0a0a;--card:#111;--border:#222;--text:#e8e8e8;--sec:#666}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#e8e8e8}
 
-/* Header */
-.topbar{background:rgba(17,17,17,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.topbar a{color:var(--gold);text-decoration:none;font-size:13px}
+.topbar{background:#111;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
+.topbar a{color:#c9a96e;text-decoration:none;font-size:13px}
 
-/* Main layout */
-.main{display:grid;grid-template-columns:1fr 380px;min-height:calc(100vh - 52px)}
-@media(max-width:900px){.main{grid-template-columns:1fr}}
+.page{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 48px)}
+@media(max-width:800px){.page{grid-template-columns:1fr}}
 
-/* ===== 3D MANNEQUIN SCENE ===== */
-.scene{position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0d0d0d 0%,#141414 50%,#0d0d0d 100%);overflow:hidden;perspective:1200px}
-@media(max-width:900px){.scene{min-height:75vh}}
+/* Left: Mannequin */
+.preview{display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0d0d0d,#141414,#0d0d0d);position:relative;overflow:hidden;perspective:1000px}
+@media(max-width:800px){.preview{min-height:70vh}}
 
-/* Background bokeh lights */
-.bokeh{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.bokeh-dot{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.15),transparent 70%);animation:float 8s ease-in-out infinite}
-.bokeh-dot:nth-child(1){width:200px;height:200px;top:10%;left:5%;animation-delay:0s}
-.bokeh-dot:nth-child(2){width:150px;height:150px;top:60%;right:10%;animation-delay:2s}
-.bokeh-dot:nth-child(3){width:120px;height:120px;bottom:20%;left:30%;animation-delay:4s}
-.bokeh-dot:nth-child(4){width:180px;height:180px;top:20%;right:20%;animation-delay:1s}
-.bokeh-dot:nth-child(5){width:100px;height:100px;bottom:30%;right:40%;animation-delay:3s}
-@keyframes float{0%,100%{transform:translateY(0) scale(1);opacity:0.3}50%{transform:translateY(-20px) scale(1.1);opacity:0.6}}
+.mannequin{position:relative;width:260px;height:440px;transition:transform 0.15s;transform-style:preserve-3d}
+@media(max-width:480px){.mannequin{width:210px;height:370px}}
 
-/* Gold frame behind mannequin */
-.gold-frame{position:absolute;width:320px;height:440px;border:1px solid rgba(201,169,110,0.15);border-radius:16px;top:50%;left:50%;transform:translate(-50%,-52%)}
+/* SVG mannequin */
+.mannequin svg{width:100%;height:100%;filter:drop-shadow(0 15px 40px rgba(0,0,0,0.6))}
 
-/* Mannequin container */
-.mannequin-wrap{position:relative;width:300px;height:480px;transition:transform 0.1s ease-out;transform-style:preserve-3d}
-@media(max-width:480px){.mannequin-wrap{width:240px;height:400px}}
-
-/* 3D Mannequin SVG - Faceless dark grey */
-.mannequin-svg{width:100%;height:100%;filter:drop-shadow(0 20px 50px rgba(0,0,0,0.7))}
-
-/* Clothing image overlay */
-.clothing-layer{position:absolute;top:16%;left:50%;transform:translateX(-50%);width:58%;height:36%;overflow:hidden;border-radius:6px;transition:all 0.4s}
-.clothing-layer img{width:100%;height:100%;object-fit:cover;display:block}
-.clothing-tint{position:absolute;inset:0;background:var(--tint-color,#fff);mix-blend-mode:multiply;opacity:0;transition:opacity 0.3s;pointer-events:none}
+/* Product image on mannequin body */
+.product-on-body{position:absolute;top:18%;left:50%;transform:translateX(-50%);width:52%;height:34%;overflow:hidden;border-radius:4px}
+.product-on-body img{width:100%;height:100%;object-fit:cover}
+.product-tint{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:0;transition:opacity 0.3s}
 
 /* Floor shadow */
-.floor-shadow{position:absolute;bottom:5%;left:50%;transform:translateX(-50%);width:180px;height:25px;background:radial-gradient(ellipse,rgba(0,0,0,0.5),transparent 70%);border-radius:50%}
+.shadow{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);width:140px;height:16px;background:radial-gradient(ellipse,rgba(0,0,0,0.5),transparent 70%);border-radius:50%}
 
-/* Hint */
-.drag-hint{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.25);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.2)}
 
-/* ===== SIDEBAR ===== */
-.sidebar{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 52px)}
-@media(max-width:900px){.sidebar{max-height:none;border-right:none;border-top:1px solid var(--border)}}
+/* Right: Controls */
+.controls{background:#111;border-right:1px solid #222;display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 48px)}
+@media(max-width:800px){.controls{max-height:none;border-right:none;border-top:1px solid #222}}
 
-.sb-head{padding:24px;border-bottom:1px solid var(--border)}
-.p-name{font-family:'Playfair Display',serif;font-size:21px;color:var(--gold);line-height:1.4}
-.p-price{font-size:22px;font-weight:700;color:var(--gold);margin-top:8px}
-.p-old{font-size:14px;color:var(--sec);text-decoration:line-through;margin-right:8px}
+.ctrl-head{padding:20px;border-bottom:1px solid #222}
+.ctrl-head h2{font-size:18px;color:#c9a96e;line-height:1.5}
+.ctrl-head .price{font-size:20px;font-weight:700;color:#c9a96e;margin-top:6px}
 
-.sb-body{flex:1;padding:20px 24px;overflow-y:auto}
+.ctrl-body{flex:1;padding:16px 20px}
 
-.sec{margin-bottom:22px}
-.sec-label{font-size:12px;color:var(--sec);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}
+.group{margin-bottom:20px}
+.group-title{font-size:12px;color:#666;margin-bottom:8px}
 
-/* Swatches */
-.swatches{display:flex;gap:10px;flex-wrap:wrap}
-.sw{width:36px;height:36px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .2s}
-.sw:hover{transform:scale(1.12)}
-.sw.on{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,0.2)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
 
-/* Skin */
-.skins{display:flex;gap:8px}
-.sk{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .2s}
-.sk:hover{transform:scale(1.1)}
-.sk.on{border-color:var(--gold)}
+/* Color buttons */
+.cbtn{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all 0.2s}
+.cbtn:hover{transform:scale(1.1)}
+.cbtn.on{border-color:#c9a96e;box-shadow:0 0 0 3px rgba(201,169,110,0.25)}
 
-/* Sizes */
-.sizes{display:flex;gap:8px;flex-wrap:wrap}
-.sz{padding:10px 16px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
-.sz:hover{border-color:var(--gold)}
-.sz.on{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+/* Size buttons */
+.sbtn{padding:9px 16px;background:#0a0a0a;border:1px solid #333;border-radius:20px;color:#e8e8e8;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s}
+.sbtn:hover{border-color:#c9a96e}
+.sbtn.on{background:#c9a96e;color:#000;border-color:#c9a96e;font-weight:600}
 
-/* View tabs */
-.views{display:flex;background:var(--bg);border-radius:10px;padding:4px;gap:4px}
-.vw{flex:1;padding:8px;border:none;background:transparent;border-radius:8px;color:var(--sec);cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
-.vw:hover{color:var(--text)}
-.vw.on{background:var(--border);color:var(--gold);font-weight:600}
+/* View buttons */
+.vbtn{flex:1;padding:8px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#888;cursor:pointer;font-family:inherit;font-size:12px;transition:all 0.2s}
+.vbtn:hover{color:#e8e8e8}
+.vbtn.on{background:#1a1a1a;border-color:#c9a96e;color:#c9a96e}
 
-/* CTA */
-.sb-foot{padding:20px 24px;border-top:1px solid var(--border)}
-.cart-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8956a);border:none;border-radius:12px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .3s}
-.cart-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,169,110,0.3)}
+/* Cart button */
+.cart{width:100%;padding:14px;background:linear-gradient(135deg,#c9a96e,#b8956a);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:auto;transition:all 0.3s}
+.cart:hover{box-shadow:0 6px 20px rgba(201,169,110,0.3)}
 
-.trust{display:flex;justify-content:center;gap:16px;padding:12px;border-top:1px solid var(--border);font-size:11px;color:var(--sec)}
-.trust span{display:flex;align-items:center;gap:4px}
+.ctrl-foot{padding:16px 20px;border-top:1px solid #222}
 
 /* Mobile */
-@media(max-width:480px){
-.sb-head{padding:16px}.sb-body{padding:16px}.sb-foot{padding:16px}
-.p-name{font-size:18px}.p-price{font-size:20px}
-}
+@media(max-width:480px){.ctrl-head{padding:14px}.ctrl-body{padding:12px 16px}.ctrl-foot{padding:12px 16px}}
 </style>
 </head><body>
 
 <div class="topbar">
 <a href="/product/{{ product.id }}">← بازگشت</a>
-<a href="/" style="font-family:'Playfair Display',serif;font-size:16px">مزون هدیه</a>
-<a href="/cart">🛒 سبد خرید</a>
+<a href="/" style="font-weight:600">مزون هدیه</a>
+<a href="/cart">🛒</a>
 </div>
 
-<div class="main">
-<!-- 3D Scene -->
-<div class="scene" id="scene">
-<!-- Bokeh background -->
-<div class="bokeh">
-<div class="bokeh-dot"></div><div class="bokeh-dot"></div><div class="bokeh-dot"></div>
-<div class="bokeh-dot"></div><div class="bokeh-dot"></div>
-</div>
-<div class="gold-frame"></div>
-
+<div class="page">
 <!-- Mannequin -->
-<div class="mannequin-wrap" id="mannequin">
-<svg viewBox="0 0 240 480" class="mannequin-svg">
+<div class="preview" id="preview">
+<div class="mannequin" id="mannequin">
+<svg viewBox="0 0 220 440">
 <!-- Shadow -->
-<ellipse cx="120" cy="460" rx="60" ry="10" fill="rgba(0,0,0,0.4)"/>
-
+<ellipse cx="110" cy="425" rx="50" ry="8" fill="rgba(0,0,0,0.4)"/>
 <!-- Legs -->
-<rect x="90" y="320" width="24" height="130" rx="12" id="sk-leg-l" fill="#2a2a2a"/>
-<rect x="126" y="320" width="24" height="130" rx="12" id="sk-leg-r" fill="#2a2a2a"/>
-
+<rect x="80" y="300" width="22" height="115" rx="11" fill="#2d2d2d"/>
+<rect x="118" y="300" width="22" height="115" rx="11" fill="#2d2d2d"/>
 <!-- Feet -->
-<ellipse cx="102" cy="452" rx="16" ry="8" id="sk-foot-l" fill="#2a2a2a"/>
-<ellipse cx="138" cy="452" rx="16" ry="8" id="sk-foot-r" fill="#2a2a2a"/>
-
+<ellipse cx="91" cy="415" rx="14" ry="7" fill="#2d2d2d"/>
+<ellipse cx="129" cy="415" rx="14" ry="7" fill="#2d2d2d"/>
 <!-- Body -->
-<path d="M72 110 Q120 95 168 110 L178 320 Q120 335 62 320 Z" id="sk-body" fill="#2a2a2a"/>
-
+<path d="M62 100 Q110 85 158 100 L166 300 Q110 315 54 300 Z" fill="#2d2d2d"/>
 <!-- Arms -->
-<path d="M72 110 Q52 125 48 190 Q46 230 52 255 Q58 262 64 255 Q68 230 72 190 Q74 140 78 120" id="sk-arm-l" fill="#2a2a2a"/>
-<path d="M168 110 Q188 125 192 190 Q194 230 188 255 Q182 262 176 255 Q172 230 168 190 Q166 140 162 120" id="sk-arm-r" fill="#2a2a2a"/>
-
+<path d="M62 100 Q45 115 42 175 Q40 210 46 235 Q50 240 54 235 Q58 210 62 175 Q64 130 68 110" fill="#2d2d2d"/>
+<path d="M158 100 Q175 115 178 175 Q180 210 174 235 Q170 240 166 235 Q162 210 158 175 Q156 130 152 110" fill="#2d2d2d"/>
 <!-- Hands -->
-<ellipse cx="55" cy="258" rx="10" ry="12" id="sk-hand-l" fill="#2a2a2a"/>
-<ellipse cx="185" cy="258" rx="10" ry="12" id="sk-hand-r" fill="#2a2a2a"/>
-
+<ellipse cx="49" cy="238" rx="9" ry="11" fill="#2d2d2d"/>
+<ellipse cx="171" cy="238" rx="9" ry="11" fill="#2d2d2d"/>
 <!-- Neck -->
-<rect x="108" y="78" width="24" height="22" rx="12" id="sk-neck" fill="#2a2a2a"/>
-
-<!-- Head - faceless oval -->
-<ellipse cx="120" cy="50" rx="30" ry="36" id="sk-head" fill="#2a2a2a"/>
-
-<!-- Subtle body highlights -->
-<path d="M90 115 Q120 108 150 115" stroke="rgba(255,255,255,0.03)" stroke-width="1" fill="none"/>
-<path d="M85 320 Q120 330 155 320" stroke="rgba(255,255,255,0.02)" stroke-width="1" fill="none"/>
+<rect x="100" y="68" width="20" height="20" rx="10" fill="#2d2d2d"/>
+<!-- Head -->
+<ellipse cx="110" cy="45" rx="28" ry="34" fill="#2d2d2d"/>
 </svg>
 
-<!-- Clothing overlay -->
-<div class="clothing-layer" id="clothingLayer">
+<!-- Product image -->
+<div class="product-on-body">
 {% if product.image %}
-<img src="{{ product.image }}" alt="{{ product.name }}" id="clothingImg">
-<div class="clothing-tint" id="clothingTint"></div>
+<img src="{{ product.image }}" alt="{{ product.name }}">
+<div class="product-tint" id="tint"></div>
 {% endif %}
 </div>
 </div>
-
-<div class="drag-hint">↔ بکش تا بچرخه</div>
+<div class="shadow"></div>
+<div class="hint">↔ بکش تا بچرخه</div>
 </div>
 
-<!-- Sidebar -->
-<div class="sidebar">
-<div class="sb-head">
-<div class="p-name">{{ product.name }}</div>
-<div><span class="p-price">{{ "{:,}".format(product.price) }} تومان</span>
-{% if product.old_price %}<span class="p-old">{{ "{:,}".format(product.old_price) }}</span>{% endif %}</div>
+<!-- Controls -->
+<div class="controls">
+<div class="ctrl-head">
+<h2>{{ product.name }}</h2>
+<div class="price">{{ "{:,}".format(product.price) }} تومان</div>
 </div>
 
-<div class="sb-body">
-<!-- View -->
-<div class="sec">
-<div class="sec-label">👁️ نمای لباس</div>
-<div class="views">
-<button class="vw on" onclick="setView('front',this)">جلو</button>
-<button class="vw" onclick="setView('side',this)">بغل</button>
-<button class="vw" onclick="setView('back',this)">پشت</button>
-</div>
-</div>
-
-<!-- Color -->
-<div class="sec">
-<div class="sec-label">🎨 رنگ لباس</div>
-<div class="swatches">
-<button class="sw on" style="background:#fff" onclick="setColor('#ffffff',this)"></button>
-<button class="sw" style="background:#1a1a1a;border-color:#444" onclick="setColor('#1a1a1a',this)"></button>
-<button class="sw" style="background:#FFB6C1" onclick="setColor('#FFB6C1',this)"></button>
-<button class="sw" style="background:#c9a96e" onclick="setColor('#c9a96e',this)"></button>
-<button class="sw" style="background:#8B0000" onclick="setColor('#8B0000',this)"></button>
-<button class="sw" style="background:#4A6741" onclick="setColor('#4A6741',this)"></button>
-<button class="sw" style="background:#1B3A5C" onclick="setColor('#1B3A5C',this)"></button>
-<button class="sw" style="background:#F5E6D3" onclick="setColor('#F5E6D3',this)"></button>
+<div class="ctrl-body">
+<div class="group">
+<div class="group-title">🎨 رنگ لباس</div>
+<div class="row">
+<button class="cbtn on" style="background:#fff" onclick="setColor('#fff',this)"></button>
+<button class="cbtn" style="background:#111;border-color:#444" onclick="setColor('#111',this)"></button>
+<button class="cbtn" style="background:#FFB6C1" onclick="setColor('#FFB6C1',this)"></button>
+<button class="cbtn" style="background:#c9a96e" onclick="setColor('#c9a96e',this)"></button>
+<button class="cbtn" style="background:#8B0000" onclick="setColor('#8B0000',this)"></button>
+<button class="cbtn" style="background:#4A6741" onclick="setColor('#4A6741',this)"></button>
+<button class="cbtn" style="background:#1B3A5C" onclick="setColor('#1B3A5C',this)"></button>
+<button class="cbtn" style="background:#F5E6D3" onclick="setColor('#F5E6D3',this)"></button>
 </div>
 </div>
 
-<!-- Skin -->
-<div class="sec">
-<div class="sec-label">🧑 رنگ مانکن</div>
-<div class="skins">
-<button class="sk" style="background:#4a4a4a" onclick="setSkin('#4a4a4a',this)"></button>
-<button class="sk on" style="background:#2a2a2a" onclick="setSkin('#2a2a2a',this)"></button>
-<button class="sk" style="background:#1a1a1a" onclick="setSkin('#1a1a1a',this)"></button>
-<button class="sk" style="background:#E8C4A0" onclick="setSkin('#E8C4A0',this)"></button>
-<button class="sk" style="background:#C68642" onclick="setSkin('#C68642',this)"></button>
+<div class="group">
+<div class="group-title">👁️ نمای لباس</div>
+<div class="row">
+<button class="vbtn on" onclick="setView('front',this)">جلو</button>
+<button class="vbtn" onclick="setView('side',this)">بغل</button>
+<button class="vbtn" onclick="setView('back',this)">پشت</button>
 </div>
 </div>
 
-<!-- Size -->
-<div class="sec">
-<div class="sec-label">📐 سایز</div>
-<div class="sizes" id="sizeRow">
+<div class="group">
+<div class="group-title">📐 سایز</div>
+<div class="row">
 {% set sizes = product.sizes.split(',') if product.sizes else ['36','38','40','42','44','46'] %}
-{% for size in sizes %}
-<button class="sz {% if loop.first %}on{% endif %}" onclick="setSize('{{ size }}',this)">{{ size }}</button>
+{% for s in sizes %}
+<button class="sbtn {% if loop.first %}on{% endif %}" onclick="setSize('{{ s }}',this)">{{ s }}</button>
 {% endfor %}
 </div>
 </div>
 </div>
 
-<div class="sb-foot">
-<button class="cart-btn" onclick="addToCart()">🛒 افزودن به سبد خرید</button>
-</div>
-<div class="trust">
-<span>🚚 ارسال سریع</span>
-<span>✅ ضمانت</span>
-<span>🔄 تعویض</span>
+<div class="ctrl-foot">
+<button class="cart" onclick="addToCart()">🛒 افزودن به سبد خرید</button>
 </div>
 </div>
 </div>
 
 <script>
-var curSize='{{ sizes[0] if sizes else "36" }}';
+var sz='{{ sizes[0] if sizes else "36" }}';
 
 function setColor(c,el){
-    document.querySelectorAll('.sw').forEach(function(s){s.classList.remove('on')});
+    document.querySelectorAll('.cbtn').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
-    var t=document.getElementById('clothingTint');
+    var t=document.getElementById('tint');
     if(t){t.style.background=c;t.style.opacity='0.3'}
 }
-function setSkin(c,el){
-    document.querySelectorAll('.sk').forEach(function(s){s.classList.remove('on')});
-    el.classList.add('on');
-    ['sk-head','sk-neck','sk-body','sk-arm-l','sk-arm-r','sk-hand-l','sk-hand-r','sk-leg-l','sk-leg-r','sk-foot-l','sk-foot-r'].forEach(function(id){
-        var e=document.getElementById(id);if(e)e.setAttribute('fill',c);
-    });
-}
-function setSize(s,el){
-    curSize=s;
-    document.querySelectorAll('.sz').forEach(function(b){b.classList.remove('on')});
-    el.classList.add('on');
-}
+
 function setView(v,el){
-    document.querySelectorAll('.vw').forEach(function(b){b.classList.remove('on')});
+    document.querySelectorAll('.vbtn').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
-    var l=document.getElementById('clothingLayer');
-    if(v==='front'){l.style.transform='translateX(-50%) scaleX(1) skewY(0)';l.style.opacity='1'}
-    else if(v==='side'){l.style.transform='translateX(-50%) scaleX(0.55) skewY(3deg)';l.style.opacity='0.9'}
-    else{l.style.transform='translateX(-50%) scaleX(1)';l.style.opacity='0.3'}
+    var m=document.getElementById('mannequin');
+    var img=document.querySelector('.product-on-body');
+    if(v==='front'){m.style.transform='rotateY(0)';img.style.transform='translateX(-50%) scaleX(1)'}
+    else if(v==='side'){m.style.transform='rotateY(20deg)';img.style.transform='translateX(-50%) scaleX(0.6) skewY(2deg)'}
+    else{m.style.transform='rotateY(180deg)';img.style.opacity='0.3'}
 }
+
+function setSize(s,el){
+    sz=s;
+    document.querySelectorAll('.sbtn').forEach(function(b){b.classList.remove('on')});
+    el.classList.add('on');
+}
+
 function addToCart(){
-    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:curSize,quantity:1})}).then(function(r){return r.json()}).then(function(d){
+    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:sz,quantity:1})}).then(r=>r.json()).then(d=>{
         if(d.success){
             var t=document.createElement('div');
-            t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn;box-shadow:0 8px 30px rgba(0,0,0,0.4)';
-            t.textContent='✓ به سبد خرید اضافه شد';
-            document.body.appendChild(t);setTimeout(function(){t.remove()},3000);
+            t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn';
+            t.textContent='✓ به سبد اضافه شد';
+            document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
         }
     });
 }
 
-// 3D rotation with drag/touch
-var scene=document.getElementById('scene'), m=document.getElementById('mannequin');
-var dragging=false,sx=0,rot=0;
-
-scene.addEventListener('mousedown',function(e){dragging=true;sx=e.clientX});
-document.addEventListener('mousemove',function(e){
-    if(!dragging)return;
-    rot+=(e.clientX-sx)*0.2;
-    rot=Math.max(-35,Math.min(35,rot));
-    m.style.transform='rotateY('+rot+'deg)';
-    sx=e.clientX;
-});
-document.addEventListener('mouseup',function(){dragging=false});
-
-scene.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;dragging=true});
-scene.addEventListener('touchmove',function(e){
-    if(!dragging)return;
-    e.preventDefault();
-    rot+=(e.touches[0].clientX-sx)*0.2;
-    rot=Math.max(-35,Math.min(35,rot));
-    m.style.transform='rotateY('+rot+'deg)';
-    sx=e.touches[0].clientX;
-},{passive:false});
-scene.addEventListener('touchend',function(){dragging=false});
+// 3D drag rotation
+var p=document.getElementById('preview'),m=document.getElementById('mannequin');
+var drag=false,sx=0,rot=0;
+p.addEventListener('mousedown',e=>{drag=true;sx=e.clientX});
+document.addEventListener('mousemove',e=>{if(!drag)return;rot+=(e.clientX-sx)*0.2;rot=Math.max(-30,Math.min(30,rot));m.style.transform='rotateY('+rot+'deg)';sx=e.clientX});
+document.addEventListener('mouseup',()=>{drag=false});
+p.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true});
+p.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();rot+=(e.touches[0].clientX-sx)*0.2;rot=Math.max(-30,Math.min(30,rot));m.style.transform='rotateY('+rot+'deg)';sx=e.touches[0].clientX},{passive:false});
+p.addEventListener('touchend',()=>{drag=false});
 </script>
 </body></html>
