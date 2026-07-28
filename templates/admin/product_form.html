@@ -1,25 +1,117 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>فرم محصول | ادمین</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
-<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>ادمین</span></div></a></div></div></header>
-<div class="container"><div style="display:grid;grid-template-columns:220px 1fr;gap:30px;padding:30px 0">
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px">
-<a href="/admin" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">داشبورد</a>
-<a href="/admin/products" style="display:block;padding:10px;color:var(--primary);text-decoration:none;background:var(--bg-lighter);border-radius:6px;margin-bottom:4px">محصولات</a>
-<a href="/admin/orders" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">سفارشات</a></div>
-<div>{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
-<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:30px">{{ "ویرایش محصول" if product else "محصول جدید" }}</h1>
-<form method="POST" style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;max-width:700px">
-<div style="margin-bottom:16px"><label style="display:block;margin-bottom:6px;color:var(--text-sec)">نام محصول *</label><input name="name" value="{{ product.name if product else '' }}" required style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div>
-<div style="margin-bottom:16px"><label style="display:block;margin-bottom:6px;color:var(--text-sec)">توضیحات</label><textarea name="description" rows="3" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit">{{ product.description if product else '' }}</textarea></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-<div><label style="display:block;margin-bottom:6px;color:var(--text-sec)">قیمت *</label><input name="price" type="number" value="{{ product.price if product else '' }}" required style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div>
-<div><label style="display:block;margin-bottom:6px;color:var(--text-sec)">قیمت قبلی</label><input name="old_price" type="number" value="{{ product.old_price if product else '' }}" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-<div><label style="display:block;margin-bottom:6px;color:var(--text-sec)">دسته‌بندی</label><select name="category_id" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit">{% for c in categories %}<option value="{{ c.id }}" {{ "selected" if product and product.category_id == c.id }}>{{ c.name }}</option>{% endfor %}</select></div>
-<div><label style="display:block;margin-bottom:6px;color:var(--text-sec)">موجودی</label><input name="stock" type="number" value="{{ product.stock if product else 100 }}" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-<div><label style="display:block;margin-bottom:6px;color:var(--text-sec)">سایزها</label><input name="sizes" value="{{ product.sizes if product else 'S,M,L,XL' }}" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div>
-<div><label style="display:block;margin-bottom:6px;color:var(--text-sec)">رنگ‌ها</label><input name="colors" value="{{ product.colors if product else '' }}" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div></div>
-<div style="display:flex;gap:20px;margin-bottom:16px"><label><input type="checkbox" name="is_featured" {{ "checked" if product and product.is_featured }}> پرفروش</label>{% if product %}<label><input type="checkbox" name="is_active" {{ "checked" if product.is_active }}> فعال</label>{% endif %}</div>
-<button type="submit" style="padding:12px 30px;background:var(--primary);border:none;border-radius:8px;color:#000;font-weight:700;cursor:pointer;font-family:inherit">{{ "ذخیره" if product else "افزودن" }}</button></form>
-</div></div></div>
-<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ "ویرایش محصول" if product else "محصول جدید" }} | پنل مدیریت</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 80px)}
+.sidebar{background:var(--bg-card);border-left:1px solid var(--border);padding:24px 0;position:sticky;top:80px;height:calc(100vh - 80px)}
+.sidebar-logo{padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sidebar-logo img{height:40px;border-radius:50%}
+.sidebar-logo span{font-family:'Playfair Display',serif;color:var(--primary);font-size:18px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;color:var(--text-sec);text-decoration:none;font-size:14px;transition:.2s;border-right:3px solid transparent}
+.nav-item:hover{background:var(--bg-lighter);color:var(--text)}
+.nav-item.active{background:var(--bg-lighter);color:var(--primary);border-right-color:var(--primary)}
+.nav-section{padding:8px 24px;color:var(--text-sec);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:16px}
+.main-content{padding:24px 32px}
+.form-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;margin-bottom:6px;color:var(--text-sec);font-size:13px}
+.form-input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit}
+.form-input:focus{outline:none;border-color:var(--primary)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.btn{padding:12px 24px;border:none;border-radius:8px;font-family:inherit;font-weight:600;cursor:pointer;transition:.2s}
+.btn-primary{background:var(--primary);color:#000}
+.btn-primary:hover{background:var(--primary-dark)}
+.image-upload{border:2px dashed var(--border);border-radius:12px;padding:24px;text-align:center;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+.image-upload:hover{border-color:var(--primary)}
+.image-upload input[type="file"]{position:absolute;width:100%;height:100%;top:0;left:0;opacity:0;cursor:pointer}
+.image-upload-icon{font-size:40px;margin-bottom:8px}
+.image-upload-text{color:var(--text-sec);font-size:13px}
+.image-preview{max-width:200px;max-height:200px;border-radius:8px;margin-top:12px}
+.checkbox-group{display:flex;gap:16px;flex-wrap:wrap}
+.checkbox-label{display:flex;align-items:center;gap:8px;cursor:pointer}
+.checkbox-label input{accent-color:var(--primary)}
+@media(max-width:992px){.admin-layout{grid-template-columns:1fr}.sidebar{display:none}}
+</style>
+</head><body>
+<header class="header"><div class="container"><div class="header-inner">
+<a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>مدیریت</span></div></a>
+<div class="header-actions"><a href="/" class="hdr-btn">🏠</a><a href="/admin/products" class="hdr-btn">🛍️</a></div>
+</div></div></header>
+
+<div class="admin-layout">
+<div class="sidebar">
+<div class="sidebar-logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><span>مزون هدیه</span></div>
+<div class="nav-section">منوی اصلی</div>
+<a href="/admin" class="nav-item">داشبورد</a>
+<a href="/admin/products" class="nav-item active">محصولات</a>
+<a href="/admin/orders" class="nav-item">سفارشات</a>
+<a href="/admin/users" class="nav-item">کاربران</a>
+<div class="nav-section">تنظیمات</div>
+<a href="/admin/settings" class="nav-item">تنظیمات فروشگاه</a>
+</div>
+
+<div class="main-content">
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+
+<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:24px">{{ "ویرایش محصول" if product else "محصول جدید" }}</h1>
+
+<form method="POST" enctype="multipart/form-data">
+<div class="form-card">
+<h2 style="color:var(--primary);margin-bottom:16px;font-size:16px">📸 تصویر محصول</h2>
+<div class="image-upload" id="imageUpload">
+<input type="file" name="image" accept="image/*" onchange="previewImage(this)">
+<div id="uploadPlaceholder">
+<div class="image-upload-icon">📷</div>
+<div class="image-upload-text">کلیک کنید یا عکس را بکشید</div>
+<div class="image-upload-text">فرمت‌های مجاز: JPG, PNG, GIF, WebP</div>
+</div>
+<img id="imagePreview" class="image-preview" style="display:none">
+</div>
+{% if product and product.image %}
+<div style="margin-top:12px"><img src="{{ product.image }}" style="max-width:150px;border-radius:8px;border:1px solid var(--border)"></div>
+{% endif %}
+</div>
+
+<div class="form-card" style="margin-top:16px">
+<h2 style="color:var(--primary);margin-bottom:16px;font-size:16px">📝 اطلاعات محصول</h2>
+<div class="form-group"><label class="form-label">نام محصول *</label><input name="name" class="form-input" value="{{ product.name if product else '' }}" required></div>
+<div class="form-group"><label class="form-label">توضیحات</label><textarea name="description" class="form-input" rows="4">{{ product.description if product else '' }}</textarea></div>
+
+<div class="form-row">
+<div class="form-group"><label class="form-label">قیمت (تومان) *</label><input name="price" type="number" class="form-input" value="{{ product.price if product else '' }}" required></div>
+<div class="form-group"><label class="form-label">قیمت قبلی (تومان)</label><input name="old_price" type="number" class="form-input" value="{{ product.old_price if product else '' }}"></div>
+</div>
+
+<div class="form-row">
+<div class="form-group"><label class="form-label">دسته‌بندی</label><select name="category_id" class="form-input">{% for c in categories %}<option value="{{ c.id }}" {{ "selected" if product and product.category_id == c.id }}>{{ c.icon }} {{ c.name }}</option>{% endfor %}</select></div>
+<div class="form-group"><label class="form-label">موجودی</label><input name="stock" type="number" class="form-input" value="{{ product.stock if product else 100 }}"></div>
+</div>
+
+<div class="form-row">
+<div class="form-group"><label class="form-label">سایزها (با کاما)</label><input name="sizes" class="form-input" value="{{ product.sizes if product else 'S,M,L,XL' }}"></div>
+<div class="form-group"><label class="form-label">رنگ‌ها (با کاما)</label><input name="colors" class="form-input" value="{{ product.colors if product else '' }}"></div>
+</div>
+
+<div class="form-group">
+<label class="form-label">وضعیت نمایش</label>
+<div class="checkbox-group">
+<label class="checkbox-label"><input type="checkbox" name="is_featured" {{ "checked" if product and product.is_featured }}> پرفروش</label>
+{% if product %}<label class="checkbox-label"><input type="checkbox" name="is_active" {{ "checked" if product.is_active }}> فعال</label>{% endif %}
+</div>
+</div>
+
+<div style="display:flex;gap:12px;margin-top:20px">
+<button type="submit" class="btn btn-primary">{{ "ذخیره تغییرات" if product else "افزودن محصول" }}</button>
+<a href="/admin/products" style="padding:12px 24px;color:var(--text-sec);text-decoration:none">انصراف</a>
+</div>
+</div>
+</form>
+</div></div>
+
+<footer class="footer" style="margin:0"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه | پنل مدیریت</p></div></div></footer>
+
+<script>
+function previewImage(input){if(input.files&&input.files[0]){var reader=new FileReader();reader.onload=function(e){document.getElementById('imagePreview').src=e.target.result;document.getElementById('imagePreview').style.display='block';document.getElementById('uploadPlaceholder').style.display='none'};reader.readAsDataURL(input.files[0])}}
+</script></body></html>

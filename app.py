@@ -19,6 +19,7 @@ app.config['DATABASE'] = 'mazoun_hediye.db'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 hours
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
 # ZarinPal Settings (TODO: Fill with your merchant ID)
 ZARINPAL_MERCHANT_ID = os.environ.get('ZARINPAL_MERCHANT', 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX')
@@ -770,6 +771,116 @@ def admin_users():
     users = db.execute('SELECT * FROM users ORDER BY created_at DESC').fetchall()
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
     return render_template('admin/users.html', users=users, settings=settings)
+
+
+@app.route('/admin/upload-image', methods=['POST'])
+@admin_required
+def admin_upload_image():
+    if 'image' not in request.files:
+        return jsonify({'error': 'فایلی انتخاب نشد'}), 400
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'فایلی انتخاب نشد'}), 400
+    
+    ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+    if ext not in ALLOWED_EXTENSIONS:
+        return jsonify({'error': 'فرمت فایل مجاز نیست'}), 400
+    
+    filename = f"{secrets.token_hex(8)}.{ext}"
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    file.save(filepath)
+    
+    return jsonify({'success': True, 'url': f'/uploads/{filename}', 'filename': filename})
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+@app.route('/admin/change-password', methods=['POST'])
+@admin_required
+def admin_change_password():
+    current = request.form.get('current_password', '')
+    new_pass = request.form.get('new_password', '')
+    confirm = request.form.get('confirm_password', '')
+    
+    if not current or not new_pass:
+        flash('لطفاً تمام فیلدها را پر کنید', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    if new_pass != confirm:
+        flash('رمز جدید و تکرار آن مطابقت ندارند', 'danger')
+        return redirect(url_for('admin_settings'))
+    
+    if len(new_pass) < 6:
+        flash('رمز عبور باید حداقل ۶ کاراکتر باشد', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    db = get_db()
+    user = db.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    
+    if not check_password_hash(user['password'], current):
+        flash('رمز فعلی اشتباه است', 'danger')
+        return redirect(url_for('admin_settings'))
+    
+    db.execute('UPDATE users SET password = ? WHERE id = ?', 
+               (generate_password_hash(new_pass), session['user_id']))
+    db.commit()
+    flash('رمز عبور با موفقیت تغییر کرد ✓', 'success')
+    return redirect(url_for('admin_settings'))
+
+@app.route('/admin/change-username', methods=['POST'])
+@admin_required
+def admin_change_username():
+    new_username = request.form.get('new_username', '').strip()
+    
+    if not new_username:
+        flash('نام کاربری جدید را وارد کنید', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    if len(new_username) < 3:
+        flash('نام کاربری باید حداقل ۳ کاراکتر باشد', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    db = get_db()
+    existing = db.execute('SELECT id FROM users WHERE username = ? AND id != ?', 
+                         (new_username, session['user_id'])).fetchone()
+    if existing:
+        flash('این نام کاربری قبلاً استفاده شده', 'danger')
+        return redirect(url_for('admin_settings'))
+    
+    db.execute('UPDATE users SET username = ? WHERE id = ?', 
+               (new_username, session['user_id']))
+    db.commit()
+    session['username'] = new_username
+    flash('نام کاربری با موفقیت تغییر کرد ✓', 'success')
+    return redirect(url_for('admin_settings'))
+
+@app.route('/admin/add-category', methods=['POST'])
+@admin_required
+def admin_add_category():
+    name = request.form.get('name', '').strip()
+    icon = request.form.get('icon', '📁').strip()
+    
+    if not name:
+        flash('نام دسته‌بندی را وارد کنید', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    db = get_db()
+    db.execute('INSERT INTO categories (name, icon, is_active) VALUES (?, ?, 1)', (name, icon))
+    db.commit()
+    flash(f'دسته‌بندی "{name}" اضافه شد ✓', 'success')
+    return redirect(url_for('admin_settings'))
+
+@app.route('/admin/delete-category/<int:cat_id>', methods=['POST'])
+@admin_required
+def admin_delete_category(cat_id):
+    db = get_db()
+    db.execute('DELETE FROM categories WHERE id = ?', (cat_id,))
+    db.commit()
+    flash('دسته‌بندی حذف شد ✓', 'success')
+    return redirect(url_for('admin_settings'))
 
 # ==================== API ====================
 @app.route('/api/cart/add', methods=['POST'])
