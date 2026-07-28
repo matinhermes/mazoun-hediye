@@ -1,23 +1,138 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>داشبورد | ادمین</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
-<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>ادمین</span></div></a><div class="header-actions"><a href="/" class="hdr-btn" title="سایت">🏠</a></div></div></div></header>
-<div class="container"><div style="display:grid;grid-template-columns:220px 1fr;gap:30px;padding:30px 0">
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px">
-<h3 style="color:var(--primary);margin-bottom:20px">منو</h3>
-<a href="/admin" style="display:block;padding:10px;color:var(--primary);text-decoration:none;background:var(--bg-lighter);border-radius:6px;margin-bottom:4px">داشبورد</a>
-<a href="/admin/products" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">محصولات</a>
-<a href="/admin/orders" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">سفارشات</a>
-<a href="/admin/users" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">کاربران</a>
-<a href="/admin/settings" style="display:block;padding:10px;color:var(--text-sec);text-decoration:none;border-radius:6px;margin-bottom:4px">تنظیمات</a>
-<a href="/" style="display:block;padding:10px;color:var(--rose);text-decoration:none;border-radius:6px;margin-top:20px;border-top:1px solid var(--border);padding-top:16px">بازگشت به سایت</a></div>
-<div>{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
-<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:30px">داشبورد</h1>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:30px">
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--primary)">{{ stats.total_orders }}</div><div style="color:var(--text-sec);font-size:13px">کل سفارشات</div></div>
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:#ff9800">{{ stats.pending_orders }}</div><div style="color:var(--text-sec);font-size:13px">در انتظار</div></div>
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--primary)">{{ stats.total_products }}</div><div style="color:var(--text-sec);font-size:13px">محصولات</div></div>
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--rose)">{{ stats.total_users }}</div><div style="color:var(--text-sec);font-size:13px">کاربران</div></div>
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;grid-column:1/-1"><div style="font-size:28px;font-weight:700;color:#28a745">{{ "{:,}".format(stats.total_revenue) }} تومان</div><div style="color:var(--text-sec);font-size:13px">درآمد کل</div></div></div>
-<h2 style="color:var(--primary);margin-bottom:16px">آخرین سفارشات</h2>
-{% for o in recent_orders %}<a href="/admin/orders/{{ o.id }}" style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;text-decoration:none;color:var(--text)"><div><strong>#{{ o.id }}</strong> - {{ o.full_name }}</div><div style="color:var(--primary)">{{ "{:,}".format(o.total_amount) }} تومان</div><div style="color:var(--text-sec);font-size:12px">{{ o.status }}</div></a>{% endfor %}
-</div></div></div>
-<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>داشبورد ادمین | مزون هدیه</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/style.css">
+<style>
+.admin-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 80px)}
+.sidebar{background:var(--bg-card);border-left:1px solid var(--border);padding:24px 0;position:sticky;top:80px;height:calc(100vh - 80px)}
+.sidebar-logo{padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.sidebar-logo img{height:40px;border-radius:50%}
+.sidebar-logo span{font-family:'Playfair Display',serif;color:var(--primary);font-size:18px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;color:var(--text-sec);text-decoration:none;font-size:14px;transition:.2s;border-right:3px solid transparent}
+.nav-item:hover{background:var(--bg-lighter);color:var(--text)}
+.nav-item.active{background:var(--bg-lighter);color:var(--primary);border-right-color:var(--primary)}
+.nav-section{padding:8px 24px;color:var(--text-sec);font-size:11px;text-transform:uppercase;letter-spacing:1px;margin-top:16px}
+.main-content{padding:24px 32px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+.stat-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;right:0;width:4px;height:100%;border-radius:0 4px 4px 0}
+.stat-card:nth-child(1)::before{background:var(--primary)}
+.stat-card:nth-child(2)::before{background:#ff9800}
+.stat-card:nth-child(3)::before{background:var(--success)}
+.stat-card:nth-child(4)::before{background:var(--rose)}
+.stat-icon{font-size:24px;margin-bottom:8px}
+.stat-value{font-size:28px;font-weight:700;margin-bottom:4px}
+.stat-label{color:var(--text-sec);font-size:13px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:24px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.card-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--primary)}
+.table{width:100%;border-collapse:collapse}
+.table th{padding:12px 16px;text-align:right;color:var(--text-sec);font-size:12px;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid var(--border);background:var(--bg-lighter)}
+.table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px}
+.table tr:hover{background:rgba(201,169,110,0.05)}
+.badge{padding:4px 10px;border-radius:20px;font-size:12px;font-weight:600}
+.badge-pending{background:rgba(255,152,0,0.15);color:#ff9800}
+.badge-shipped{background:rgba(201,169,110,0.15);color:var(--primary)}
+.badge-delivered{background:rgba(40,167,69,0.15);color:var(--success)}
+.btn-sm{padding:6px 14px;font-size:12px;border-radius:6px;text-decoration:none;display:inline-block}
+.btn-edit{background:rgba(201,169,110,0.15);color:var(--primary);border:1px solid var(--primary)}
+.btn-delete{background:rgba(220,53,69,0.15);color:var(--danger);border:1px solid var(--danger)}
+.btn-view{background:rgba(183,110,121,0.15);color:var(--rose);border:1px solid var(--rose)}
+.quick-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.quick-action{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;text-decoration:none;color:var(--text);transition:.2s}
+.quick-action:hover{border-color:var(--primary);transform:translateY(-2px)}
+.quick-action-icon{font-size:28px;margin-bottom:8px}
+.quick-action-text{font-size:13px;color:var(--text-sec)}
+.recent-order{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.recent-order:last-child{border:none}
+.order-info{display:flex;align-items:center;gap:12px}
+.order-avatar{width:40px;height:40px;border-radius:50%;background:var(--bg-lighter);display:flex;align-items:center;justify-content:center;font-size:18px}
+.order-details{font-size:14px}
+.order-name{font-weight:600;margin-bottom:2px}
+.order-date{color:var(--text-sec);font-size:12px}
+.order-amount{color:var(--primary);font-weight:700}
+@media(max-width:992px){.admin-layout{grid-template-columns:1fr}.sidebar{display:none}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head><body>
+<header class="header"><div class="container"><div class="header-inner">
+<a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">پنل <span>مدیریت</span></div></a>
+<div class="header-actions">
+<a href="/" class="hdr-btn" title="مشاهده سایت">🏠</a>
+<a href="/admin/products/add" class="hdr-btn" title="محصول جدید" style="background:var(--primary);color:#000">+</a>
+<a href="/logout" class="hdr-btn" title="خروج" style="color:var(--danger)">🚪</a>
+</div></div></div></header>
+
+<div class="admin-layout">
+<div class="sidebar">
+<div class="sidebar-logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><span>مزون هدیه</span></div>
+<div class="nav-section">منوی اصلی</div>
+<a href="/admin" class="nav-item active">📊 داشبورد</a>
+<a href="/admin/products" class="nav-item">🛍️ محصولات</a>
+<a href="/admin/orders" class="nav-item">📦 سفارشات</a>
+<a href="/admin/users" class="nav-item">👥 کاربران</a>
+<div class="nav-section">تنظیمات</div>
+<a href="/admin/settings" class="nav-item">⚙️ تنظیمات فروشگاه</a>
+<div class="nav-section">لینک‌ها</div>
+<a href="/" class="nav-item">🏠 مشاهده سایت</a>
+<a href="/logout" class="nav-item" style="color:var(--danger)">🚪 خروج</a>
+</div>
+
+<div class="main-content">
+{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+
+<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:24px">داشبورد مدیریت</h1>
+
+<!-- Stats Cards -->
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-icon">📦</div><div class="stat-value" style="color:var(--primary)">{{ stats.total_orders }}</div><div class="stat-label">کل سفارشات</div></div>
+<div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-value" style="color:#ff9800">{{ stats.pending_orders }}</div><div class="stat-label">در انتظار پردازش</div></div>
+<div class="stat-card"><div class="stat-icon">🛍️</div><div class="stat-value" style="color:var(--success)">{{ stats.total_products }}</div><div class="stat-label">محصولات فعال</div></div>
+<div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" style="color:var(--rose)">{{ stats.total_users }}</div><div class="stat-label">کاربران ثبت‌نام شده</div></div>
+</div>
+
+<!-- Revenue Card -->
+<div class="card" style="background:linear-gradient(135deg,var(--bg-card),#1a1a1a)">
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div><div style="color:var(--text-sec);font-size:13px;margin-bottom:4px">درآمد کل (پرداخت شده)</div><div style="font-size:36px;font-weight:700;color:var(--success)">{{ "{:,}".format(stats.total_revenue) }} <span style="font-size:18px">تومان</span></div></div>
+<div style="font-size:48px;opacity:0.3">💰</div>
+</div></div>
+
+<!-- Quick Actions -->
+<div class="card">
+<div class="card-header"><div class="card-title">دسترسی سریع</div></div>
+<div class="quick-actions">
+<a href="/admin/products/add" class="quick-action"><div class="quick-action-icon">➕</div><div class="quick-action-text">محصول جدید</div></a>
+<a href="/admin/orders?status=pending" class="quick-action"><div class="quick-action-icon">📋</div><div class="quick-action-text">سفارشات جدید</div></a>
+<a href="/admin/users" class="quick-action"><div class="quick-action-icon">👤</div><div class="quick-action-text">کاربران</div></a>
+</div></div>
+
+<!-- Recent Orders -->
+<div class="card">
+<div class="card-header">
+<div class="card-title">آخرین سفارشات</div>
+<a href="/admin/orders" style="color:var(--primary);font-size:13px;text-decoration:none">مشاهده همه →</a>
+</div>
+{% if recent_orders %}
+{% for o in recent_orders %}
+<div class="recent-order">
+<div class="order-info">
+<div class="order-avatar">👤</div>
+<div class="order-details">
+<div class="order-name">{{ o.full_name }}</div>
+<div class="order-date">{{ o.created_at }} | {{ o.phone }}</div>
+</div></div>
+<div style="display:flex;align-items:center;gap:16px">
+<span class="badge {% if o.status == 'pending' %}badge-pending{% elif o.status == 'shipped' %}badge-shipped{% else %}badge-delivered{% endif %}">{{ o.status }}</span>
+<span class="order-amount">{{ "{:,}".format(o.total_amount) }} تومان</span>
+<a href="/admin/orders/{{ o.id }}" class="btn-sm btn-view">مشاهده</a>
+</div></div>
+{% endfor %}
+{% else %}
+<div style="text-align:center;padding:40px;color:var(--text-sec)">هنوز سفارشی ثبت نشده</div>
+{% endif %}
+</div>
+
+</div></div>
+
+<footer class="footer" style="margin:0"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه | پنل مدیریت</p></div></div></footer></body></html>

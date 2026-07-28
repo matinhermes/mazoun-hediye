@@ -27,8 +27,10 @@
         /* Header */
         .header { background: var(--bg-card); border-bottom: 1px solid var(--border); padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
         .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-        .logo { font-family: 'Playfair Display', serif; font-size: 28px; color: var(--primary); text-decoration: none; }
-        .logo span { color: var(--rose); }
+        .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .logo img { height: 50px; border-radius: 50%; }
+        .logo-text { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--primary); }
+        .logo-text span { color: var(--rose); }
         .search-bar { flex: 1; max-width: 500px; position: relative; }
         .search-bar input { width: 100%; padding: 12px 50px 12px 20px; background: var(--bg-lighter); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 14px; }
         .search-bar input:focus { outline: none; border-color: var(--primary); }
@@ -100,7 +102,7 @@
     <header class="header">
         <div class="container">
             <div class="header-inner">
-                <a href="{{ url_for('home') }}" class="logo">مزون <span>هدیه</span></a>
+                <a href="{{ url_for('home') }}" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a>
                 <form class="search-bar" action="{{ url_for('products_page') }}" method="GET">
                     <input type="text" name="search" placeholder="جستجو در محصولات..." value="{{ request.args.get('search', '') }}">
                     <button type="submit">🔍</button>
