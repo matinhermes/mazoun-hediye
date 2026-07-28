@@ -662,19 +662,32 @@ def admin_product_add():
         price = request.form.get('price', 0, type=int)
         old_price = request.form.get('old_price', 0, type=int)
         category_id = request.form.get('category_id', 0, type=int)
-        sizes = request.form.get('sizes', 'S,M,L,XL')
+        sizes = request.form.get('sizes', '36,38,40,42,44,46')
         colors = request.form.get('colors', '')
         stock = request.form.get('stock', 100, type=int)
         is_featured = 1 if request.form.get('is_featured') else 0
+        
+        # Handle image upload
+        image_url = ''
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename:
+                ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+                if ext in ALLOWED_EXTENSIONS:
+                    filename = f"product_{secrets.token_hex(8)}.{ext}"
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                    file.save(filepath)
+                    image_url = f'/uploads/{filename}'
         
         discount = 0
         if old_price > 0 and price > 0:
             discount = round((old_price - price) / old_price * 100)
         
         db.execute('''INSERT INTO products 
-            (name, description, price, old_price, category_id, sizes, colors, stock, discount, is_featured)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
-            (name, description, price, old_price, category_id, sizes, colors, stock, discount, is_featured))
+            (name, description, price, old_price, category_id, sizes, colors, stock, discount, is_featured, image)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (name, description, price, old_price, category_id, sizes, colors, stock, discount, is_featured, image_url))
         db.commit()
         
         flash('محصول اضافه شد ✓', 'success')
@@ -696,11 +709,24 @@ def admin_product_edit(product_id):
         price = request.form.get('price', 0, type=int)
         old_price = request.form.get('old_price', 0, type=int)
         category_id = request.form.get('category_id', 0, type=int)
-        sizes = request.form.get('sizes', 'S,M,L,XL')
+        sizes = request.form.get('sizes', '36,38,40,42,44,46')
         colors = request.form.get('colors', '')
         stock = request.form.get('stock', 100, type=int)
         is_featured = 1 if request.form.get('is_featured') else 0
         is_active = 1 if request.form.get('is_active') else 0
+        
+        # Handle image upload
+        image_url = product['image'] if product else ''
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename:
+                ext = file.filename.rsplit('.', 1)[-1].lower() if '.' in file.filename else ''
+                if ext in ALLOWED_EXTENSIONS:
+                    filename = f"product_{secrets.token_hex(8)}.{ext}"
+                    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+                    file.save(filepath)
+                    image_url = f'/uploads/{filename}'
         
         discount = 0
         if old_price > 0 and price > 0:
@@ -708,10 +734,10 @@ def admin_product_edit(product_id):
         
         db.execute('''UPDATE products SET 
             name=?, description=?, price=?, old_price=?, category_id=?, 
-            sizes=?, colors=?, stock=?, discount=?, is_featured=?, is_active=?
+            sizes=?, colors=?, stock=?, discount=?, is_featured=?, is_active=?, image=?
             WHERE id=?''',
             (name, description, price, old_price, category_id, sizes, colors,
-             stock, discount, is_featured, is_active, product_id))
+             stock, discount, is_featured, is_active, image_url, product_id))
         db.commit()
         
         flash('محصول بروزرسانی شد ✓', 'success')

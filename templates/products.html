@@ -7,7 +7,31 @@
     <style>
         :root{--primary:#c9a96e;--rose:#b76e79;--bg:#0a0a0a;--bg-card:#111;--bg-lighter:#1a1a1a;--text:#e8e8e8;--text-sec:#888;--border:#222;--danger:#dc3545;--success:#28a745}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);line-height:1.8}.container{max-width:1300px;margin:0 auto;padding:0 20px}.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:15px 0;position:sticky;top:0;z-index:1000}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}.logo{font-family:'Playfair Display',serif;font-size:28px;color:var(--primary);text-decoration:none}.logo span{color:var(--rose)}.search-bar{flex:1;max-width:500px;position:relative}.search-bar input{width:100%;padding:12px 50px 12px 20px;background:var(--bg-lighter);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:14px}.search-bar input:focus{outline:none;border-color:var(--primary)}.search-bar button{position:absolute;left:5px;top:50%;transform:translateY(-50%);background:var(--primary);border:none;width:38px;height:38px;border-radius:6px;color:#fff;cursor:pointer}.header-actions{display:flex;gap:12px}.header-btn{background:var(--bg-lighter);border:1px solid var(--border);width:42px;height:42px;border-radius:8px;color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;text-decoration:none;font-size:18px}.header-btn:hover{border-color:var(--primary);color:var(--primary)}.nav{background:var(--bg-lighter);border-bottom:1px solid var(--border);padding:12px 0}.nav-list{display:flex;gap:30px;justify-content:center;flex-wrap:wrap}.nav-link{color:var(--text-sec);text-decoration:none;font-size:14px;padding:8px 0;border-bottom:2px solid transparent;transition:.3s}.nav-link:hover,.nav-link.active{color:var(--primary);border-bottom-color:var(--primary)}.page-header{padding:30px 0}.page-title{font-family:'Playfair Display',serif;font-size:28px;color:var(--primary)}.main-layout{display:flex;gap:24px;padding:10px 0 60px}.sidebar{width:260px;flex-shrink:0}.filter-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}.filter-title{font-size:15px;font-weight:600;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border)}.color-dots{display:flex;gap:8px;flex-wrap:wrap}.color-dot{width:30px;height:30px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.3s}.color-dot:hover,.color-dot.active{border-color:var(--primary);transform:scale(1.1)}.size-btns{display:flex;gap:6px;flex-wrap:wrap}.size-btn{padding:6px 14px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;transition:.3s}.size-btn:hover,.size-btn.active{border-color:var(--primary);color:var(--primary)}.price-range{width:100%;accent-color:var(--primary)}.sort-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px}.sort-bar select{padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:inherit;font-size:13px}.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}.product-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:.3s}.product-card:hover{border-color:var(--primary);transform:translateY(-4px)}.product-img{height:280px;display:flex;align-items:center;justify-content:center;font-size:50px}.product-info{padding:16px}.product-name{font-size:15px;font-weight:600;margin-bottom:6px}.product-rating{color:var(--primary);font-size:13px;margin-bottom:8px}.product-price{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}.price-current{font-size:18px;font-weight:700;color:var(--primary)}.price-old{font-size:13px;color:var(--text-sec);text-decoration:line-through}.discount-badge{background:var(--danger);color:#fff;font-size:11px;padding:3px 7px;border-radius:4px}.add-cart-btn{width:100%;padding:10px;background:var(--primary);border:none;border-radius:8px;color:#000;font-weight:600;font-family:inherit;cursor:pointer;transition:.3s}.add-cart-btn:hover{background:var(--primary-dark,#b8956a)}.footer{background:var(--bg-card);border-top:1px solid var(--border);padding:40px 0 20px;margin-top:40px}.footer-bottom{text-align:center;padding-top:20px;border-top:1px solid var(--border);color:var(--text-sec);font-size:13px}.flash{padding:12px 16px;border-radius:8px;margin-bottom:16px;font-size:14px}.flash-success{background:rgba(40,167,69,0.15);border:1px solid #28a745;color:#28a745}.flash-danger{background:rgba(220,53,69,0.15);border:1px solid #dc3545;color:#dc3545}.flash-warning{background:rgba(201,169,110,0.15);border:1px solid var(--primary);color:var(--primary)}.flash-info{background:rgba(183,110,121,0.15);border:1px solid var(--rose);color:var(--rose)}
         @media(max-width:1024px){.sidebar{display:none}.products-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}}@media(max-width:768px){.header-inner{flex-wrap:wrap}.search-bar{order:3;max-width:100%;width:100%}.products-grid{grid-template-columns:repeat(2,1fr);gap:12px}.product-img{height:180px}}
-    </style>
+    
+@media(max-width:768px){
+body{font-size:14px}
+.products-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.product-img{height:160px!important;font-size:30px!important}
+.product-info{padding:10px!important}
+.product-name{font-size:13px!important}
+.price-current{font-size:14px!important}
+.container{padding:0 10px!important}
+.header-inner{padding:8px 0!important}
+.logo img{height:36px!important}
+.logo-text{font-size:16px!important}
+.search-bar input{padding:10px 40px 10px 12px!important;font-size:13px!important}
+.search-bar button{width:32px!important;height:32px!important}
+.hdr-btn{width:36px!important;height:36px!important;font-size:14px!important}
+}
+@media(max-width:480px){
+.products-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+.product-img{height:140px!important}
+.product-info{padding:8px!important}
+.product-name{font-size:12px!important}
+.price-current{font-size:13px!important}
+}
+
+</style>
 </head>
 <body>
 <header class="header"><div class="container"><div class="header-inner">

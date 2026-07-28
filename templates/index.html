@@ -95,7 +95,34 @@
             .products-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .product-img { height: 200px; }
         }
-    </style>
+    
+@media(max-width:768px){
+body{font-size:14px}
+.hero h1{font-size:24px!important}
+.hero p{font-size:14px!important}
+.products-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.product-img{height:160px!important;font-size:30px!important}
+.product-info{padding:10px!important}
+.product-name{font-size:13px!important}
+.price-current{font-size:14px!important}
+.container{padding:0 10px!important}
+.header-inner{padding:8px 0!important}
+.logo img{height:36px!important}
+.logo-text{font-size:16px!important}
+.search-bar input{padding:10px 40px 10px 12px!important;font-size:13px!important}
+.search-bar button{width:32px!important;height:32px!important}
+.hdr-btn{width:36px!important;height:36px!important;font-size:14px!important}
+.section-title{font-size:20px!important;margin-bottom:20px!important}
+.footer{padding:20px 0 10px!important}
+.footer h4{font-size:14px!important}
+.footer p,.footer a{font-size:12px!important}
+}
+@media(max-width:480px){
+.products-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+.product-img{height:140px!important}
+}
+
+</style>
 </head>
 <body>
     <!-- Header -->

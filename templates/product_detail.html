@@ -30,6 +30,21 @@
 .related-card{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;text-decoration:none;color:var(--text);transition:.3s}
 .related-card:hover{border-color:var(--primary)}
 @media(max-width:768px){.product-detail{grid-template-columns:1fr}.product-image{height:300px}.related-grid{grid-template-columns:repeat(2,1fr)}}
+
+@media(max-width:768px){
+body{font-size:14px}
+.product-detail{grid-template-columns:1fr!important;gap:20px!important;padding:20px 0!important}
+.product-image{height:300px!important}
+.product-title{font-size:22px!important}
+.price-row{font-size:20px!important}
+.container{padding:0 12px!important}
+.header-inner{padding:8px 0!important}
+.logo img{height:36px!important}
+.logo-text{font-size:16px!important}
+.hdr-btn{width:36px!important;height:36px!important;font-size:14px!important}
+.related-grid{grid-template-columns:repeat(2,1fr)!important}
+}
+
 </style>
 </head><body>
 <header class="header"><div class="container"><div class="header-inner">
@@ -78,7 +93,34 @@
 <button class="qty-btn" onclick="changeQty(1)">+</button>
 </div>
 
-<a href="/tryon/{{ product.id }}" class="tryon-btn">👗 پروژه لباس روی مانکن</a>
+<!-- AI Virtual Try-On Section -->
+<div id="tryonSection" style="display:none;margin-bottom:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px">
+<h4 style="color:var(--primary);margin-bottom:12px;font-size:14px">👗 پروژه لباس روی مانکن</h4>
+<div style="position:relative;width:100%;max-width:250px;margin:0 auto">
+<svg viewBox="0 0 200 350" style="width:100%">
+<ellipse cx="100" cy="40" rx="25" ry="30" fill="#D4A574" id="mHead"/>
+<rect x="88" y="68" width="24" height="15" fill="#D4A574" id="mNeck"/>
+<path d="M55 83 Q100 73 145 83 L155 180 Q100 190 45 180 Z" fill="#D4A574" id="mBody"/>
+<ellipse cx="40" cy="130" rx="16" ry="50" fill="#D4A574" id="mArmL"/>
+<ellipse cx="160" cy="130" rx="16" ry="50" fill="#D4A574" id="mArmR"/>
+<rect x="60" y="180" width="22" height="100" rx="8" fill="#D4A574" id="mLegL"/>
+<rect x="118" y="180" width="22" height="100" rx="8" fill="#D4A574" id="mLegR"/>
+</svg>
+{% if product.image %}
+<div style="position:absolute;top:12%;left:15%;width:70%;height:40%;overflow:hidden;border-radius:6px">
+<img src="{{ product.image }}" style="width:100%;height:100%;object-fit:cover" id="tryonImage">
+<div id="tryonColorOverlay" style="position:absolute;inset:0;mix-blend-mode:multiply;opacity:0.3;transition:background 0.3s"></div>
+</div>
+{% endif %}
+</div>
+<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;justify-content:center">
+<button onclick="setTryonMannequin('#F5F5DC')" style="width:24px;height:24px;border-radius:50%;border:2px solid #333;background:#F5F5DC;cursor:pointer"></button>
+<button onclick="setTryonMannequin('#D4A574')" style="width:24px;height:24px;border-radius:50%;border:2px solid #333;background:#D4A574;cursor:pointer"></button>
+<button onclick="setTryonMannequin('#8B4513')" style="width:24px;height:24px;border-radius:50%;border:2px solid #333;background:#8B4513;cursor:pointer"></button>
+<button onclick="setTryonMannequin('#000000')" style="width:24px;height:24px;border-radius:50%;border:2px solid #333;background:#000;cursor:pointer"></button>
+</div>
+</div>
+<button type="button" onclick="toggleTryon()" style="width:100%;padding:10px;background:var(--rose);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:12px">👗 پرویو لباس روی مانکن</button>
 <button class="add-cart" onclick="addToCart({{ product.id }})">🛒 افزودن به سبد خرید</button>
 
 <div class="features">
@@ -113,4 +155,6 @@ var qty=1;
 function selectSize(el,s){document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');selectedSize=s}
 function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty').textContent=qty}
 function addToCart(id){fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,size:selectedSize,quantity:qty})}).then(r=>r.json()).then(d=>{if(d.success){const t=document.createElement('div');t.className='flash flash-success';t.textContent='به سبد خرید اضافه شد ✓';t.style.cssText='position:fixed;bottom:20px;left:20px;z-index:9999';document.body.appendChild(t);setTimeout(()=>t.remove(),3000)}})}
+function toggleTryon(){var s=document.getElementById('tryonSection');s.style.display=s.style.display==='none'?'block':'none'}
+function setTryonMannequin(color){['mHead','mNeck','mBody','mArmL','mArmR','mLegL','mLegR'].forEach(function(id){var el=document.getElementById(id);if(el)el.setAttribute('fill',color)})}
 </script></body></html>
