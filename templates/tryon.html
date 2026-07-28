@@ -1,205 +1,138 @@
 <!DOCTYPE html><html lang="fa" dir="rtl"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>پرویو لباس | {{ product.name }} | مزون هدیه</title>
+<title>پرویو لباس | {{ product.name }}</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#c9a96e;--rose:#b76e79;--bg:#0a0a0a;--card:#111;--border:#222;--text:#e8e8e8;--sec:#666}
+:root{--gold:#c9a96e;--bg:#0a0a0a;--card:#111;--border:#222;--text:#e8e8e8;--sec:#666}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text)}
 
-/* Top bar */
-.topbar{background:rgba(17,17,17,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.topbar a{color:var(--gold);text-decoration:none;font-size:13px;transition:opacity .2s}
-.topbar a:hover{opacity:.7}
-.topbar-title{font-family:'Playfair Display',serif;color:var(--gold);font-size:17px}
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.topbar a{color:var(--gold);text-decoration:none;font-size:13px}
 
-/* Main layout */
-.main{display:grid;grid-template-columns:1fr 400px;min-height:calc(100vh - 56px)}
-@media(max-width:900px){.main{grid-template-columns:1fr;grid-template-rows:auto auto}}
+.page{display:grid;grid-template-columns:1fr 380px;min-height:calc(100vh - 56px)}
+@media(max-width:900px){.page{grid-template-columns:1fr;}}
 
-/* Left: Preview */
-.preview{position:relative;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#0f0f0f 0%,#1a1a1a 50%,#0f0f0f 100%);overflow:hidden;min-height:70vh}
-@media(max-width:900px){.preview{min-height:60vh}}
+/* Preview - Professional Fashion Style */
+.preview{background:#0f0f0f;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;position:relative}
+.preview-title{font-family:'Playfair Display',serif;color:var(--gold);font-size:16px;margin-bottom:20px;text-align:center}
 
-/* Realistic body silhouette using pure CSS */
-.body-silhouette{position:relative;width:320px;height:580px}
+/* Realistic dress display */
+.dress-display{position:relative;width:320px;height:480px}
+@media(max-width:480px){.dress-display{width:260px;height:400px}}
 
-/* Using a professional model outline */
-.body-outline{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+/* Professional hanger + dress layout */
+.hanger{position:relative;z-index:2;text-align:center}
+.hanger svg{width:180px;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.3))}
 
-/* Professional model silhouette - realistic proportions */
-.model-container{position:relative;width:280px;height:560px}
+/* Product image on dress form */
+.dress-form{position:relative;margin-top:-30px;text-align:center}
+.dress-form img{max-width:260px;max-height:320px;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,0.5);transition:transform .4s;object-fit:cover}
+.dress-form img:hover{transform:scale(1.02)}
+@media(max-width:480px){.dress-form img{max-width:200px;max-height:260px}}
 
-/* Skin layer */
-.model-skin{position:absolute;inset:0;display:flex;justify-content:center}
-.model-skin svg{height:100%;width:auto;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.6))}
+/* Color overlay */
+.color-overlay{position:absolute;top:0;left:50%;transform:translateX(-50%);width:260px;height:320px;border-radius:8px;pointer-events:none;mix-blend-mode:multiply;opacity:0;transition:opacity .3s}
 
-/* Product image overlay - positioned on torso */
-.product-overlay{position:absolute;top:22%;left:50%;transform:translateX(-50%);width:55%;height:32%;overflow:hidden;border-radius:4px;transition:all .4s ease}
-.product-overlay img{width:100%;height:100%;object-fit:cover;display:block}
-.product-overlay .color-tint{position:absolute;inset:0;mix-blend-mode:multiply;opacity:0;transition:opacity .3s;pointer-events:none}
+/* Features below */
+.preview-features{display:flex;gap:30px;margin-top:30px;justify-content:center}
+.preview-feature{text-align:center;color:var(--sec);font-size:12px}
+.preview-feature span{font-size:20px;display:block;margin-bottom:4px}
 
-/* Subtle body lines */
-.body-lines{position:absolute;inset:0;pointer-events:none}
-.body-lines::before{content:'';position:absolute;top:15%;left:50%;transform:translateX(-50%);width:60%;height:40%;border:1px solid rgba(255,255,255,0.03);border-radius:8px}
-
-/* Ambient light */
-.ambient-light{position:absolute;top:10%;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(201,169,110,0.04),transparent 70%);pointer-events:none}
-
-/* Floor reflection */
-.floor{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to top,rgba(0,0,0,0.4),transparent);pointer-events:none}
-.floor::after{content:'';position:absolute;bottom:30px;left:50%;transform:translateX(-50%);width:160px;height:20px;background:radial-gradient(ellipse,rgba(0,0,0,0.3),transparent 70%);border-radius:50%}
-
-/* Right: Controls */
-.sidebar{background:var(--card);border-right:1px solid var(--border);padding:0;display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 56px)}
-@media(max-width:900px){.sidebar{max-height:none;border-right:none;border-top:1px solid var(--border)}}
+/* Sidebar */
+.sidebar{background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column}
+@media(max-width:900px){.sidebar{border-right:none;border-top:1px solid var(--border)}}
 
 .sidebar-header{padding:24px;border-bottom:1px solid var(--border)}
-.product-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);line-height:1.4}
-.product-price-row{display:flex;align-items:baseline;gap:10px;margin-top:10px}
-.product-price{font-size:24px;font-weight:700;color:var(--gold)}
-.product-old-price{font-size:15px;color:var(--sec);text-decoration:line-through}
+.p-name{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold);line-height:1.4}
+.p-price{font-size:24px;font-weight:700;color:var(--gold);margin-top:8px}
+.p-old{font-size:14px;color:var(--sec);text-decoration:line-through;margin-right:8px}
 
 .sidebar-body{flex:1;padding:20px 24px;overflow-y:auto}
 
-.section{margin-bottom:24px}
-.section-title{font-size:13px;color:var(--sec);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section{margin-bottom:22px}
+.section-label{font-size:12px;color:var(--sec);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px}
 
-/* Color swatches */
-.swatch-grid{display:flex;gap:10px;flex-wrap:wrap}
-.swatch{width:38px;height:38px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .25s;position:relative}
-.swatch:hover{transform:scale(1.12)}
+/* Swatches */
+.swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:36px;height:36px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .2s}
+.swatch:hover{transform:scale(1.1)}
 .swatch.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,0.2)}
-.swatch.active::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
 
-/* Skin tones */
-.skin-grid{display:flex;gap:8px}
-.skin-dot{width:32px;height:32px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .25s}
-.skin-dot:hover{transform:scale(1.1)}
-.skin-dot.active{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,0.2)}
+/* Skin */
+.skins{display:flex;gap:8px}
+.skin{width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all .2s}
+.skin:hover{transform:scale(1.1)}
+.skin.active{border-color:var(--gold)}
 
-/* Size pills */
-.size-row{display:flex;gap:8px;flex-wrap:wrap}
-.size-pill{padding:9px 16px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;transition:all .25s}
-.size-pill:hover{border-color:var(--gold);color:var(--gold)}
-.size-pill.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
+/* Sizes */
+.sizes{display:flex;gap:8px;flex-wrap:wrap}
+.size{padding:10px 18px;background:transparent;border:1px solid var(--border);border-radius:20px;color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;transition:all .2s}
+.size:hover{border-color:var(--gold)}
+.size.active{background:var(--gold);color:#000;border-color:var(--gold);font-weight:600}
 
-/* View toggle */
-.view-tabs{display:flex;background:var(--bg);border-radius:10px;padding:4px;gap:4px}
-.view-tab{flex:1;padding:9px;border:none;background:transparent;border-radius:8px;color:var(--sec);cursor:pointer;font-family:inherit;font-size:13px;transition:all .25s}
-.view-tab:hover{color:var(--text)}
-.view-tab.active{background:var(--border);color:var(--gold);font-weight:600}
-
-/* CTA */
+/* Footer */
 .sidebar-footer{padding:20px 24px;border-top:1px solid var(--border)}
-.cta-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8956a);border:none;border-radius:12px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px}
-.cta-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,169,110,0.3)}
-.secondary-btn{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:inherit;cursor:pointer;margin-top:8px;transition:all .25s}
-.secondary-btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn-cart{width:100%;padding:15px;background:linear-gradient(135deg,var(--gold),#b8956a);border:none;border-radius:12px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:all .3s}
+.btn-cart:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,169,110,0.3)}
 
-/* Trust badges */
-.trust{display:flex;justify-content:center;gap:20px;padding:14px;border-top:1px solid var(--border);font-size:11px;color:var(--sec)}
+.trust{display:flex;justify-content:center;gap:16px;padding:12px;border-top:1px solid var(--border);font-size:11px;color:var(--sec)}
 .trust span{display:flex;align-items:center;gap:4px}
-
-/* Drag hint */
-.drag-hint{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.3);display:flex;align-items:center;gap:6px;animation:fadeInUp 1s ease}
-@keyframes fadeInUp{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
-
-/* Mobile */
-@media(max-width:480px){
-.sidebar-header{padding:16px}
-.sidebar-body{padding:16px}
-.sidebar-footer{padding:16px}
-.product-title{font-size:18px}
-.product-price{font-size:20px}
-.swatch{width:34px;height:34px}
-}
 </style>
 </head><body>
 
 <div class="topbar">
 <a href="/product/{{ product.id }}">← بازگشت</a>
-<span class="topbar-title">پرویو لباس</span>
+<a href="/" style="font-family:'Playfair Display',serif;font-size:17px">مزون هدیه</a>
 <a href="/cart">🛒 سبد خرید</a>
 </div>
 
-<div class="main">
-<!-- Preview Area -->
-<div class="preview" id="previewArea">
-<div class="ambient-light"></div>
+<div class="page">
+<div class="preview">
+<div class="preview-title">پرویو لباس</div>
 
-<div class="model-container" id="modelContainer">
-<!-- Professional body silhouette SVG -->
-<div class="model-skin">
-<svg viewBox="0 0 280 560" id="bodySvg">
-<!-- Hair -->
-<path d="M108 30 Q140 5 172 30 Q185 20 190 40 Q195 65 188 80 L188 55 Q180 35 140 30 Q100 35 92 55 L92 80 Q85 65 90 40 Q95 20 108 30Z" fill="#1a1a1a"/>
-
-<!-- Head -->
-<ellipse cx="140" cy="58" rx="32" ry="38" id="skinHead" fill="#E8C4A0"/>
-
-<!-- Neck -->
-<rect x="128" y="93" width="24" height="22" rx="12" id="skinNeck" fill="#E8C4A0"/>
-
-<!-- Shoulders & Body -->
-<path d="M75 118 Q140 105 205 118 L215 310 Q140 325 65 310 Z" id="skinBody" fill="#E8C4A0"/>
-
-<!-- Arms -->
-<path d="M75 118 Q55 130 48 200 Q45 240 52 265 Q58 275 65 268 Q72 240 75 200 Q78 150 82 130" id="skinArmL" fill="#E8C4A0"/>
-<path d="M205 118 Q225 130 232 200 Q235 240 228 265 Q222 275 215 268 Q208 240 205 200 Q202 150 198 130" id="skinArmR" fill="#E8C4A0"/>
-
-<!-- Hands -->
-<ellipse cx="58" cy="270" rx="11" ry="14" id="skinHandL" fill="#E8C4A0"/>
-<ellipse cx="222" cy="270" rx="11" ry="14" id="skinHandR" fill="#E8C4A0"/>
-
-<!-- Legs -->
-<path d="M95 310 Q100 400 105 480 Q108 510 115 530 Q120 540 130 535 Q135 520 130 480 Q125 400 120 310" id="skinLegL" fill="#E8C4A0"/>
-<path d="M160 310 Q165 400 170 480 Q172 510 165 530 Q160 540 150 535 Q145 520 150 480 Q155 400 160 310" id="skinLegR" fill="#E8C4A0"/>
-
-<!-- Subtle body contours -->
-<path d="M110 120 Q140 115 170 120" stroke="rgba(0,0,0,0.05)" stroke-width="1" fill="none"/>
-<path d="M100 310 Q140 320 180 310" stroke="rgba(0,0,0,0.03)" stroke-width="1" fill="none"/>
+<div class="dress-display">
+<!-- Professional hanger -->
+<div class="hanger">
+<svg viewBox="0 0 200 60" fill="none">
+<path d="M100 5 L100 20" stroke="#c9a96e" stroke-width="3"/>
+<path d="M100 5 L130 5 Q145 5 145 15 Q145 25 130 25 L100 20" stroke="#c9a96e" stroke-width="2" fill="none"/>
+<path d="M100 5 L70 5 Q55 5 55 15 Q55 25 70 25 L100 20" stroke="#c9a96e" stroke-width="2" fill="none"/>
+<path d="M100 20 L30 50 Q25 52 30 55 L170 55 Q175 52 170 50 L100 20" stroke="#c9a96e" stroke-width="2" fill="none"/>
 </svg>
 </div>
 
-<!-- Product image overlay -->
-<div class="product-overlay" id="productOverlay">
+<!-- Product image -->
+<div class="dress-form">
 {% if product.image %}
-<img src="{{ product.image }}" alt="{{ product.name }}" id="productImg">
-<div class="color-tint" id="colorTint"></div>
+<img src="{{ product.image }}" alt="{{ product.name }}" id="productImage">
+{% else %}
+<div style="width:260px;height:320px;background:linear-gradient(135deg,#333,#111);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;font-size:14px">عکس محصول</div>
 {% endif %}
+<div class="color-overlay" id="colorOverlay"></div>
 </div>
 </div>
 
-<div class="floor"></div>
-<div class="drag-hint">↔ برای چرخش بکشید</div>
+<div class="preview-features">
+<div class="preview-feature"><span>🚚</span>ارسال سریع</div>
+<div class="preview-feature"><span>✅</span>ضمانت کیفیت</div>
+<div class="preview-feature"><span>🔄</span>تعویض آسان</div>
+</div>
 </div>
 
-<!-- Sidebar Controls -->
 <div class="sidebar">
 <div class="sidebar-header">
-<div class="product-title">{{ product.name }}</div>
-<div class="product-price-row">
-<span class="product-price">{{ "{:,}".format(product.price) }} تومان</span>
-{% if product.old_price %}<span class="product-old-price">{{ "{:,}".format(product.old_price) }}</span>{% endif %}
+<div class="p-name">{{ product.name }}</div>
+<div>
+<span class="p-price">{{ "{:,}".format(product.price) }} تومان</span>
+{% if product.old_price %}<span class="p-old">{{ "{:,}".format(product.old_price) }}</span>{% endif %}
 </div>
 </div>
 
 <div class="sidebar-body">
-<!-- View -->
 <div class="section">
-<div class="section-title">👁️ نمای لباس</div>
-<div class="view-tabs">
-<button class="view-tab active" onclick="setView('front',this)">جلو</button>
-<button class="view-tab" onclick="setView('side',this)">بغل</button>
-<button class="view-tab" onclick="setView('back',this)">پشت</button>
-</div>
-</div>
-
-<!-- Clothing Color -->
-<div class="section">
-<div class="section-title">🎨 رنگ لباس</div>
-<div class="swatch-grid" id="colorSwatches">
+<div class="section-label">🎨 رنگ لباس</div>
+<div class="swatches">
 <button class="swatch active" style="background:#fff" onclick="setColor('#ffffff',this)"></button>
 <button class="swatch" style="background:#1a1a1a;border-color:#444" onclick="setColor('#1a1a1a',this)"></button>
 <button class="swatch" style="background:#FFB6C1" onclick="setColor('#FFB6C1',this)"></button>
@@ -208,128 +141,73 @@ body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);m
 <button class="swatch" style="background:#4A6741" onclick="setColor('#4A6741',this)"></button>
 <button class="swatch" style="background:#1B3A5C" onclick="setColor('#1B3A5C',this)"></button>
 <button class="swatch" style="background:#F5E6D3" onclick="setColor('#F5E6D3',this)"></button>
-<button class="swatch" style="background:#C0C0C0" onclick="setColor('#C0C0C0',this)"></button>
 </div>
 </div>
 
-<!-- Skin -->
 <div class="section">
-<div class="section-title">🧑 رنگ پوست</div>
-<div class="skin-grid" id="skinDots">
-<button class="skin-dot" style="background:#FDEBD0" onclick="setSkin('#FDEBD0',this)"></button>
-<button class="skin-dot active" style="background:#E8C4A0" onclick="setSkin('#E8C4A0',this)"></button>
-<button class="skin-dot" style="background:#C68642" onclick="setSkin('#C68642',this)"></button>
-<button class="skin-dot" style="background:#8D5524" onclick="setSkin('#8D5524',this)"></button>
-<button class="skin-dot" style="background:#4A3228" onclick="setSkin('#4A3228',this)"></button>
+<div class="section-label">🧑 رنگ پوست</div>
+<div class="skins">
+<button class="skin" style="background:#FDEBD0" onclick="setSkin(this)"></button>
+<button class="skin active" style="background:#E8C4A0" onclick="setSkin(this)"></button>
+<button class="skin" style="background:#C68642" onclick="setSkin(this)"></button>
+<button class="skin" style="background:#8D5524" onclick="setSkin(this)"></button>
 </div>
 </div>
 
-<!-- Size -->
 <div class="section">
-<div class="section-title">📐 سایز</div>
-<div class="size-row" id="sizeRow">
+<div class="section-label">📐 سایز</div>
+<div class="sizes">
 {% set sizes = product.sizes.split(',') if product.sizes else ['36','38','40','42','44','46'] %}
 {% for size in sizes %}
-<button class="size-pill {% if loop.first %}active{% endif %}" onclick="setSize('{{ size }}',this)">{{ size }}</button>
+<button class="size {% if loop.first %}active{% endif %}" onclick="setSize('{{ size }}',this)">{{ size }}</button>
 {% endfor %}
 </div>
 </div>
 </div>
 
 <div class="sidebar-footer">
-<button class="cta-btn" onclick="addToCart()">
-<span>🛒</span> افزودن به سبد خرید
-</button>
-<button class="secondary-btn" onclick="window.location.href='/product/{{ product.id }}'">مشاهده جزئیات محصول</button>
+<button class="btn-cart" onclick="addToCart()">🛒 افزودن به سبد خرید</button>
 </div>
 
 <div class="trust">
 <span>🚚 ارسال سریع</span>
-<span>✅ ضمانت اصالت</span>
-<span>🔄 تعویض آسان</span>
+<span>✅ ضمانت</span>
+<span>🔄 تعویض</span>
 </div>
 </div>
 </div>
 
 <script>
-var currentSize = '{{ sizes[0] if sizes else "36" }}';
-var currentColor = '#ffffff';
+var currentSize='{{ sizes[0] if sizes else "36" }}';
 
-function setColor(color, el) {
-    currentColor = color;
+function setColor(color,el){
     document.querySelectorAll('.swatch').forEach(function(s){s.classList.remove('active')});
     el.classList.add('active');
-    var tint = document.getElementById('colorTint');
-    tint.style.background = color;
-    tint.style.opacity = '0.35';
+    var o=document.getElementById('colorOverlay');
+    if(o){o.style.background=color;o.style.opacity='0.3'}
 }
 
-function setSkin(color, el) {
-    document.querySelectorAll('.skin-dot').forEach(function(s){s.classList.remove('active')});
-    el.classList.add('active');
-    ['skinHead','skinNeck','skinBody','skinArmL','skinArmR','skinHandL','skinHandR','skinLegL','skinLegR'].forEach(function(id){
-        var e = document.getElementById(id);
-        if(e) e.setAttribute('fill', color);
-    });
-}
-
-function setSize(size, el) {
-    currentSize = size;
-    document.querySelectorAll('.size-pill').forEach(function(s){s.classList.remove('active')});
+function setSkin(el){
+    document.querySelectorAll('.skin').forEach(function(s){s.classList.remove('active')});
     el.classList.add('active');
 }
 
-function setView(view, el) {
-    document.querySelectorAll('.view-tab').forEach(function(s){s.classList.remove('active')});
+function setSize(size,el){
+    currentSize=size;
+    document.querySelectorAll('.size').forEach(function(s){s.classList.remove('active')});
     el.classList.add('active');
-    var overlay = document.getElementById('productOverlay');
-    if(view === 'front') { overlay.style.transform = 'translateX(-50%) scaleX(1)'; }
-    else if(view === 'side') { overlay.style.transform = 'translateX(-50%) scaleX(0.6) skewY(2deg)'; }
-    else { overlay.style.transform = 'translateX(-50%) scaleX(1)'; overlay.style.opacity = '0.3'; setTimeout(function(){overlay.style.opacity='1'},300); }
 }
 
-function addToCart() {
-    fetch('/cart/add', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({product_id:{{ product.id }}, size:currentSize, quantity:1})
-    }).then(function(r){return r.json()}).then(function(d){
+function addToCart(){
+    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:currentSize,quantity:1})}).then(function(r){return r.json()}).then(function(d){
         if(d.success){
-            var t = document.createElement('div');
-            t.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn;box-shadow:0 8px 30px rgba(0,0,0,0.4)';
-            t.textContent = '✓ به سبد خرید اضافه شد';
+            var t=document.createElement('div');
+            t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:14px 32px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn;box-shadow:0 8px 30px rgba(0,0,0,0.4)';
+            t.textContent='✓ به سبد خرید اضافه شد';
             document.body.appendChild(t);
             setTimeout(function(){t.remove()},3000);
         }
     });
 }
-
-// 3D rotation with mouse/touch
-var preview = document.getElementById('previewArea');
-var container = document.getElementById('modelContainer');
-var isDragging = false, startX = 0, rotation = 0;
-
-preview.addEventListener('mousedown', function(e){isDragging=true;startX=e.clientX});
-document.addEventListener('mousemove', function(e){
-    if(!isDragging) return;
-    var delta = (e.clientX - startX) * 0.15;
-    rotation += delta;
-    rotation = Math.max(-30, Math.min(30, rotation));
-    container.style.transform = 'perspective(800px) rotateY(' + rotation + 'deg)';
-    startX = e.clientX;
-});
-document.addEventListener('mouseup', function(){isDragging=false});
-
-// Touch
-preview.addEventListener('touchstart', function(e){startX=e.touches[0].clientX;isDragging=true});
-preview.addEventListener('touchmove', function(e){
-    if(!isDragging) return;
-    var delta = (e.touches[0].clientX - startX) * 0.15;
-    rotation += delta;
-    rotation = Math.max(-30, Math.min(30, rotation));
-    container.style.transform = 'perspective(800px) rotateY(' + rotation + 'deg)';
-    startX = e.touches[0].clientX;
-});
-preview.addEventListener('touchend', function(){isDragging=false});
 </script>
 </body></html>

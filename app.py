@@ -1075,6 +1075,36 @@ with app.app_context():
 
 # ==================== MAIN ====================
 import os
+
+@app.route('/admin/setup-demo-images')
+def setup_demo_images():
+    """Setup demo images for products - run once"""
+    from flask import session as sess
+    if not sess.get('user_id'):
+        return redirect(url_for('login'))
+    
+    db = get_db()
+    demo_images = {
+        1: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop',
+        2: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop',
+        3: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=800&fit=crop',
+        4: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=600&h=800&fit=crop',
+        5: 'https://images.unsplash.com/photo-1583846783214-0a5e3c8a8f8c?w=600&h=800&fit=crop',
+        6: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&h=800&fit=crop',
+        7: 'https://images.unsplash.com/photo-1434389677669-e08b4cda3a43?w=600&h=800&fit=crop',
+        8: 'https://images.unsplash.com/photo-1596783074918-c44d8a39e0d2?w=600&h=800&fit=crop',
+        9: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=800&fit=crop',
+        10: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&h=800&fit=crop',
+    }
+    
+    for pid, url in demo_images.items():
+        db.execute('UPDATE products SET image = ? WHERE id = ?', (url, pid))
+    db.commit()
+    
+    flash('عکس‌های نمونه اضافه شد ✓', 'success')
+    return redirect(url_for('admin_products'))
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
