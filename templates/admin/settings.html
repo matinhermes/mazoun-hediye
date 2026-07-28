@@ -139,9 +139,9 @@
 </div>
 <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-<label class="checkbox-label"><input type="checkbox" name="shipping_motor_enabled" value="1" {{ 'checked' if settings.get('shipping_motor_enabled', '0') == '1' }}> پیک موتوری</label>
+<label class="checkbox-label"><input type="checkbox" name="shipping_collect_enabled" value="1" {{ 'checked' if settings.get('shipping_collect_enabled', '0') == '1' }}> پس کرایه</label>
 </div>
-<div class="form-group"><label class="form-label">هزینه (تومان)</label><input name="shipping_motor_cost" type="number" class="form-input" value="{{ settings.get('shipping_motor_cost', '30000') }}"></div>
+<div style="color:var(--text-sec);font-size:12px">هزینه ارسال توسط مشتری در مقصد پرداخت می‌شود</div>
 </div>
 <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">

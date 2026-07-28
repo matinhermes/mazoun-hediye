@@ -90,7 +90,19 @@
 </div>
 
 <div class="form-row">
-<div class="form-group"><label class="form-label">سایزها (با کاما)</label><input name="sizes" class="form-input" value="{{ product.sizes if product else 'S,M,L,XL' }}"></div>
+<div class="form-group"><label class="form-label">سایزها</label>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+{% set default_sizes = ['36', '38', '40', '42', '44', '46'] %}
+{% set product_sizes = product.sizes.split(',') if product and product.sizes else default_sizes %}
+{% for size in default_sizes %}
+<label style="display:flex;align-items:center;gap:4px;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:13px">
+<input type="checkbox" name="sizes_list" value="{{ size }}" {{ 'checked' if size in product_sizes }}> {{ size }}
+</label>
+{% endfor %}
+</div>
+<input type="hidden" name="sizes" id="sizesInput" value="{{ product.sizes if product else '36,38,40,42,44,46' }}">
+<div style="color:var(--text-sec);font-size:11px;margin-top:6px">سایزبندی زنانه: 36 (XS) | 38 (S) | 40 (M) | 42 (L) | 44 (XL) | 46 (XXL)</div>
+</div>
 <div class="form-group"><label class="form-label">رنگ‌ها (با کاما)</label><input name="colors" class="form-input" value="{{ product.colors if product else '' }}"></div>
 </div>
 
@@ -114,4 +126,14 @@
 
 <script>
 function previewImage(input){if(input.files&&input.files[0]){var reader=new FileReader();reader.onload=function(e){document.getElementById('imagePreview').src=e.target.result;document.getElementById('imagePreview').style.display='block';document.getElementById('uploadPlaceholder').style.display='none'};reader.readAsDataURL(input.files[0])}}
-</script></body></html>
+</script>
+<script>
+document.querySelectorAll('input[name="sizes_list"]').forEach(cb => {
+    cb.addEventListener('change', function() {
+        let sizes = [];
+        document.querySelectorAll('input[name="sizes_list"]:checked').forEach(c => sizes.push(c.value));
+        document.getElementById('sizesInput').value = sizes.join(',');
+    });
+});
+</script>
+</body></html>

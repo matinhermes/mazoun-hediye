@@ -247,6 +247,23 @@ def add_security_headers(response):
     return response
 
 
+
+# ==================== SMS SERVICE ====================
+def send_welcome_sms(phone, name):
+    """Send welcome SMS to new users - integrate with SMS provider"""
+    # TODO: Integrate with SMS provider (e.g., Kavenegar, SMS.ir, etc.)
+    # Example with Kavenegar:
+    # import requests
+    # api_key = os.environ.get('KAVE_NEGAR_API', '')
+    # sender = os.environ.get('SMS_SENDER', '')
+    # if api_key and sender and phone:
+    #     url = f"https://api.kavenegar.com/v1/{api_key}/send.json"
+    #     data = {'receptor': phone, 'sender': sender, 'message': f'خوش آمدید {name}!\nفروشگاه مزون هدیه\nwww.mezonehediye.ir'}
+    #     requests.post(url, data=data)
+    print(f"[SMS] Welcome message sent to {phone} for {name}")
+    return True
+
+
 # ==================== MAIN ROUTES ====================
 @app.route('/')
 def home():
@@ -568,6 +585,9 @@ def register():
                 (username, email, generate_password_hash(password), full_name, phone))
             db.commit()
             flash('ثبت‌نام موفقیت‌آمیز بود! 🎉', 'success')
+            # Send welcome SMS
+            if phone:
+                send_welcome_sms(phone, full_name or username)
             return redirect(url_for('login'))
         except sqlite3.IntegrityError:
             flash('نام کاربری یا ایمیل قبلاً استفاده شده', 'danger')
@@ -892,8 +912,8 @@ def admin_shipping_methods():
     methods = [
         {'key': 'shipping_tipax', 'name': 'تیپاکس'},
         {'key': 'shipping_post', 'name': 'پست پیشتاز'},
-        {'key': 'shipping_motor', 'name': 'پیک موتوری'},
         {'key': 'shipping_tnt', 'name': 'TNT'},
+        {'key': 'shipping_collect', 'name': 'پس کرایه'},
     ]
     
     for method in methods:
