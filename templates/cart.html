@@ -1,72 +1,234 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>سبد خرید | مزون هدیه</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/static/css/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-.cart-page{padding:40px 0}.cart-items{margin-bottom:30px}
-.cart-item{display:flex;gap:20px;padding:20px;border:1px solid var(--border);border-radius:12px;margin-bottom:16px;background:var(--bg-card)}
-.cart-item-img{width:100px;height:100px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0}
-.cart-item-info{flex:1}.cart-item-name{font-weight:600;margin-bottom:4px}.cart-item-price{color:var(--primary);font-weight:700;margin-bottom:8px}
-.cart-item-controls{display:flex;align-items:center;gap:12px}
-.qty-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:16px}
-.remove-btn{color:var(--danger);background:none;border:none;cursor:pointer;font-family:inherit}
-.cart-summary{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px}
-.cart-summary h3{font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:16px}
-.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;font-size:15px}
-.summary-total{font-size:22px;font-weight:700;color:var(--primary);border-top:1px solid var(--border);padding-top:16px;margin-top:16px}
-.checkout-btn{width:100%;padding:16px;background:var(--primary);border:none;border-radius:8px;color:#000;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:20px;text-decoration:none;display:block;text-align:center}
-.empty-cart{text-align:center;padding:60px;color:var(--text-sec)}.empty-cart .icon{font-size:80px;margin-bottom:20px;opacity:.3}
-@media(max-width:768px){.cart-page>div{grid-template-columns:1fr!important}.cart-item{flex-direction:column}}
+:root{--gold:#c9a96e;--rose:#b76e79;--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--border:#2a2a2a;--text:#e8e8e8;--text2:#999;--danger:#e53935}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+/* Header */
+.header{background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.header .container{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo img{height:42px;border-radius:50%;border:2px solid var(--gold)}
+.logo-text{font-size:22px;font-weight:700;color:var(--gold)}
+.logo-text span{font-weight:400;color:var(--rose);font-size:14px}
+.header-nav{display:flex;align-items:center;gap:8px}
+.nav-link{padding:8px 16px;border-radius:10px;font-size:14px;font-weight:500;color:var(--text2);transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.nav-link:hover{background:var(--bg2);color:var(--text)}
+.nav-link.active{background:rgba(201,169,110,0.12);color:var(--gold)}
+.header-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg2);font-size:18px;transition:all 0.2s;text-decoration:none}
+.header-icon:hover{background:var(--gold);color:#fff}
+.cart-badge{position:relative}
+.cart-badge .badge{position:absolute;top:-4px;left:-4px;background:var(--rose);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* Page header */
+.page-header{padding:40px 0 20px}
+.page-title{font-size:28px;font-weight:700;display:flex;align-items:center;gap:12px}
+.page-title .icon{font-size:32px}
+.page-count{color:var(--text2);font-size:15px;font-weight:400}
+
+/* Cart layout */
+.cart-layout{display:grid;grid-template-columns:1fr 380px;gap:30px;padding-bottom:60px;align-items:start}
+@media(max-width:900px){.cart-layout{grid-template-columns:1fr}}
+
+/* Cart item */
+.cart-item{display:flex;gap:20px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:16px;margin-bottom:16px;transition:all 0.3s}
+.cart-item:hover{border-color:rgba(201,169,110,0.2)}
+.cart-item-img{width:120px;height:140px;border-radius:12px;overflow:hidden;flex-shrink:0;background:var(--bg2)}
+.cart-item-img img{width:100%;height:100%;object-fit:cover}
+.cart-item-img .placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(135deg,var(--bg2),var(--border))}
+.cart-item-info{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.cart-item-name{font-size:16px;font-weight:600;line-height:1.6}
+.cart-item-meta{display:flex;gap:12px;margin-top:6px}
+.cart-item-size{font-size:13px;color:var(--text2);background:var(--bg2);padding:4px 12px;border-radius:6px}
+.cart-item-unit-price{font-size:13px;color:var(--text2)}
+.cart-item-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:10px}
+.cart-item-price{font-size:18px;font-weight:700;color:var(--gold)}
+
+/* Quantity controls */
+.qty-controls{display:flex;align-items:center;gap:0;background:var(--bg2);border-radius:10px;border:1px solid var(--border)}
+.qty-btn{width:38px;height:38px;border:none;background:transparent;color:var(--text);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s}
+.qty-btn:hover{background:var(--border)}
+.qty-btn:active{background:var(--gold);color:#0a0a0a}
+.qty-val{min-width:36px;text-align:center;font-weight:700;font-size:15px;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:6px 0}
+
+/* Remove button */
+.remove-btn{background:none;border:1px solid transparent;color:var(--text2);font-family:inherit;font-size:13px;cursor:pointer;padding:8px 12px;border-radius:8px;transition:all 0.2s;display:flex;align-items:center;gap:4px}
+.remove-btn:hover{color:var(--danger);border-color:rgba(229,57,53,0.3);background:rgba(229,57,53,0.08)}
+
+/* Summary */
+.cart-summary{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:sticky;top:90px}
+.summary-title{font-size:18px;font-weight:700;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:14px}
+.summary-row .label{color:var(--text2)}
+.summary-row .value{font-weight:600}
+.summary-shipping{color:#81c784;font-weight:600}
+.summary-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.summary-total{display:flex;justify-content:space-between;align-items:center;font-size:22px;font-weight:700;margin-bottom:24px}
+.summary-total .total-price{color:var(--gold)}
+
+.btn-checkout{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),#b8956a);border:none;border-radius:12px;color:#0a0a0a;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-checkout:hover{box-shadow:0 8px 24px rgba(201,169,110,0.3);transform:translateY(-1px)}
+
+.btn-login{width:100%;padding:16px;background:linear-gradient(135deg,var(--rose),#a0606a);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.3s;display:block;text-align:center}
+.btn-login:hover{box-shadow:0 8px 24px rgba(183,110,121,0.3);transform:translateY(-1px)}
+
+.summary-features{margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.summary-feature{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);margin-bottom:8px}
+.summary-feature span{color:var(--gold)}
+
+/* Empty cart */
+.empty-cart{text-align:center;padding:80px 20px}
+.empty-icon{font-size:100px;margin-bottom:20px;opacity:0.3}
+.empty-title{font-size:22px;font-weight:600;margin-bottom:8px}
+.empty-desc{color:var(--text2);margin-bottom:24px}
+.btn-continue{padding:14px 32px;background:var(--card);border:1px solid var(--border);border-radius:12px;color:var(--gold);font-size:15px;font-weight:600;font-family:inherit;cursor:pointer;transition:all 0.3s;text-decoration:inline-block}
+.btn-continue:hover{background:rgba(201,169,110,0.1);border-color:var(--gold)}
+
+/* Flash */
+.flash{padding:14px 18px;border-radius:12px;margin:20px 0;font-size:14px;display:flex;align-items:center;gap:10px}
+.flash-success{background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#81c784}
+.flash-danger{background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);color:#ef5350}
+.flash-warning{background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.3);color:var(--gold)}
+.flash-info{background:rgba(183,110,121,0.12);border:1px solid rgba(183,110,121,0.3);color:var(--rose)}
+
+/* Footer */
+.footer{background:var(--card);border-top:1px solid var(--border);padding:16px 0;text-align:center;font-size:12px;color:var(--text2);margin-top:40px}
+
+@media(max-width:600px){
+.cart-item{flex-direction:column}
+.cart-item-img{width:100%;height:200px}
+.cart-item-bottom{justify-content:space-between}
+.page-title{font-size:22px}
+}
 </style>
-</head><body>
-<header class="header"><div class="container"><div class="header-inner">
-<a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a>
-<div class="header-actions"><a href="/" class="hdr-btn">🏠</a><a href="/products" class="hdr-btn">🛍</a></div>
-</div></div></header>
+</head>
+<body>
+
+<header class="header">
+<div class="container">
+<a href="/" class="logo">
+<img src="/static/images/logo.jpg" alt="مزون هدیه">
+<div class="logo-text">مزون <span>هدیه</span></div>
+</a>
+<div class="header-nav">
+<a href="/" class="nav-link">🏠 خانه</a>
+<a href="/products" class="nav-link">🛍️ محصولات</a>
+<a href="/cart" class="nav-link active cart-badge">
+🛒 سبد خرید
+</a>
+<a href="/profile" class="header-icon">👤</a>
+</div>
+</div>
+</header>
 
 <div class="container">
-{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for cat, msg in messages %}
+<div class="flash flash-{{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
 
-<div class="cart-page">
-<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin-bottom:30px">🛒 سبد خرید</h1>
+<div class="page-header">
+<h1 class="page-title"><span class="icon">🛒</span> سبد خرید <span class="page-count">{% if items %}({{ items|length }} کالا){% endif %}</span></h1>
+</div>
 
 {% if items %}
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:30px">
+<div class="cart-layout">
+<!-- Cart Items -->
 <div class="cart-items">
 {% for item in items %}
-<div class="cart-item">
-<div class="cart-item-img" style="background:linear-gradient(135deg,#333,#111)">👗</div>
+<div class="cart-item" id="cart-item-{{ item.product.id }}">
+<div class="cart-item-img">
+{% if item.product.image and not item.product.image.startswith('linear') %}
+<img src="{{ item.product.image }}" alt="{{ item.product.name }}">
+{% else %}
+<div class="placeholder">👗</div>
+{% endif %}
+</div>
 <div class="cart-item-info">
-<div class="cart-item-name">{{ item.product.name }} ({{ item.size }})</div>
-<div class="cart-item-price">{{ "{:,}".format(item.product.price) }} تومان</div>
-<div class="cart-item-controls">
+<div>
+<div class="cart-item-name">{{ item.product.name }}</div>
+<div class="cart-item-meta">
+<span class="cart-item-size">سایز: {{ item.size }}</span>
+{% if item.product.color %}<span class="cart-item-size">رنگ: {{ item.product.color }}</span>{% endif %}
+</div>
+</div>
+<div class="cart-item-bottom">
+<div class="cart-item-price">{{ "{:,}".format(item.product.price) }} <span style="font-size:12px;font-weight:400;color:var(--text2)">تومان</span></div>
+<div style="display:flex;align-items:center;gap:12px">
+<div class="qty-controls">
 <button class="qty-btn" onclick="updateCart({{ item.product.id }},'decrease')">−</button>
-<span>{{ item.quantity }}</span>
+<div class="qty-val">{{ item.quantity }}</div>
 <button class="qty-btn" onclick="updateCart({{ item.product.id }},'increase')">+</button>
+</div>
 <button class="remove-btn" onclick="updateCart({{ item.product.id }},'remove')">🗑 حذف</button>
-</div></div></div>
+</div>
+</div>
+</div>
+</div>
 {% endfor %}
 </div>
 
+<!-- Summary -->
 <div class="cart-summary">
-<h3>خلاصه سفارش</h3>
-<div class="summary-row"><span>جمع کل:</span><span>{{ "{:,}".format(total) }} تومان</span></div>
-<div class="summary-row"><span>هزینه ارسال:</span><span>{% if shipping == 0 %}رایگان ✨{% else %}{{ "{:,}".format(shipping) }} تومان{% endif %}</span></div>
-<div class="summary-row summary-total"><span>جمع نهایی:</span><span>{{ "{:,}".format(total + shipping) }} تومان</span></div>
-{% if session.get('user_id') %}
-<a href="/checkout" class="checkout-btn">تکمیل خرید</a>
+<h3 class="summary-title">خلاصه سفارش</h3>
+<div class="summary-row"><span class="label">جمع خرید</span><span class="value">{{ "{:,}".format(total) }} تومان</span></div>
+<div class="summary-row"><span class="label">هزینه ارسال</span>
+{% if shipping == 0 %}
+<span class="summary-shipping">رایگان ✨</span>
 {% else %}
-<a href="/login" class="checkout-btn">برای خرید وارد شوید</a>
+<span class="value">{{ "{:,}".format(shipping) }} تومان</span>
 {% endif %}
 </div>
+<hr class="summary-divider">
+<div class="summary-total">
+<span>مبلغ قابل پرداخت</span>
+<span class="total-price">{{ "{:,}".format(total + shipping) }} تومان</span>
 </div>
-{% else %}
-<div class="empty-cart"><div class="icon">🛒</div><h2>سبد خرید شما خالی است</h2><p style="margin-top:10px"><a href="/products" style="color:var(--primary)">محصولات ما را ببینید</a></p></div>
-{% endif %}
-</div></div>
 
-<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer>
+{% if session.get('user_id') %}
+<a href="/checkout" class="btn-checkout">تکمیل خرید →</a>
+{% else %}
+<a href="/login" class="btn-login">برای خرید وارد شوید</a>
+{% endif %}
+
+<div class="summary-features">
+<div class="summary-feature"><span>✓</span> ارسال رایگان بالای ۵۰۰ هزار تومان</div>
+<div class="summary-feature"><span>✓</span> ضمانت اصالت کالا</div>
+<div class="summary-feature"><span>✓</span> تعویض تا ۷ روز</div>
+<div class="summary-feature"><span>✓</span> پرداخت امن بانکی</div>
+</div>
+</div>
+</div>
+
+{% else %}
+<div class="empty-cart">
+<div class="empty-icon">🛒</div>
+<h2 class="empty-title">سبد خرید شما خالی است</h2>
+<p class="empty-desc">هنوز محصولی به سبد خرید اضافه نکرده‌اید</p>
+<a href="/products" class="btn-continue">مشاهده محصولات</a>
+</div>
+{% endif %}
+</div>
+
+<footer class="footer"><div class="container">© ۱۴۰۵ مزون هدیه — تمامی حقوق محفوظ است</div></footer>
+
 <script>
-function updateCart(id,action){fetch('/cart/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,action:action})}).then(()=>location.reload())}
-</script></body></html>
+function updateCart(id,action){
+fetch('/cart/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,action:action})})
+.then(function(r){return r.json()})
+.then(function(d){if(d.success)location.reload()});
+}
+</script>
+</body>
+</html>

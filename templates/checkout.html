@@ -1,16 +1,201 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>تکمیل خرید | مزون هدیه</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/static/css/style.css"></head><body>
-<header class="header"><div class="container"><div class="header-inner"><a href="/" class="logo"><img src="/static/images/logo.jpg" alt="مزون هدیه"><div class="logo-text">مزون <span>هدیه</span></div></a></div></div></header>
-<div class="container">{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}{% endwith %}
-<h1 style="font-family:'Playfair Display',serif;color:var(--primary);margin:30px 0">تکمیل خرید</h1>
-<form method="POST" action="/checkout/confirm" style="display:grid;grid-template-columns:1fr 1fr;gap:30px">
-<div><h3 style="margin-bottom:20px;color:var(--primary)">اطلاعات ارسال</h3>
-<div style="margin-bottom:16px"><label style="display:block;margin-bottom:6px;color:var(--text-sec);font-size:13px">نام و نام خانوادگی *</label><input name="full_name" value="{{ user.full_name or '' }}" required style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div>
-<div style="margin-bottom:16px"><label style="display:block;margin-bottom:6px;color:var(--text-sec);font-size:13px">شماره موبایل *</label><input name="phone" value="{{ user.phone or '' }}" required style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div>
-<div style="margin-bottom:16px"><label style="display:block;margin-bottom:6px;color:var(--text-sec);font-size:13px">آدرس کامل *</label><textarea name="address" required rows="4" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;resize:vertical">{{ user.address or '' }}</textarea></div>
-<div style="margin-bottom:16px"><label style="display:block;margin-bottom:6px;color:var(--text-sec);font-size:13px">شهر</label><input name="city" value="قم" style="width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit"></div></div>
-<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;height:fit-content"><h3 style="color:var(--primary);margin-bottom:16px">خلاصه سفارش</h3>
-{% for item in items %}<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px"><span>{{ item.product.name }} x {{ item.quantity }}</span><span>{{ "{:,}".format(item.total) }} تومان</span></div>{% endfor %}
-<div style="display:flex;justify-content:space-between;padding:12px 0;margin-top:12px;font-size:15px"><span>هزینه ارسال:</span><span>{% if shipping == 0 %}رایگان{% else %}{{ "{:,}".format(shipping) }} تومان{% endif %}</span></div>
-<div style="display:flex;justify-content:space-between;padding:16px 0;border-top:2px solid var(--border);font-size:20px;font-weight:700;color:var(--primary)"><span>جمع نهایی:</span><span>{{ "{:,}".format(total + shipping) }} تومان</span></div>
-<button type="submit" style="width:100%;padding:16px;background:var(--primary);border:none;border-radius:8px;color:#000;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:20px">ثبت سفارش</button></div></form></div>
-<footer class="footer"><div class="container"><div class="footer-bottom"><p>© ۱۴۰۵ مزون هدیه</p></div></div></footer></body></html>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تکمیل خرید | مزون هدیه</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a96e;--rose:#b76e79;--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--border:#2a2a2a;--text:#e8e8e8;--text2:#999;--danger:#e53935}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+.header{background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:100}
+.header .container{display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo img{height:42px;border-radius:50%;border:2px solid var(--gold)}
+.logo-text{font-size:22px;font-weight:700;color:var(--gold)}
+.logo-text span{font-weight:400;color:var(--rose);font-size:14px}
+.header-nav{display:flex;align-items:center;gap:8px}
+.nav-link{padding:8px 16px;border-radius:10px;font-size:14px;font-weight:500;color:var(--text2);transition:all 0.2s;display:flex;align-items:center;gap:6px}
+.nav-link:hover{background:var(--bg2);color:var(--text)}
+.header-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:var(--bg2);font-size:18px;transition:all 0.2s;text-decoration:none}
+.header-icon:hover{background:var(--gold);color:#fff}
+
+/* Steps */
+.checkout-steps{display:flex;align-items:center;justify-content:center;gap:0;padding:30px 0;position:relative}
+.step{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text2);position:relative;padding:0 20px}
+.step.active{color:var(--gold);font-weight:600}
+.step.done{color:var(--text2)}
+.step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;border:2px solid var(--border);background:var(--card)}
+.step.active .step-num{background:var(--gold);color:#0a0a0a;border-color:var(--gold)}
+.step.done .step-num{background:var(--text2);color:#0a0a0a;border-color:var(--text2)}
+.step-line{width:60px;height:2px;background:var(--border)}
+.step-line.active{background:var(--gold)}
+
+/* Layout */
+.checkout-layout{display:grid;grid-template-columns:1fr 400px;gap:30px;padding-bottom:60px;align-items:start}
+@media(max-width:900px){.checkout-layout{grid-template-columns:1fr}}
+
+/* Form card */
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px}
+.form-card-title{font-size:18px;font-weight:700;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.form-card-title .icon{font-size:22px}
+
+.form-group{margin-bottom:20px}
+.form-group label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px}
+.form-group label .required{color:var(--rose)}
+.form-group input,.form-group textarea{width:100%;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;transition:all 0.3s}
+.form-group textarea{resize:vertical;min-height:100px}
+.form-group input::placeholder,.form-group textarea::placeholder{color:#555}
+.form-group input:focus,.form-group textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,0.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}}
+
+/* Order summary sidebar */
+.order-summary{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:28px;position:sticky;top:90px}
+.summary-title{font-size:18px;font-weight:700;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+
+.order-items{margin-bottom:20px}
+.order-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.order-item:last-child{border-bottom:none}
+.order-item-img{width:60px;height:70px;border-radius:8px;overflow:hidden;background:var(--bg2);flex-shrink:0}
+.order-item-img img{width:100%;height:100%;object-fit:cover}
+.order-item-info{flex:1}
+.order-item-name{font-size:13px;font-weight:600;line-height:1.5;margin-bottom:4px}
+.order-item-meta{font-size:12px;color:var(--text2)}
+.order-item-price{font-size:14px;font-weight:700;color:var(--gold);white-space:nowrap}
+
+.summary-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:14px}
+.summary-row .label{color:var(--text2)}
+.summary-row .value{font-weight:600}
+.summary-shipping{color:#81c784;font-weight:600}
+.summary-divider{border:none;border-top:1px solid var(--border);margin:16px 0}
+.summary-total{display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:700;margin-bottom:24px}
+.summary-total .total-price{color:var(--gold)}
+
+.btn-submit{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),#b8956a);border:none;border-radius:12px;color:#0a0a0a;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.3s}
+.btn-submit:hover{box-shadow:0 8px 24px rgba(201,169,110,0.3);transform:translateY(-1px)}
+
+.secure-badge{text-align:center;margin-top:16px;font-size:12px;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:6px}
+
+/* Flash */
+.flash{padding:14px 18px;border-radius:12px;margin:20px 0;font-size:14px;display:flex;align-items:center;gap:10px}
+.flash-success{background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#81c784}
+.flash-danger{background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);color:#ef5350}
+.flash-warning{background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.3);color:var(--gold)}
+.flash-info{background:rgba(183,110,121,0.12);border:1px solid rgba(183,110,121,0.3);color:var(--rose)}
+
+.footer{background:var(--card);border-top:1px solid var(--border);padding:16px 0;text-align:center;font-size:12px;color:var(--text2);margin-top:40px}
+</style>
+</head>
+<body>
+
+<header class="header">
+<div class="container">
+<a href="/" class="logo">
+<img src="/static/images/logo.jpg" alt="مزون هدیه">
+<div class="logo-text">مزون <span>هدیه</span></div>
+</a>
+<div class="header-nav">
+<a href="/" class="nav-link">🏠 خانه</a>
+<a href="/products" class="nav-link">🛍️ محصولات</a>
+<a href="/cart" class="header-icon">🛒</a>
+</div>
+</div>
+</header>
+
+<div class="container">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for cat, msg in messages %}
+<div class="flash flash-{{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="checkout-steps">
+<div class="step done"><div class="step-num">✓</div> سبد خرید</div>
+<div class="step-line active"></div>
+<div class="step active"><div class="step-num">۲</div> اطلاعات ارسال</div>
+<div class="step-line"></div>
+<div class="step"><div class="step-num">۳</div> پرداخت</div>
+</div>
+
+<form method="POST" action="/checkout/confirm">
+<div class="checkout-layout">
+<!-- Shipping form -->
+<div class="form-card">
+<div class="form-card-title"><span class="icon">📦</span> اطلاعات ارسال</div>
+
+<div class="form-group">
+<label>نام و نام خانوادگی <span class="required">*</span></label>
+<input type="text" name="full_name" value="{{ user.full_name or '' }}" required placeholder="نام کامل خود را وارد کنید">
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>شماره موبایل <span class="required">*</span></label>
+<input type="tel" name="phone" value="{{ user.phone or '' }}" required placeholder="۰۹۱۲XXXXXXX" dir="ltr" style="text-align:right">
+</div>
+<div class="form-group">
+<label>شهر</label>
+<input type="text" name="city" value="{{ user.city if user.city is defined else 'قم' }}" placeholder="شهر خود را وارد کنید">
+</div>
+</div>
+<div class="form-group">
+<label>آدرس کامل <span class="required">*</span></label>
+<textarea name="address" required placeholder="آدرس دقیق ارسال شامل خیابان، کوچه، پلاک و واحد">{{ user.address or '' }}</textarea>
+</div>
+</div>
+
+<!-- Order summary -->
+<div>
+<div class="order-summary">
+<h3 class="summary-title">📦 خلاصه سفارش</h3>
+
+<div class="order-items">
+{% for item in items %}
+<div class="order-item">
+<div class="order-item-img">
+{% if item.product.image and not item.product.image.startswith('linear') %}
+<img src="{{ item.product.image }}" alt="{{ item.product.name }}">
+{% else %}
+<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:24px">👗</div>
+{% endif %}
+</div>
+<div class="order-item-info">
+<div class="order-item-name">{{ item.product.name }}</div>
+<div class="order-item-meta">سایز: {{ item.size }} × {{ item.quantity }}</div>
+</div>
+<div class="order-item-price">{{ "{:,}".format(item.total) }} ت</div>
+</div>
+{% endfor %}
+</div>
+
+<div class="summary-row"><span class="label">جمع خرید</span><span class="value">{{ "{:,}".format(total) }} تومان</span></div>
+<div class="summary-row"><span class="label">هزینه ارسال</span>
+{% if shipping == 0 %}
+<span class="summary-shipping">رایگان ✨</span>
+{% else %}
+<span class="value">{{ "{:,}".format(shipping) }} تومان</span>
+{% endif %}
+</div>
+<hr class="summary-divider">
+<div class="summary-total">
+<span>مبلغ قابل پرداخت</span>
+<span class="total-price">{{ "{:,}".format(total + shipping) }} تومان</span>
+</div>
+
+<button type="submit" class="btn-submit">🔒 ثبت سفارش</button>
+<div class="secure-badge">🛡️ پرداخت امن و رمزنگاری شده</div>
+</div>
+</div>
+</div>
+</form>
+</div>
+
+<footer class="footer"><div class="container">© ۱۴۰۵ مزون هدیه — تمامی حقوق محفوظ است</div></footer>
+</body>
+</html>

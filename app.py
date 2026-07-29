@@ -274,6 +274,7 @@ def send_welcome_sms(phone, name):
 
 
 # ==================== MAIN ROUTES ====================
+
 @app.route('/')
 def home():
     db = get_db()
@@ -1174,6 +1175,38 @@ def setup_demo_images():
     flash('عکس‌های نمونه اضافه شد ✓', 'success')
     return redirect(url_for('admin_products'))
 
+
+
+@app.route('/about')
+def about():
+    settings = {}
+    db = get_db()
+    try:
+        settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    except Exception:
+        pass
+    return render_template('about.html', settings=settings)
+@app.route('/contact')
+def contact():
+    settings = {}
+    db = get_db()
+    try:
+        settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    except Exception:
+        pass
+    return render_template('contact.html', settings=settings)
+
+@app.route('/contact/submit', methods=['POST'])
+def contact_submit():
+    name = request.form.get('name', '').strip()
+    phone = request.form.get('phone', '').strip()
+    email = request.form.get('email', '').strip()
+    subject = request.form.get('subject', '').strip()
+    message = request.form.get('message', '').strip()
+    if not name or not phone or not message:
+        return jsonify({'success': False, 'message': 'فیلدهای ضروری را پر کنید'})
+    print(f"[CONTACT] New message from {name} ({phone}) - {subject}: {message}")
+    return jsonify({'success': True, 'message': 'پیام شما با موفقیت ارسال شد'})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

@@ -1,0 +1,465 @@
+<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>درباره ما | {{ settings.get('shop_name', 'مزون هدیه') }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffffff;--bg2:#f5f5f5;--card:#ffffff;--border:#e5e5e5;--text:#1a1a1a;--text2:#666;--gold:#c9a96e;--rose:#b76e79;--primary:#c9a96e;--danger:#e53935;--success:#43a047;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08)}
+[data-theme="dark"]{--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--border:#2a2a2a;--text:#e8e8e8;--text2:#999;--shadow:0 2px 12px rgba(0,0,0,0.3)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);transition:background 0.3s,color 0.3s}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 16px}
+
+/* === TOP BAR === */
+.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:8px 0;font-size:12px;color:var(--text2)}
+.topbar .container{display:flex;align-items:center;justify-content:space-between}
+.topbar-links{display:flex;gap:16px}
+.topbar-links a{color:var(--text2);transition:color 0.2s}
+.topbar-links a:hover{color:var(--gold)}
+
+/* === HEADER === */
+.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header .container{display:flex;align-items:center;gap:20px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo img{height:40px;border-radius:50%}
+.logo-text{font-size:18px;font-weight:700;color:var(--gold)}
+.search{flex:1;position:relative;max-width:500px}
+.search input{width:100%;padding:10px 44px 10px 16px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;transition:border 0.2s}
+.search input:focus{outline:none;border-color:var(--gold)}
+.search button{position:absolute;left:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:var(--gold);border:none;border-radius:8px;color:#fff;font-size:16px;cursor:pointer}
+.header-icons{display:flex;gap:12px;align-items:center}
+.header-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg2);color:var(--text);font-size:18px;transition:all 0.2s;position:relative;cursor:pointer}
+.header-icon:hover{background:var(--gold);color:#fff}
+.cart-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--danger);color:#fff;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* === NAV === */
+.nav{background:var(--card);border-bottom:1px solid var(--border)}
+.nav .container{display:flex;align-items:center;gap:0;overflow-x:auto}
+.nav a{padding:12px 16px;font-size:13px;font-weight:500;color:var(--text2);white-space:nowrap;transition:all 0.2s;border-bottom:2px solid transparent}
+.nav a:hover,.nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* === PAGE HERO === */
+.page-hero{padding:48px 0 32px;text-align:center;background:linear-gradient(135deg,var(--bg2),var(--bg))}
+.page-hero h1{font-size:32px;font-weight:800;margin-bottom:12px}
+.page-hero h1 span{color:var(--gold)}
+.page-hero p{font-size:15px;color:var(--text2);max-width:600px;margin:0 auto;line-height:1.8}
+.breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--text2);margin-bottom:16px}
+.breadcrumb a{color:var(--gold);transition:color 0.2s}
+.breadcrumb a:hover{color:var(--rose)}
+
+/* === ABOUT STORY === */
+.about-story{padding:48px 0}
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.story-content h2{font-size:24px;font-weight:700;margin-bottom:16px}
+.story-content h2 span{color:var(--gold)}
+.story-content p{font-size:14px;color:var(--text2);line-height:2;margin-bottom:12px}
+.story-image{border-radius:var(--radius);overflow:hidden;position:relative;aspect-ratio:4/3}
+.story-image img{width:100%;height:100%;object-fit:cover}
+.story-image::after{content:'';position:absolute;inset:0;border:2px solid var(--gold);border-radius:var(--radius);opacity:0.3}
+.story-image-placeholder{width:100%;height:100%;background:linear-gradient(135deg,var(--gold),var(--rose));display:flex;align-items:center;justify-content:center;font-size:64px;opacity:0.8}
+
+/* === STATS === */
+.stats-section{padding:40px 0}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:28px 16px;text-align:center;transition:all 0.3s}
+.stat-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:var(--shadow)}
+.stat-icon{font-size:36px;margin-bottom:12px}
+.stat-number{font-size:32px;font-weight:800;color:var(--gold);margin-bottom:4px}
+.stat-label{font-size:13px;color:var(--text2);font-weight:500}
+
+/* === VALUES === */
+.values-section{padding:48px 0}
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.value-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;text-align:center;transition:all 0.3s;position:relative;overflow:hidden}
+.value-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--rose));opacity:0;transition:opacity 0.3s}
+.value-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:var(--shadow)}
+.value-card:hover::before{opacity:1}
+.value-icon{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,rgba(201,169,110,0.1),rgba(183,110,121,0.1));display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;border:2px solid var(--border);transition:border-color 0.3s}
+.value-card:hover .value-icon{border-color:var(--gold)}
+.value-title{font-size:16px;font-weight:700;margin-bottom:8px}
+.value-desc{font-size:13px;color:var(--text2);line-height:1.8}
+
+/* === TEAM === */
+.team-section{padding:48px 0;background:var(--bg2)}
+.team-section .section-header{justify-content:center;text-align:center;display:flex;flex-direction:column;align-items:center}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:32px}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all 0.3s;text-align:center}
+.team-card:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:var(--shadow)}
+.team-avatar{width:100%;aspect-ratio:1;background:linear-gradient(135deg,var(--gold),var(--rose));display:flex;align-items:center;justify-content:center;font-size:48px;color:#fff;opacity:0.9}
+.team-avatar img{width:100%;height:100%;object-fit:cover}
+.team-info{padding:20px}
+.team-name{font-size:16px;font-weight:700;margin-bottom:4px}
+.team-role{font-size:13px;color:var(--gold);font-weight:500;margin-bottom:12px}
+.team-desc{font-size:12px;color:var(--text2);line-height:1.8}
+.team-social{display:flex;justify-content:center;gap:10px;margin-top:12px}
+.team-social a{width:34px;height:34px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+.team-social a:hover{background:var(--gold);color:#fff}
+
+/* === CTA === */
+.cta-section{padding:48px 0;text-align:center}
+.cta-box{background:linear-gradient(135deg,var(--gold),#b8956a);border-radius:var(--radius);padding:48px 32px;color:#fff;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-50%;right:-20%;width:300px;height:300px;background:rgba(255,255,255,0.05);border-radius:50%}
+.cta-box::after{content:'';position:absolute;bottom:-30%;left:-10%;width:200px;height:200px;background:rgba(255,255,255,0.05);border-radius:50%}
+.cta-title{font-size:24px;font-weight:800;margin-bottom:12px;position:relative;z-index:1}
+.cta-sub{font-size:14px;opacity:0.9;margin-bottom:24px;position:relative;z-index:1}
+.cta-btn{display:inline-block;padding:14px 36px;background:#fff;color:var(--gold);border-radius:var(--radius);font-weight:700;font-size:14px;transition:all 0.3s;position:relative;z-index:1}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+
+/* === FOOTER === */
+.footer{background:var(--card);border-top:1px solid var(--border);margin-top:32px;padding:32px 0}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
+.footer-title{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:12px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:8px}
+.footer-links a{font-size:13px;color:var(--text2);transition:color 0.2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-social{display:flex;gap:12px;margin-top:12px}
+.footer-social a{width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
+.footer-social a:hover{background:var(--gold);color:#fff}
+.footer-bottom{border-top:1px solid var(--border);margin-top:24px;padding-top:16px;text-align:center;font-size:12px;color:var(--text2)}
+
+/* === THEME TOGGLE === */
+.theme-toggle{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg2);border:none;color:var(--text);font-size:18px;cursor:pointer;transition:all 0.2s}
+.theme-toggle:hover{background:var(--gold);color:#fff}
+
+/* === MOBILE NAV === */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0;z-index:100}
+.mobile-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--text2);padding:4px 12px}
+.mobile-nav a.active{color:var(--gold)}
+.mobile-nav a .icon{font-size:20px}
+
+/* === SCROLL TOP === */
+.scroll-top{position:fixed;bottom:80px;left:20px;width:44px;height:44px;background:var(--gold);color:#fff;border:none;border-radius:50%;font-size:20px;cursor:pointer;display:none;z-index:99;box-shadow:0 4px 12px rgba(201,169,110,0.4);transition:all 0.2s}
+.scroll-top:hover{transform:scale(1.1)}
+
+/* === RESPONSIVE === */
+@media(max-width:768px){
+  .mobile-nav{display:flex;justify-content:space-around}
+  .page-hero h1{font-size:24px}
+  .story-grid{grid-template-columns:1fr;gap:24px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .values-grid{grid-template-columns:1fr}
+  .team-grid{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .scroll-top{bottom:80px}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .stat-number{font-size:24px}
+}
+@media(min-width:769px){.scroll-top{bottom:20px}}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+<div class="container">
+<div class="topbar-links">
+<a href="/products">همه محصولات</a>
+<a href="/about">درباره ما</a>
+<a href="/contact">تماس با ما</a>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<span>📞 ۰۹۱۰۰۵۹۹۸۰۵</span>
+<button class="theme-toggle" onclick="toggleTheme()" title="حالت روز/شب">🌙</button>
+</div>
+</div>
+</div>
+
+<!-- Header -->
+<div class="header">
+<div class="container">
+<a href="/" class="logo">
+<img src="/static/images/logo.jpg" alt="مزون هدیه">
+<div class="logo-text">مزون <span style="font-weight:400;font-size:14px">هدیه</span></div>
+</a>
+<div class="search">
+<input type="text" placeholder="جستجو در محصولات..." id="searchInput">
+<button onclick="doSearch()">🔍</button>
+</div>
+<div class="header-icons">
+<a href="/profile" class="header-icon" title="حساب کاربری">👤</a>
+<a href="/cart" class="header-icon" title="سبد خرید">
+🛒
+<span class="cart-badge" id="cartCount" style="display:none">0</span>
+</a>
+</div>
+</div>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+<div class="container">
+<a href="/">خانه</a>
+<a href="/products">همه محصولات</a>
+<a href="/about" class="active">درباره ما</a>
+<a href="/contact">تماس با ما</a>
+</div>
+</div>
+
+<!-- Page Hero -->
+<div class="page-hero">
+<div class="container">
+<div class="breadcrumb">
+<a href="/">خانه</a>
+<span>›</span>
+<span>درباره ما</span>
+</div>
+<h1>درباره <span>مزون هدیه</span></h1>
+<p>ما باور داریم که هر زنی لایق بهترین استایل و باکیفیت‌ترین پوشاک است. مزون هدیه با عشق و دقت، زیبایی را به خانه‌های شما می‌آورد.</p>
+</div>
+</div>
+
+<!-- Brand Story -->
+<div class="about-story">
+<div class="container">
+<div class="story-grid">
+<div class="story-content">
+<h2>داستان <span>برند ما</span></h2>
+<p>مزون هدیه با هدف ارائه پوشاک زنانه با کیفیت و قیمت مناسب در شهر مقدس قم تأسیس شد. ما باور داریم که زیبایی حق هر زنی است و تلاش می‌کنیم تا با ارائه متنوع‌ترین مدل‌ها و بهترین کیفیت، تجربه‌ای متفاوت از خرید آنلاین را برای شما فراهم کنیم.</p>
+<p>از شومیزهای مجلسی تا مانتوهای اسپرت، از ست‌های راحتی تا شلوارهای شیک — هر کالا با دقت انتخاب و بررسی کیفیت، به شما ارائه می‌شود. تیم ما مدام در حال رصد آخرین ترندهای مد جهانی و ایرانی است تا همواره به‌روزترین مدل‌ها را در اختیار شما قرار دهد.</p>
+<p>ما به اعتماد شما افتخار می‌کنیم و متعهد هستیم که هر خرید، تجربه‌ای لذت‌بخش و مطمئن باشد.</p>
+</div>
+<div class="story-image">
+<div class="story-image-placeholder">✨</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Stats -->
+<div class="stats-section">
+<div class="container">
+<div class="stats-grid">
+<div class="stat-card">
+<div class="stat-icon">🛍️</div>
+<div class="stat-number">۵۰۰+</div>
+<div class="stat-label">محصول متنوع</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">👥</div>
+<div class="stat-number">۱۰,۰۰۰+</div>
+<div class="stat-label">مشتری راضی</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">⭐</div>
+<div class="stat-number">۴.۸</div>
+<div class="stat-label">امتیاز میانگین</div>
+</div>
+<div class="stat-card">
+<div class="stat-icon">🚚</div>
+<div class="stat-number">۲۴</div>
+<div class="stat-label">ساعت ارسال</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Values -->
+<div class="values-section">
+<div class="container">
+<div class="section-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)">
+<div class="section-title" style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px">💎 <span style="color:var(--gold)">ارزش‌های ما</span></div>
+</div>
+<div class="values-grid">
+<div class="value-card">
+<div class="value-icon">✨</div>
+<div class="value-title">کیفیت بی‌نظیر</div>
+<div class="value-desc">هر محصول با دقت و وسواس فراوان انتخاب می‌شود تا بهترین کیفیت را تضمین کنیم. ما فقط محصولاتی را ارائه می‌دهیم که خودمان به آن‌ها ایمان داریم.</div>
+</div>
+<div class="value-card">
+<div class="value-icon">💰</div>
+<div class="value-title">قیمت منصفانه</div>
+<div class="value-desc">ما باور داریم که کیفیت بالا نباید با قیمت نامعقول همراه باشد. با حذف واسطه‌ها، بهترین قیمت را مستقیماً به شما ارائه می‌دهیم.</div>
+</div>
+<div class="value-card">
+<div class="value-icon">🤝</div>
+<div class="value-title">اعتماد شما، سرمایه ماست</div>
+<div class="value-desc">رضایت شما اولویت اول ماست. با ضمانت اصالت کالا، امکان تعویض آسان و پشتیبانی ۲۴ ساعته، همواره در کنار شما هستیم.</div>
+</div>
+<div class="value-card">
+<div class="value-icon">🚚</div>
+<div class="value-title">ارسال سریع و مطمئن</div>
+<div class="value-desc">سفارشات شما در سریع‌ترین زمان ممکن بسته‌بندی و ارسال می‌شود. ارسال رایگان برای خریدهای بالای ۵۰۰ هزار تومان.</div>
+</div>
+<div class="value-card">
+<div class="value-icon">🔄</div>
+<div class="value-title">تعویض بدون دردسر</div>
+<div class="value-desc">اگر از خرید خود راضی نبودید، تا ۷ روز امکان تعویض محصول وجود دارد. رضایت شما برای ما مهم‌تر از هر چیزی است.</div>
+</div>
+<div class="value-card">
+<div class="value-icon">💜</div>
+<div class="value-title">طراحی با عشق</div>
+<div class="value-desc">هر مدل با دقت و عشق انتخاب شده تا استایلی منحصر به فرد و متفاوت برای شما رقم بزند. ما در جستجوی زیبایی هستیم.</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Team -->
+<div class="team-section">
+<div class="container">
+<div class="section-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)">
+<div class="section-title" style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px">👩‍💼 <span style="color:var(--gold)">تیم ما</span></div>
+</div>
+<div class="team-grid">
+<div class="team-card">
+<div class="team-avatar">👩‍💼</div>
+<div class="team-info">
+<div class="team-name">هدیه احمدی</div>
+<div class="team-role">مدیر و بنیان‌گذار</div>
+<div class="team-desc">با عشق به مد و زیبایی، مزون هدیه را تأسیس کرد تا تجربه‌ای متفاوت از خرید آنلاین را برای بانوان ایرانی رقم بزند.</div>
+<div class="team-social">
+<a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام">📷</a>
+<a href="tel:09100599805" title="تماس">📞</a>
+</div>
+</div>
+</div>
+<div class="team-card">
+<div class="team-avatar">👗</div>
+<div class="team-info">
+<div class="team-name">تیم طراحی</div>
+<div class="team-role">انتخاب و بررسی محصولات</div>
+<div class="team-desc">تیم ما با دقت و وسواس فراوان، بهترین محصولات را از تولیدکنندگان معتبر انتخاب و بررسی می‌کند تا فقط بهترین‌ها به شما برسد.</div>
+<div class="team-social">
+<a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام">📷</a>
+</div>
+</div>
+</div>
+<div class="team-card">
+<div class="team-avatar">📦</div>
+<div class="team-info">
+<div class="team-name">تیم پشتیبانی</div>
+<div class="team-role">خدمات مشتریان</div>
+<div class="team-desc">تیم پشتیبانی ما همواره آماده پاسخگویی به سؤالات و مشکلات شماست تا تجربه خریدی بدون دغدغه داشته باشید.</div>
+<div class="team-social">
+<a href="tel:09100599805" title="تماس">📞</a>
+<a href="mailto:info@mezonehediye.ir" title="ایمیل">📧</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+<div class="container">
+<div class="cta-box">
+<div class="cta-title">همین حالا خرید کنید!</div>
+<div class="cta-sub">جدیدترین مدل‌های پوشاک زنانه را با بهترین قیمت مشاهده کنید</div>
+<a href="/products" class="cta-btn">مشاهده محصولات →</a>
+</div>
+</div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+<div class="container">
+<div class="footer-grid">
+<div>
+<div class="footer-title">مزون هدیه</div>
+<p style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px">فروشگاه آنلاین مد و پوشاک زنانه با بهترین کیفیت و قیمت مناسب</p>
+<div class="footer-social">
+<a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام">📷</a>
+<a href="https://t.me/mezonehediye" title="تلگرام">✈️</a>
+<a href="tel:09100599805" title="تماس">📞</a>
+</div>
+</div>
+<div>
+<div class="footer-title">دسترسی سریع</div>
+<ul class="footer-links">
+<li><a href="/">خانه</a></li>
+<li><a href="/products">محصولات</a></li>
+<li><a href="/cart">سبد خرید</a></li>
+<li><a href="/profile">حساب کاربری</a></li>
+</ul>
+</div>
+<div>
+<div class="footer-title">خدمات مشتریان</div>
+<ul class="footer-links">
+<li><a href="/about">درباره ما</a></li>
+<li><a href="/contact">تماس با ما</a></li>
+<li><a href="/faq">سوالات متداول</a></li>
+<li><a href="/rules">قوانین خرید</a></li>
+</ul>
+</div>
+<div>
+<div class="footer-title">اطلاعات فروشگاه</div>
+<ul class="footer-links">
+<li>📍 قم، ایران</li>
+<li>📞 ۰۹۱۰۰۵۹۹۸۰۵</li>
+<li>📧 info@mezonehediye.ir</li>
+<li>🕐 شنبه تا پنجشنبه</li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+© ۱۴۰۵ مزون هدیه — تمامی حقوق محفوظ است
+</div>
+</div>
+</div>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav">
+<a href="/"><span class="icon">🏠</span>خانه</a>
+<a href="/products"><span class="icon">🛍️</span>محصولات</a>
+<a href="/cart"><span class="icon">🛒</span>سبد</a>
+<a href="/profile"><span class="icon">👤</span>پروفایل</a>
+</div>
+
+<!-- Scroll Top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// Theme toggle
+var theme=localStorage.getItem('theme')||'light';
+document.documentElement.setAttribute('data-theme',theme);
+updateThemeBtn();
+function toggleTheme(){
+    theme=theme==='light'?'dark':'light';
+    document.documentElement.setAttribute('data-theme',theme);
+    localStorage.setItem('theme',theme);
+    updateThemeBtn();
+}
+function updateThemeBtn(){
+    var btn=document.querySelector('.theme-toggle');
+    if(btn)btn.textContent=theme==='dark'?'☀️':'🌙';
+}
+
+// Search
+function doSearch(){
+    var q=document.getElementById('searchInput').value;
+    if(q)window.location.href='/products?q='+encodeURIComponent(q);
+}
+document.getElementById('searchInput').addEventListener('keypress',function(e){if(e.key==='Enter')doSearch()});
+
+// Scroll top
+window.addEventListener('scroll',function(){
+    var btn=document.getElementById('scrollTop');
+    if(window.scrollY>300)btn.style.display='flex';else btn.style.display='none';
+});
+
+// Animate stats on scroll
+var animated=false;
+window.addEventListener('scroll',function(){
+    if(!animated){
+        var statsSection=document.querySelector('.stats-section');
+        if(statsSection){
+            var rect=statsSection.getBoundingClientRect();
+            if(rect.top<window.innerHeight){
+                animated=true;
+                document.querySelectorAll('.stat-number').forEach(function(el){
+                    el.style.transition='transform 0.5s ease';
+                    el.style.transform='scale(1.1)';
+                    setTimeout(function(){el.style.transform='scale(1)'},500);
+                });
+            }
+        }
+    }
+});
+</script>
+</body>
+</html>

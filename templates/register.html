@@ -1,47 +1,109 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ثبت‌نام | مزون هدیه</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --primary: #c9a96e; --bg: #0a0a0a; --bg-card: #111; --text: #e8e8e8; --border: #222; --rose: #b76e79; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Vazirmatn', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 40px; width: 100%; max-width: 420px; }
-        .logo { text-align: center; font-family: 'Playfair Display', serif; font-size: 32px; color: var(--primary); margin-bottom: 30px; }
-        .logo span { color: var(--rose); }
-        .form-group { margin-bottom: 18px; }
-        .form-group label { display: block; font-size: 13px; color: var(--text-secondary, #888); margin-bottom: 6px; }
-        .form-group input { width: 100%; padding: 12px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: inherit; font-size: 14px; }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
-        .btn { width: 100%; padding: 14px; background: var(--primary); border: none; border-radius: 8px; color: #000; font-weight: 700; font-family: inherit; font-size: 15px; cursor: pointer; margin-top: 10px; }
-        .btn:hover { background: var(--primary-dark, #b8956a); }
-        .links { text-align: center; margin-top: 20px; font-size: 14px; }
-        .links a { color: var(--primary); text-decoration: none; }
-        .flash { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
-        .flash-success { background: rgba(40,167,69,0.15); border: 1px solid #28a745; color: #28a745; }
-        .flash-danger { background: rgba(220,53,69,0.15); border: 1px solid #dc3545; color: #dc3545; }
-        .flash-warning { background: rgba(201,169,110,0.15); border: 1px solid var(--primary); color: var(--primary); }
-        .flash-info { background: rgba(183,110,121,0.15); border: 1px solid var(--rose); color: var(--rose); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ثبت‌نام | مزون هدیه</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c9a96e;--rose:#b76e79;--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--border:#2a2a2a;--text:#e8e8e8;--text2:#999;--danger:#e53935}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+
+.header{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 0;z-index:100}
+.header .container{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+.logo img{height:42px;border-radius:50%;border:2px solid var(--gold)}
+.logo-text{font-size:22px;font-weight:700;color:var(--gold);letter-spacing:-0.5px}
+.logo-text span{font-weight:400;color:var(--rose);font-size:14px}
+
+.auth-wrapper{width:100%;max-width:440px;margin-top:40px}
+.auth-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:40px 36px;position:relative;overflow:hidden}
+.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--rose))}
+.auth-icon{text-align:center;margin-bottom:24px}
+.auth-icon .circle{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,rgba(201,169,110,0.15),rgba(183,110,121,0.15));border:2px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:36px}
+.auth-title{text-align:center;font-size:24px;font-weight:700;margin-bottom:6px}
+.auth-subtitle{text-align:center;color:var(--text2);font-size:14px;margin-bottom:28px}
+
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font-size:13px;font-weight:500;color:var(--text2);margin-bottom:8px}
+.form-group input{width:100%;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;color:var(--text);font-family:inherit;font-size:15px;transition:all 0.3s}
+.form-group input::placeholder{color:#555}
+.form-group input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,169,110,0.1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+.btn-primary{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold),#b8956a);border:none;border-radius:12px;color:#0a0a0a;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.3s;margin-top:8px}
+.btn-primary:hover{box-shadow:0 8px 24px rgba(201,169,110,0.3);transform:translateY(-1px)}
+
+.auth-links{text-align:center;margin-top:24px;font-size:14px;color:var(--text2)}
+.auth-links a{color:var(--gold);text-decoration:none;font-weight:600}
+.auth-links a:hover{text-decoration:underline}
+
+.flash{padding:14px 18px;border-radius:12px;margin-bottom:20px;font-size:14px;display:flex;align-items:center;gap:10px}
+.flash-success{background:rgba(76,175,80,0.12);border:1px solid rgba(76,175,80,0.3);color:#81c784}
+.flash-danger{background:rgba(229,57,53,0.12);border:1px solid rgba(229,57,53,0.3);color:#ef5350}
+.flash-warning{background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.3);color:var(--gold)}
+.flash-info{background:rgba(183,110,121,0.12);border:1px solid rgba(183,110,121,0.3);color:var(--rose)}
+
+@media(max-width:480px){.auth-card{padding:32px 20px}.form-row{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-    <div class="card">
-        <div class="logo">مزون <span>هدیه</span></div>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}{% for cat, msg in messages %}<div class="flash flash-{{ cat }}">{{ msg }}</div>{% endfor %}{% endif %}
-        {% endwith %}
-        <form method="POST">
-            <div class="form-group"><label>نام کامل</label><input type="text" name="full_name" placeholder="نام و نام خانوادگی"></div>
-            <div class="form-group"><label>نام کاربری *</label><input type="text" name="username" required placeholder="نام کاربری انتخاب کنید"></div>
-            <div class="form-group"><label>ایمیل *</label><input type="email" name="email" required placeholder="example@email.com"></div>
-            <div class="form-group"><label>شماره موبایل</label><input type="tel" name="phone" placeholder="۰۹۱۲XXXXXXX"></div>
-            <div class="form-group"><label>رمز عبور *</label><input type="password" name="password" required placeholder="حداقل ۶ کاراکتر"></div>
-            <button type="submit" class="btn">ثبت‌نام ✓</button>
-        </form>
-        <div class="links"><a href="{{ url_for('login') }}">قبلاً ثبت‌نام کردید؟ وارد شوید</a></div>
-    </div>
+
+<div class="header">
+<div class="container">
+<a href="/" class="logo">
+<img src="/static/images/logo.jpg" alt="مزون هدیه">
+<div class="logo-text">مزون <span>هدیه</span></div>
+</a>
+</div>
+</div>
+
+<div class="auth-wrapper">
+<div class="auth-card">
+<div class="auth-icon"><div class="circle">✨</div></div>
+<h1 class="auth-title">ایجاد حساب جدید</h1>
+<p class="auth-subtitle">به جمع مشتریان مزون هدیه بپیوندید</p>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for cat, msg in messages %}
+<div class="flash flash-{{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<form method="POST">
+<div class="form-group">
+<label>نام و نام خانوادگی</label>
+<input type="text" name="full_name" placeholder="نام کامل خود را وارد کنید">
+</div>
+<div class="form-group">
+<label>نام کاربری *</label>
+<input type="text" name="username" required placeholder="نام کاربری انتخاب کنید" autocomplete="username">
+</div>
+<div class="form-row">
+<div class="form-group">
+<label>ایمیل *</label>
+<input type="email" name="email" required placeholder="example@email.com">
+</div>
+<div class="form-group">
+<label>شماره موبایل</label>
+<input type="tel" name="phone" placeholder="۰۹۱۲XXXXXXX" dir="ltr" style="text-align:right">
+</div>
+</div>
+<div class="form-group">
+<label>رمز عبور *</label>
+<input type="password" name="password" required placeholder="حداقل ۶ کاراکتر" autocomplete="new-password">
+</div>
+<button type="submit" class="btn-primary">ثبت‌نام</button>
+</form>
+
+<div class="auth-links">
+قبلاً ثبت‌نام کردید؟ <a href="{{ url_for('login') }}">وارد شوید</a>
+</div>
+</div>
+</div>
+
 </body>
 </html>
