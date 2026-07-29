@@ -1076,6 +1076,22 @@ with app.app_context():
 # ==================== MAIN ====================
 import os
 
+
+@app.route('/admin/migrate-add-image-back')
+def migrate_image_back():
+    """Add image_back column to products table"""
+    from flask import session as sess
+    if not sess.get('user_id'):
+        return redirect(url_for('login'))
+    db = get_db()
+    try:
+        db.execute('ALTER TABLE products ADD COLUMN image_back TEXT')
+        db.commit()
+        flash('ستون image_back اضافه شد ✓', 'success')
+    except:
+        flash('ستون قبلاً اضافه شده بود', 'info')
+    return redirect(url_for('admin_products'))
+
 @app.route('/admin/setup-demo-images')
 def setup_demo_images():
     """Setup demo images for products - run once"""

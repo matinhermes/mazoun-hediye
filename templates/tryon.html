@@ -12,21 +12,18 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 .page{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 48px)}
 @media(max-width:800px){.page{grid-template-columns:1fr}}
 
-/* === 3D PRODUCT DISPLAY === */
+/* 3D Display */
 .display{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center 40%,#151515,#0a0a0a);position:relative;overflow:hidden;perspective:1200px}
 @media(max-width:800px){.display{min-height:70vh}}
 
-/* The 3D card */
 .card-3d{position:relative;transform-style:preserve-3d;transition:transform 0.12s ease-out;will-change:transform}
 
-/* Product image with 3D card effect */
-.card-face{position:relative;width:280px;border-radius:12px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,169,110,0.1);backface-visibility:hidden}
+.card-face{position:relative;width:280px;border-radius:12px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,169,110,0.1)}
 @media(max-width:480px){.card-face{width:230px}}
 
-.card-face img{width:100%;height:auto;display:block;transition:transform 0.4s}
-.card-face:hover img{transform:scale(1.02)}
+.card-face img{width:100%;height:auto;display:block;transition:opacity 0.4s}
 
-/* 3D side effect */
+/* 3D side */
 .card-3d::before{content:'';position:absolute;top:4px;right:-8px;width:8px;height:calc(100% - 8px);background:linear-gradient(to right,#1a1a1a,#111);border-radius:0 4px 4px 0;transform:rotateY(90deg);transform-origin:right}
 .card-3d::after{content:'';position:absolute;bottom:-8px;left:4px;width:calc(100% - 8px);height:8px;background:linear-gradient(to bottom,#1a1a1a,#111);border-radius:0 0 4px 4px;transform:rotateX(90deg);transform-origin:bottom}
 
@@ -34,19 +31,24 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 .hanger{position:absolute;top:-30px;left:50%;transform:translateX(-50%);z-index:2}
 .hanger svg{width:120px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}
 
-/* Gold ring glow */
+/* Color overlay on clothing */
+.color-overlay{position:absolute;inset:0;border-radius:12px;pointer-events:none;transition:all 0.3s}
+
 .glow{position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.06),transparent 60%);pointer-events:none}
 
-/* Color tint overlay */
-.tint{position:absolute;inset:0;background:#fff;mix-blend-mode:multiply;opacity:0;transition:opacity 0.3s;pointer-events:none;border-radius:12px}
-
-/* Floor reflection */
-.reflection{position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleY(-1);width:280px;height:120px;background:linear-gradient(to top,rgba(255,255,255,0.02),transparent);opacity:0.3;filter:blur(2px);pointer-events:none;border-radius:12px;overflow:hidden}
+.reflection{position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleY(-1);width:280px;height:100px;opacity:0.15;filter:blur(3px);pointer-events:none;border-radius:12px;overflow:hidden}
+.reflection img{width:100%;height:auto;display:block}
 @media(max-width:480px){.reflection{width:230px}}
 
 .hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(255,255,255,0.2)}
 
-/* === SIDEBAR === */
+/* Front/Back tabs */
+.img-tabs{position:absolute;top:16px;right:16px;display:flex;gap:6px;z-index:5}
+.img-tab{padding:6px 14px;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);border:1px solid #333;border-radius:20px;color:#888;cursor:pointer;font-family:inherit;font-size:12px;transition:all 0.2s}
+.img-tab:hover{color:#eee}
+.img-tab.on{background:rgba(201,169,110,0.2);border-color:#c9a96e;color:#c9a96e}
+
+/* Sidebar */
 .sidebar{background:#111;border-right:1px solid #222;display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 48px)}
 @media(max-width:800px){.sidebar{max-height:none;border-right:none;border-top:1px solid #222}}
 
@@ -88,12 +90,10 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 </div>
 
 <div class="page">
-<!-- 3D Display -->
 <div class="display" id="display">
 <div class="glow"></div>
 
 <div class="card-3d" id="card3d">
-<!-- Hanger -->
 <div class="hanger">
 <svg viewBox="0 0 120 40" fill="none">
 <path d="M60 5 L60 15" stroke="#c9a96e" stroke-width="2.5"/>
@@ -103,20 +103,27 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 </svg>
 </div>
 
-<!-- Product image -->
-<div class="card-face">
+<div class="card-face" id="cardFace">
 {% if product.image %}
-<img src="{{ product.image }}" alt="{{ product.name }}" id="productImg">
-<div class="tint" id="tint"></div>
-{% else %}
-<div style="width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#222,#111);display:flex;align-items:center;justify-content:center;color:#555;font-size:14px;border-radius:12px">عکس محصول</div>
+<img src="{{ product.image }}" alt="{{ product.name }}" id="frontImg">
 {% endif %}
+{% if product.image_back %}
+<img src="{{ product.image_back }}" alt="{{ product.name }} پشت" id="backImg" style="display:none;position:absolute;inset:0">
+{% endif %}
+<div class="color-overlay" id="colorOverlay"></div>
 </div>
 
-<!-- Reflection -->
+<!-- Front/Back tabs -->
+{% if product.image_back %}
+<div class="img-tabs">
+<button class="img-tab on" onclick="showFront(this)">جلو</button>
+<button class="img-tab" onclick="showBack(this)">پشت</button>
+</div>
+{% endif %}
+
 <div class="reflection">
 {% if product.image %}
-<img src="{{ product.image }}" alt="" style="width:100%;height:auto;display:block;opacity:0.15">
+<img src="{{ product.image }}" alt="">
 {% endif %}
 </div>
 </div>
@@ -131,19 +138,22 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 <div class="price">{{ "{:,}".format(product.price) }} تومان</div>
 </div>
 <div class="sb-bd">
+<!-- Color -->
 <div class="grp">
 <div class="grp-l">🎨 رنگ لباس</div>
 <div class="row">
-<button class="cb on" style="background:#fff" onclick="setColor(this)"></button>
-<button class="cb" style="background:#111;border-color:#444" onclick="setColor(this)"></button>
-<button class="cb" style="background:#FFB6C1" onclick="setColor(this)"></button>
-<button class="cb" style="background:#c9a96e" onclick="setColor(this)"></button>
-<button class="cb" style="background:#8B0000" onclick="setColor(this)"></button>
-<button class="cb" style="background:#4A6741" onclick="setColor(this)"></button>
-<button class="cb" style="background:#1B3A5C" onclick="setColor(this)"></button>
-<button class="cb" style="background:#F5E6D3" onclick="setColor(this)"></button>
+<button class="cb on" style="background:#fff" data-color="#ffffff" onclick="setColor(this)"></button>
+<button class="cb" style="background:#111;border-color:#444" data-color="#1a1a1a" onclick="setColor(this)"></button>
+<button class="cb" style="background:#FFB6C1" data-color="#FFB6C1" onclick="setColor(this)"></button>
+<button class="cb" style="background:#c9a96e" data-color="#c9a96e" onclick="setColor(this)"></button>
+<button class="cb" style="background:#8B0000" data-color="#8B0000" onclick="setColor(this)"></button>
+<button class="cb" style="background:#4A6741" data-color="#4A6741" onclick="setColor(this)"></button>
+<button class="cb" style="background:#1B3A5C" data-color="#1B3A5C" onclick="setColor(this)"></button>
+<button class="cb" style="background:#F5E6D3" data-color="#F5E6D3" onclick="setColor(this)"></button>
 </div>
 </div>
+
+<!-- View -->
 <div class="grp">
 <div class="grp-l">👁️ نمای لباس</div>
 <div class="row">
@@ -152,6 +162,8 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 <button class="vb" onclick="setView('back',this)">پشت</button>
 </div>
 </div>
+
+<!-- Size -->
 <div class="grp">
 <div class="grp-l">📐 سایز</div>
 <div class="row">
@@ -174,17 +186,37 @@ var curSize='{{ sizes[0] if sizes else "36" }}';
 function setColor(el){
     document.querySelectorAll('.cb').forEach(b=>b.classList.remove('on'));
     el.classList.add('on');
-    var t=document.getElementById('tint');
-    if(t){t.style.background=getComputedStyle(el).background;t.style.opacity='0.25'}
+    var color=el.getAttribute('data-color');
+    var overlay=document.getElementById('colorOverlay');
+    overlay.style.background=color;
+    overlay.style.mixBlendMode='multiply';
+    overlay.style.opacity='0.35';
+}
+
+function showFront(el){
+    document.querySelectorAll('.img-tab').forEach(b=>b.classList.remove('on'));
+    el.classList.add('on');
+    var f=document.getElementById('frontImg');
+    var b=document.getElementById('backImg');
+    if(f)f.style.display='block';
+    if(b)b.style.display='none';
+}
+function showBack(el){
+    document.querySelectorAll('.img-tab').forEach(b=>b.classList.remove('on'));
+    el.classList.add('on');
+    var f=document.getElementById('frontImg');
+    var b=document.getElementById('backImg');
+    if(f)f.style.display='none';
+    if(b)b.style.display='block';
 }
 
 function setView(v,el){
     document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
     el.classList.add('on');
     var c=document.getElementById('card3d');
-    if(v==='front')c.style.transform='rotateY(0) rotateX(0)';
-    else if(v==='side')c.style.transform='rotateY(25deg) rotateX(2deg)';
-    else c.style.transform='rotateY(180deg) rotateX(0)';
+    if(v==='front')c.style.transform='rotateY(0)';
+    else if(v==='side')c.style.transform='rotateY(25deg)';
+    else c.style.transform='rotateY(180deg)';
 }
 
 function setSize(s,el){
@@ -206,19 +238,12 @@ function addToCart(){
 
 // 3D drag rotation
 var d=document.getElementById('display'),c=document.getElementById('card3d');
-var drag=false,sx=0,rotY=0,rotX=0;
+var drag=false,sx=0,rot=0;
 d.addEventListener('mousedown',e=>{drag=true;sx=e.clientX});
-document.addEventListener('mousemove',e=>{
-    if(!drag)return;
-    rotY+=(e.clientX-sx)*0.25;
-    rotY=Math.max(-30,Math.min(30,rotY));
-    rotX=Math.max(-8,Math.min(8,rotY*0.1));
-    c.style.transform='rotateY('+rotY+'deg) rotateX('+(-rotX)+'deg)';
-    sx=e.clientX;
-});
+document.addEventListener('mousemove',e=>{if(!drag)return;rot+=(e.clientX-sx)*0.25;rot=Math.max(-30,Math.min(30,rot));c.style.transform='rotateY('+rot+'deg)';sx=e.clientX});
 document.addEventListener('mouseup',()=>{drag=false});
 d.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true});
-d.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();rotY+=(e.touches[0].clientX-sx)*0.25;rotY=Math.max(-30,Math.min(30,rotY));rotX=Math.max(-8,Math.min(8,rotY*0.1));c.style.transform='rotateY('+rotY+'deg) rotateX('+(-rotX)+'deg)';sx=e.touches[0].clientX},{passive:false});
+d.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();rot+=(e.touches[0].clientX-sx)*0.25;rot=Math.max(-30,Math.min(30,rot));c.style.transform='rotateY('+rot+'deg)';sx=e.touches[0].clientX},{passive:false});
 d.addEventListener('touchend',()=>{drag=false});
 </script>
 </body></html>
