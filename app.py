@@ -1122,6 +1122,47 @@ with app.app_context():
         init_db()
         print('[SEED] Database was empty - seeded with sample data')
 
+
+@app.route('/admin/download-images')
+@admin_required
+def download_images():
+    """Download product images and store as base64 so they work in Iran"""
+    import urllib.request
+    import base64 as b64
+    db = get_db()
+    
+    image_urls = {
+        1: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop',
+        2: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop',
+        3: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=800&fit=crop',
+        4: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=600&h=800&fit=crop',
+        5: 'https://images.unsplash.com/photo-1583846783214-0a5e3c8a8f8c?w=600&h=800&fit=crop',
+        6: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&h=800&fit=crop',
+        7: 'https://images.unsplash.com/photo-1434389677669-e08b4cda3a43?w=600&h=800&fit=crop',
+        8: 'https://images.unsplash.com/photo-1596783074918-c44d8a39e0d2?w=600&h=800&fit=crop',
+        9: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=800&fit=crop',
+        10: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&h=800&fit=crop',
+    }
+    
+    downloaded = 0
+    errors = 0
+    for pid, url in image_urls.items():
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = resp.read()
+                ext = 'jpeg'
+                b64_str = 'data:image/' + ext + ';base64,' + b64.b64encode(data).decode('utf-8')
+                db.execute('UPDATE products SET image = ? WHERE id = ?', (b64_str, pid))
+                downloaded += 1
+        except Exception as e:
+            errors += 1
+    
+    db.commit()
+    flash(f'{downloaded} عکس دانلود شد، {errors} خطا ✓', 'success')
+    return redirect(url_for('admin_products'))
+
+
 # ==================== MAIN ====================
 import os
 
