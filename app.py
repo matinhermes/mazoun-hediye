@@ -160,16 +160,16 @@ def init_db():
     
     # Insert sample products
     products = [
-        ('شومیز سفید ابریشمی', 'شومیز زنانه ابریشمی با کیفیت بالا و طراحی شیک', 450000, 580000, 1, 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop', '36,38,40,42,44,46', 'سفید', 50, 22, 1, 4.5, 23),
-        ('مانتو کلاسیک مشکی', 'مانتو زنانه کلاسیک مناسب استفاده روزمره', 890000, 1100000, 2, 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop', '36,38,40,42,44,46', 'مشکی', 30, 19, 1, 4.8, 45),
-        ('ست مجلسی طلایی', 'ست مجلسی زنانه با طراحی خاص و شیک', 1200000, 1500000, 3, 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=800&fit=crop', '36,38,40,42', 'طلایی', 20, 20, 1, 4.9, 67),
-        ('شلوار مام استایل جین', 'شلوار جین زنانه مام استایل با کیفیت بالا', 380000, 450000, 4, 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=600&h=800&fit=crop', '36,38,40,42,44,46', 'آبی', 40, 16, 0, 4.3, 18),
-        ('شومیز گلدار صورتی', 'شومیز زنانه گلدار با رنگ صورتی زیبا', 320000, 400000, 1, 'https://images.unsplash.com/photo-1583846783214-0a5e3c8a8f8c?w=600&h=800&fit=crop', '36,38,40,42', 'صورتی', 35, 20, 0, 4.6, 31),
-        ('مانتو اسپرت سبز', 'مانتو زنانه اسپرت مناسب استفاده روزمره', 750000, 950000, 2, 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&h=800&fit=crop', '38,40,42,44,46', 'سبز', 25, 21, 0, 4.4, 28),
-        ('ست راحتی خانگی', 'ست راحتی زنانه مناسب استفاده در منزل', 290000, 350000, 3, 'https://images.unsplash.com/photo-1434389677669-e08b4cda3a43?w=600&h=800&fit=crop', '36,38,40,42,44,46', 'نارنجی', 60, 17, 0, 4.2, 15),
-        ('شومیز حریر مشکی', 'شومیز زنانه حریر با طراحی مجلسی', 410000, 520000, 1, 'https://images.unsplash.com/photo-1596783074918-c44d8a39e0d2?w=600&h=800&fit=crop', '36,38,40,42', 'مشکی', 30, 21, 1, 4.7, 38),
-        ('مانتو مجلسی سفید', 'مانتو زنانه مجلسی با طراحی شیک و خاص', 980000, 1250000, 2, 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=800&fit=crop', '36,38,40,42', 'سفید', 15, 22, 1, 4.9, 52),
-        ('شلوار کتان کرم', 'شلوار زنانه کتان با رنگ کرم زیبا', 350000, 420000, 4, 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&h=800&fit=crop', '38,40,42,44,46', 'کرم', 45, 17, 0, 4.1, 12),
+        ('شومیز سفید ابریشمی', 'شومیز زنانه ابریشمی با کیفیت بالا و طراحی شیک', 450000, 580000, 1, '/static/images/products/1.jpg', '36,38,40,42,44,46', 'سفید', 50, 22, 1, 4.5, 23),
+        ('مانتو کلاسیک مشکی', 'مانتو زنانه کلاسیک مناسب استفاده روزمره', 890000, 1100000, 2, '/static/images/products/2.jpg', '36,38,40,42,44,46', 'مشکی', 30, 19, 1, 4.8, 45),
+        ('ست مجلسی طلایی', 'ست مجلسی زنانه با طراحی خاص و شیک', 1200000, 1500000, 3, '/static/images/products/3.jpg', '36,38,40,42', 'طلایی', 20, 20, 1, 4.9, 67),
+        ('شلوار مام استایل جین', 'شلوار جین زنانه مام استایل با کیفیت بالا', 380000, 450000, 4, '/static/images/products/4.jpg', '36,38,40,42,44,46', 'آبی', 40, 16, 0, 4.3, 18),
+        ('شومیز گلدار صورتی', 'شومیز زنانه گلدار با رنگ صورتی زیبا', 320000, 400000, 1, '/static/images/products/5.jpg', '36,38,40,42', 'صورتی', 35, 20, 0, 4.6, 31),
+        ('مانتو اسپرت سبز', 'مانتو زنانه اسپرت مناسب استفاده روزمره', 750000, 950000, 2, '/static/images/products/6.jpg', '38,40,42,44,46', 'سبز', 25, 21, 0, 4.4, 28),
+        ('ست راحتی خانگی', 'ست راحتی زنانه مناسب استفاده در منزل', 290000, 350000, 3, '/static/images/products/7.jpg', '36,38,40,42,44,46', 'نارنجی', 60, 17, 0, 4.2, 15),
+        ('شومیز حریر مشکی', 'شومیز زنانه حریر با طراحی مجلسی', 410000, 520000, 1, '/static/images/products/8.jpg', '36,38,40,42', 'مشکی', 30, 21, 1, 4.7, 38),
+        ('مانتو مجلسی سفید', 'مانتو زنانه مجلسی با طراحی شیک و خاص', 980000, 1250000, 2, '/static/images/products/9.jpg', '36,38,40,42', 'سفید', 15, 22, 1, 4.9, 52),
+        ('شلوار کتان کرم', 'شلوار زنانه کتان با رنگ کرم زیبا', 350000, 420000, 4, '/static/images/products/10.jpg', '38,40,42,44,46', 'کرم', 45, 17, 0, 4.1, 12),
     ]
     
     for p in products:
@@ -1132,16 +1132,16 @@ def download_images():
     db = get_db()
     
     image_urls = {
-        1: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop',
-        2: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop',
-        3: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=800&fit=crop',
-        4: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=600&h=800&fit=crop',
-        5: 'https://images.unsplash.com/photo-1583846783214-0a5e3c8a8f8c?w=600&h=800&fit=crop',
-        6: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&h=800&fit=crop',
-        7: 'https://images.unsplash.com/photo-1434389677669-e08b4cda3a43?w=600&h=800&fit=crop',
-        8: 'https://images.unsplash.com/photo-1596783074918-c44d8a39e0d2?w=600&h=800&fit=crop',
-        9: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=800&fit=crop',
-        10: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&h=800&fit=crop',
+        1: '/static/images/products/1.jpg',
+        2: '/static/images/products/2.jpg',
+        3: '/static/images/products/3.jpg',
+        4: '/static/images/products/4.jpg',
+        5: '/static/images/products/5.jpg',
+        6: '/static/images/products/6.jpg',
+        7: '/static/images/products/7.jpg',
+        8: '/static/images/products/8.jpg',
+        9: '/static/images/products/9.jpg',
+        10: '/static/images/products/10.jpg',
     }
     
     downloaded = 0
@@ -1186,16 +1186,16 @@ def setup_demo_images():
     """Setup demo images for products - run once"""
     db = get_db()
     demo_images = {
-        1: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop',
-        2: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&h=800&fit=crop',
-        3: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=600&h=800&fit=crop',
-        4: 'https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=600&h=800&fit=crop',
-        5: 'https://images.unsplash.com/photo-1583846783214-0a5e3c8a8f8c?w=600&h=800&fit=crop',
-        6: 'https://images.unsplash.com/photo-1551803091-e20673f15770?w=600&h=800&fit=crop',
-        7: 'https://images.unsplash.com/photo-1434389677669-e08b4cda3a43?w=600&h=800&fit=crop',
-        8: 'https://images.unsplash.com/photo-1596783074918-c44d8a39e0d2?w=600&h=800&fit=crop',
-        9: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&h=800&fit=crop',
-        10: 'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&h=800&fit=crop',
+        1: '/static/images/products/1.jpg',
+        2: '/static/images/products/2.jpg',
+        3: '/static/images/products/3.jpg',
+        4: '/static/images/products/4.jpg',
+        5: '/static/images/products/5.jpg',
+        6: '/static/images/products/6.jpg',
+        7: '/static/images/products/7.jpg',
+        8: '/static/images/products/8.jpg',
+        9: '/static/images/products/9.jpg',
+        10: '/static/images/products/10.jpg',
     }
     
     for pid, url in demo_images.items():
