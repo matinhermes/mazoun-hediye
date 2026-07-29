@@ -367,7 +367,7 @@ def cart():
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
     shipping = int(settings.get('shipping_cost', 30000))
-    free_min = int(settings.get('free_shipping_min', 500000))
+    free_min = int(settings.get('free_shipping_min', 10000000))
     
     if total >= free_min:
         shipping = 0
@@ -456,7 +456,7 @@ def checkout():
             })
     
     shipping = int(settings.get('shipping_cost', 30000))
-    free_min = int(settings.get('free_shipping_min', 500000))
+    free_min = int(settings.get('free_shipping_min', 10000000))
     if total >= free_min:
         shipping = 0
     
@@ -487,7 +487,7 @@ def checkout_confirm():
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
     shipping = int(settings.get('shipping_cost', 30000))
-    free_min = int(settings.get('free_shipping_min', 500000))
+    free_min = int(settings.get('free_shipping_min', 10000000))
     if total >= free_min:
         shipping = 0
     

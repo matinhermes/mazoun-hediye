@@ -1,481 +1,480 @@
-<!DOCTYPE html><html lang="fa" dir="rtl"><head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تماس با ما | {{ settings.get('shop_name', 'مزون هدیه') }}</title>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#ffffff;--bg2:#f5f5f5;--card:#ffffff;--border:#e5e5e5;--text:#1a1a1a;--text2:#666;--gold:#c9a96e;--rose:#b76e79;--primary:#c9a96e;--danger:#e53935;--success:#43a047;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08)}
-[data-theme="dark"]{--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--border:#2a2a2a;--text:#e8e8e8;--text2:#999;--shadow:0 2px 12px rgba(0,0,0,0.3)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);transition:background 0.3s,color 0.3s}
-a{color:inherit;text-decoration:none}
-.container{max-width:1200px;margin:0 auto;padding:0 16px}
-
-/* === TOP BAR === */
-.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:8px 0;font-size:12px;color:var(--text2)}
-.topbar .container{display:flex;align-items:center;justify-content:space-between}
-.topbar-links{display:flex;gap:16px}
-.topbar-links a{color:var(--text2);transition:color 0.2s}
-.topbar-links a:hover{color:var(--gold)}
-
-/* === HEADER === */
-.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
-.header .container{display:flex;align-items:center;gap:20px}
-.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo img{height:40px;border-radius:50%}
-.logo-text{font-size:18px;font-weight:700;color:var(--gold)}
-.search{flex:1;position:relative;max-width:500px}
-.search input{width:100%;padding:10px 44px 10px 16px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;transition:border 0.2s}
-.search input:focus{outline:none;border-color:var(--gold)}
-.search button{position:absolute;left:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:var(--gold);border:none;border-radius:8px;color:#fff;font-size:16px;cursor:pointer}
-.header-icons{display:flex;gap:12px;align-items:center}
-.header-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg2);color:var(--text);font-size:18px;transition:all 0.2s;position:relative;cursor:pointer}
-.header-icon:hover{background:var(--gold);color:#fff}
-.cart-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--danger);color:#fff;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
-
-/* === NAV === */
-.nav{background:var(--card);border-bottom:1px solid var(--border)}
-.nav .container{display:flex;align-items:center;gap:0;overflow-x:auto}
-.nav a{padding:12px 16px;font-size:13px;font-weight:500;color:var(--text2);white-space:nowrap;transition:all 0.2s;border-bottom:2px solid transparent}
-.nav a:hover,.nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
-
-/* === PAGE HERO === */
-.page-hero{padding:48px 0 32px;text-align:center;background:linear-gradient(135deg,var(--bg2),var(--bg))}
-.page-hero h1{font-size:32px;font-weight:800;margin-bottom:12px}
-.page-hero h1 span{color:var(--gold)}
-.page-hero p{font-size:15px;color:var(--text2);max-width:600px;margin:0 auto;line-height:1.8}
-.breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--text2);margin-bottom:16px}
-.breadcrumb a{color:var(--gold);transition:color 0.2s}
-.breadcrumb a:hover{color:var(--rose)}
-
-/* === CONTACT MAIN === */
-.contact-main{padding:48px 0}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
-
-/* === CONTACT FORM === */
-.contact-form-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px}
-.contact-form-wrap h2{font-size:20px;font-weight:700;margin-bottom:24px}
-.contact-form-wrap h2 span{color:var(--gold)}
-.form-group{margin-bottom:20px}
-.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
-.form-group label .required{color:var(--rose);margin-right:2px}
-.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;transition:border 0.2s;direction:rtl}
-.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--gold)}
-.form-group textarea{resize:vertical;min-height:120px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.btn-submit{width:100%;padding:14px;background:var(--gold);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.3s}
-.btn-submit:hover{background:#b8956a;transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,169,110,0.3)}
-.btn-submit:active{transform:translateY(0)}
-.form-note{font-size:12px;color:var(--text2);margin-top:12px;line-height:1.8}
-
-/* === CONTACT INFO === */
-.contact-info-wrap{display:flex;flex-direction:column;gap:20px}
-.info-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all 0.3s}
-.info-card:hover{border-color:var(--gold);box-shadow:var(--shadow)}
-.info-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
-.info-card-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,rgba(201,169,110,0.15),rgba(183,110,121,0.15));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.info-card-title{font-size:15px;font-weight:700}
-.info-card-content{font-size:14px;color:var(--text2);line-height:1.8}
-.info-card-content a{color:var(--gold);transition:color 0.2s}
-.info-card-content a:hover{color:var(--rose)}
-.info-card-content a.dir-ltr{direction:ltr;display:inline-block}
-
-/* === SOCIAL CONNECT === */
-.social-section{padding:48px 0;background:var(--bg2)}
-.social-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center}
-.social-box h3{font-size:20px;font-weight:700;margin-bottom:8px}
-.social-box h3 span{color:var(--gold)}
-.social-box p{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.8}
-.social-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
-.social-link{display:flex;align-items:center;gap:10px;padding:14px 28px;border-radius:var(--radius);font-weight:600;font-size:14px;transition:all 0.3s;text-decoration:none}
-.social-link-instagram{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff}
-.social-link-instagram:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(131,58,180,0.3)}
-.social-link-telegram{background:#0088cc;color:#fff}
-.social-link-telegram:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,136,204,0.3)}
-.social-link-phone{background:var(--gold);color:#fff}
-.social-link-phone:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(201,169,110,0.3)}
-
-/* === MAP === */
-.map-section{padding:0 0 48px}
-.map-wrapper{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);position:relative;height:300px;background:var(--card)}
-.map-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),var(--card));gap:12px}
-.map-placeholder .map-icon{font-size:48px;opacity:0.6}
-.map-placeholder .map-text{font-size:14px;color:var(--text2);line-height:1.8}
-.map-placeholder .map-address{font-size:13px;color:var(--gold);font-weight:600}
-
-/* === FAQ === */
-.faq-section{padding:48px 0}
-.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.faq-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color 0.3s}
-.faq-item:hover{border-color:var(--gold)}
-.faq-question{padding:16px 20px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
-.faq-question::after{content:'▾';color:var(--gold);transition:transform 0.3s}
-.faq-answer{padding:0 20px 16px;font-size:13px;color:var(--text2);line-height:1.8;display:none}
-
-/* === FOOTER === */
-.footer{background:var(--card);border-top:1px solid var(--border);margin-top:32px;padding:32px 0}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
-.footer-title{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:12px}
-.footer-links{list-style:none}
-.footer-links li{margin-bottom:8px}
-.footer-links a{font-size:13px;color:var(--text2);transition:color 0.2s}
-.footer-links a:hover{color:var(--gold)}
-.footer-social{display:flex;gap:12px;margin-top:12px}
-.footer-social a{width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
-.footer-social a:hover{background:var(--gold);color:#fff}
-.footer-bottom{border-top:1px solid var(--border);margin-top:24px;padding-top:16px;text-align:center;font-size:12px;color:var(--text2)}
-
-/* === THEME TOGGLE === */
-.theme-toggle{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg2);border:none;color:var(--text);font-size:18px;cursor:pointer;transition:all 0.2s}
-.theme-toggle:hover{background:var(--gold);color:#fff}
-
-/* === MOBILE NAV === */
-.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0;z-index:100}
-.mobile-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--text2);padding:4px 12px}
-.mobile-nav a.active{color:var(--gold)}
-.mobile-nav a .icon{font-size:20px}
-
-/* === SCROLL TOP === */
-.scroll-top{position:fixed;bottom:80px;left:20px;width:44px;height:44px;background:var(--gold);color:#fff;border:none;border-radius:50%;font-size:20px;cursor:pointer;display:none;z-index:99;box-shadow:0 4px 12px rgba(201,169,110,0.4);transition:all 0.2s}
-.scroll-top:hover{transform:scale(1.1)}
-
-/* === TOAST === */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#43a047;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;font-family:Vazirmatn;display:none}
-
-/* === RESPONSIVE === */
-@media(max-width:768px){
-  .mobile-nav{display:flex;justify-content:space-around}
-  .page-hero h1{font-size:24px}
-  .contact-grid{grid-template-columns:1fr;gap:24px}
-  .form-row{grid-template-columns:1fr}
-  .faq-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr 1fr}
-  .scroll-top{bottom:80px}
-  .social-links{flex-direction:column;align-items:center}
-}
-@media(max-width:480px){
-  .footer-grid{grid-template-columns:1fr}
-  .contact-form-wrap{padding:20px}
-}
-@media(min-width:769px){.scroll-top{bottom:20px}}
-</style>
-</head>
-<body>
-
-<!-- Top Bar -->
-<div class="topbar">
-<div class="container">
-<div class="topbar-links">
-<a href="/products">همه محصولات</a>
-<a href="/about">درباره ما</a>
-<a href="/contact">تماس با ما</a>
-</div>
-<div style="display:flex;align-items:center;gap:12px">
-<span>📞 ۰۹۱۰۰۵۹۹۸۰۵</span>
-<button class="theme-toggle" onclick="toggleTheme()" title="حالت روز/شب">🌙</button>
-</div>
-</div>
-</div>
-
-<!-- Header -->
-<div class="header">
-<div class="container">
-<a href="/" class="logo">
-<img src="/static/images/logo.jpg" alt="مزون هدیه">
-<div class="logo-text">مزون <span style="font-weight:400;font-size:14px">هدیه</span></div>
-</a>
-<div class="search">
-<input type="text" placeholder="جستجو در محصولات..." id="searchInput">
-<button onclick="doSearch()">🔍</button>
-</div>
-<div class="header-icons">
-<a href="/profile" class="header-icon" title="حساب کاربری">👤</a>
-<a href="/cart" class="header-icon" title="سبد خرید">
-🛒
-<span class="cart-badge" id="cartCount" style="display:none">0</span>
-</a>
-</div>
-</div>
-</div>
-
-<!-- Nav -->
-<div class="nav">
-<div class="container">
-<a href="/">خانه</a>
-<a href="/products">همه محصولات</a>
-<a href="/about">درباره ما</a>
-<a href="/contact" class="active">تماس با ما</a>
-</div>
-</div>
-
-<!-- Page Hero -->
-<div class="page-hero">
-<div class="container">
-<div class="breadcrumb">
-<a href="/">خانه</a>
-<span>›</span>
-<span>تماس با ما</span>
-</div>
-<h1>تماس با <span>مزون هدیه</span></h1>
-<p>ما همیشه آماده شنیدن صدای شما هستیم. برای هرگونه سؤال، پیشنهاد یا مشکل، با ما در تماس باشید.</p>
-</div>
-</div>
-
-<!-- Contact Form + Info -->
-<div class="contact-main">
-<div class="container">
-<div class="contact-grid">
-
-<!-- Contact Form -->
-<div class="contact-form-wrap">
-<h2>📬 پیام <span>برای ما</span></h2>
-<form id="contactForm" onsubmit="submitContact(event)">
-<div class="form-row">
-<div class="form-group">
-<label><span class="required">*</span>نام و نام خانوادگی</label>
-<input type="text" name="name" placeholder="مثال: سارا محمدی" required>
-</div>
-<div class="form-group">
-<label><span class="required">*</span>شماره تماس</label>
-<input type="tel" name="phone" placeholder="۰۹۱۲XXXXXXX" required dir="ltr">
-</div>
-</div>
-<div class="form-group">
-<label>ایمیل</label>
-<input type="email" name="email" placeholder="example@email.com" dir="ltr">
-</div>
-<div class="form-group">
-<label>موضوع</label>
-<select name="subject">
-<option value="">انتخاب کنید...</option>
-<option value="سفارش">سؤال درباره سفارش</option>
-<option value="محصول">سؤال درباره محصول</option>
-<option value="تعویض">درخواست تعویض</option>
-<option value="همکاری">پیشنهاد همکاری</option>
-<option value="شکایت">شکایت یا انتقاد</option>
-<option value="سایر">سایر</option>
-</select>
-</div>
-<div class="form-group">
-<label><span class="required">*</span>پیام شما</label>
-<textarea name="message" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
-</div>
-<button type="submit" class="btn-submit" id="submitBtn">✉️ ارسال پیام</button>
-<div class="form-note">فیلدهای ستاره‌دار الزامی هستند. پاسخ شما ظرف ۲۴ ساعت ارسال خواهد شد.</div>
-</form>
-</div>
-
-<!-- Contact Info -->
-<div class="contact-info-wrap">
-
-<div class="info-card">
-<div class="info-card-header">
-<div class="info-card-icon">📞</div>
-<div class="info-card-title">تلفن تماس</div>
-</div>
-<div class="info-card-content">
-<p>با ما تماس بگیرید، کارشناسان ما آماده پاسخگویی هستند</p>
-<p style="margin-top:8px"><a href="tel:09100599805" class="dir-ltr">۰۹۱۰-۰۵۹-۹۸۰۵</a></p>
-<p style="font-size:12px;color:var(--text2);margin-top:4px">شنبه تا پنجشنبه | ساعت ۹ الی ۲۱</p>
-</div>
-</div>
-
-<div class="info-card">
-<div class="info-card-header">
-<div class="info-card-icon">📧</div>
-
-
-</div>
-</div>
-</div>
-
-<!-- Social Connect -->
-<div class="social-section">
-<div class="container">
-<div class="social-box">
-<h3>ما را <span>دنبال کنید</span></h3>
-<p>برای اطلاع از جدیدترین محصولات، تخفیف‌ها و محتوای جذاب مد، ما را در شبکه‌های اجتماعی دنبال کنید</p>
-<div class="social-links">
-<a href="https://instagram.com/mezonehediye.qom" target="_blank" class="social-link social-link-instagram">📷 اینستاگرام</a>
-<a href="https://t.me/mezonehediye" target="_blank" class="social-link social-link-telegram">✈️ تلگرام</a>
-<a href="tel:09100599805" class="social-link social-link-phone">📞 تماس تلفنی</a>
-</div>
-</div>
-</div>
-</div>
-
-<!-- Map -->
-<div class="map-section">
-<div class="container">
-<div class="map-wrapper">
-<div class="map-placeholder">
-<div class="map-icon">🗺️</div>
-<div class="map-text">فروشگاه آنلاین مزون هدیه</div>
-<div class="map-address">📍 قم، ایران — ارسال به سراسر کشور</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- FAQ -->
-<div class="faq-section">
-<div class="container">
-<div class="section-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)">
-<div class="section-title" style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px">❓ <span style="color:var(--gold)">سوالات متداول</span></div>
-</div>
-<div class="faq-grid">
-<div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">چقدر طول می‌کشد تا سفارش من برسد؟</div>
-<div class="faq-answer">ارسال سفارشات در تهران و قم ۱ تا ۲ روز کاری و در سایر شهرها ۲ تا ۴ روز کاری زمان می‌برد.</div>
-</div>
-<div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">آیا امکان تعویض محصول وجود دارد؟</div>
-<div class="faq-answer">بله، تا ۷ روز پس از دریافت محصول، امکان تعویض با شرط سالم بودن و عدم استفاده وجود دارد.</div>
-</div>
-<div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">نحوه پرداخت چگونه است؟</div>
-<div class="faq-answer">شما می‌توانید از طریق درگاه بانکی امن، کارت به کارت یا پرداخت درب منزل (برای سفارشات بالای ۵۰۰ هزار تومان) اقدام کنید.</div>
-</div>
-<div class="faq-item">
-<div class="faq-question" onclick="toggleFaq(this)">آیا ارسال رایگان دارید؟</div>
-<div class="faq-answer">بله، برای خریدهای بالای ۵۰۰ هزار تومان، ارسال رایگان خواهد بود. هزینه ارسال برای سفارشات کمتر ۳۰,۰۰۰ تومان است.</div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- Footer -->
-<div class="footer">
-<div class="container">
-<div class="footer-grid">
-<div>
-<div class="footer-title">مزون هدیه</div>
-<p style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px">فروشگاه آنلاین مد و پوشاک زنانه با بهترین کیفیت و قیمت مناسب</p>
-<div class="footer-social">
-<a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام">📷</a>
-<a href="https://t.me/mezonehediye" title="تلگرام">✈️</a>
-<a href="tel:09100599805" title="تماس">📞</a>
-</div>
-</div>
-<div>
-<div class="footer-title">دسترسی سریع</div>
-<ul class="footer-links">
-<li><a href="/">خانه</a></li>
-<li><a href="/products">محصولات</a></li>
-<li><a href="/cart">سبد خرید</a></li>
-<li><a href="/profile">حساب کاربری</a></li>
-</ul>
-</div>
-<div>
-<div class="footer-title">خدمات مشتریان</div>
-<ul class="footer-links">
-<li><a href="/about">درباره ما</a></li>
-<li><a href="/contact">تماس با ما</a></li>
-<li><a href="/faq">سوالات متداول</a></li>
-<li><a href="/rules">قوانین خرید</a></li>
-</ul>
-</div>
-<div>
-<div class="footer-title">اطلاعات فروشگاه</div>
-<ul class="footer-links">
-<li>📍 قم، ایران</li>
-<li>📞 ۰۹۱۰۰۵۹۹۸۰۵</li>
-<li>🕐 شنبه تا پنجشنبه</li>
-</ul>
-</div>
-</div>
-<div class="footer-bottom">
-© ۱۴۰۵ مزون هدیه — تمامی حقوق محفوظ است
-</div>
-</div>
-</div>
-
-<!-- Mobile Nav -->
-<div class="mobile-nav">
-<a href="/"><span class="icon">🏠</span>خانه</a>
-<a href="/products"><span class="icon">🛍️</span>محصولات</a>
-<a href="/cart"><span class="icon">🛒</span>سبد</a>
-<a href="/profile"><span class="icon">👤</span>پروفایل</a>
-</div>
-
-<!-- Scroll Top -->
-<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
-<!-- Toast -->
-<div class="toast" id="toast"></div>
-
-<script>
-// Theme toggle
-var theme=localStorage.getItem('theme')||'light';
-document.documentElement.setAttribute('data-theme',theme);
-updateThemeBtn();
-function toggleTheme(){
-    theme=theme==='light'?'dark':'light';
-    document.documentElement.setAttribute('data-theme',theme);
-    localStorage.setItem('theme',theme);
-    updateThemeBtn();
-}
-function updateThemeBtn(){
-    var btn=document.querySelector('.theme-toggle');
-    if(btn)btn.textContent=theme==='dark'?'☀️':'🌙';
-}
-
-// Search
-function doSearch(){
-    var q=document.getElementById('searchInput').value;
-    if(q)window.location.href='/products?q='+encodeURIComponent(q);
-}
-document.getElementById('searchInput').addEventListener('keypress',function(e){if(e.key==='Enter')doSearch()});
-
-// Scroll top
-window.addEventListener('scroll',function(){
-    var btn=document.getElementById('scrollTop');
-    if(window.scrollY>300)btn.style.display='flex';else btn.style.display='none';
-});
-
-// Contact form
-function submitContact(e){
-    e.preventDefault();
-    var form=document.getElementById('contactForm');
-    var btn=document.getElementById('submitBtn');
-    var data=new FormData(form);
-    btn.textContent='⏳ در حال ارسال...';
-    btn.disabled=true;
-    
-    fetch('/contact/submit',{
-        method:'POST',
-        body:data
-    }).then(function(r){return r.json()}).then(function(d){
-        if(d.success){
-            showToast('✅ پیام شما با موفقیت ارسال شد');
-            form.reset();
-        }else{
-            showToast('❌ خطا در ارسال پیام. لطفاً دوباره تلاش کنید');
-        }
-        btn.textContent='✉️ ارسال پیام';
-        btn.disabled=false;
-    }).catch(function(){
-        showToast('❌ خطا در ارتباط با سرور');
-        btn.textContent='✉️ ارسال پیام';
-        btn.disabled=false;
-    });
-}
-
-function showToast(msg){
-    var t=document.getElementById('toast');
-    t.textContent=msg;
-    t.style.display='block';
-    setTimeout(function(){t.style.display='none'},4000);
-}
-
-// FAQ toggle
-function toggleFaq(el){
-    var answer=el.nextElementSibling;
-    if(answer.style.display==='block'){
-        answer.style.display='none';
-    }else{
-        answer.style.display='block';
-    }
-}
-</script>
-</body>
-</html>
+1|<!DOCTYPE html><html lang="fa" dir="rtl"><head>
+2|<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+3|<title>تماس با ما | {{ settings.get('shop_name', 'مزون هدیه') }}</title>
+4|<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+5|<style>
+6|:root{--bg:#ffffff;--bg2:#f5f5f5;--card:#ffffff;--border:#e5e5e5;--text:#1a1a1a;--text2:#666;--gold:#c9a96e;--rose:#b76e79;--primary:#c9a96e;--danger:#e53935;--success:#43a047;--radius:12px;--shadow:0 2px 12px rgba(0,0,0,0.08)}
+7|[data-theme="dark"]{--bg:#0a0a0a;--bg2:#141414;--card:#1a1a1a;--border:#2a2a2a;--text:#e8e8e8;--text2:#999;--shadow:0 2px 12px rgba(0,0,0,0.3)}
+8|*{margin:0;padding:0;box-sizing:border-box}
+9|body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);transition:background 0.3s,color 0.3s}
+10|a{color:inherit;text-decoration:none}
+11|.container{max-width:1200px;margin:0 auto;padding:0 16px}
+12|
+13|/* === TOP BAR === */
+14|.topbar{background:var(--card);border-bottom:1px solid var(--border);padding:8px 0;font-size:12px;color:var(--text2)}
+15|.topbar .container{display:flex;align-items:center;justify-content:space-between}
+16|.topbar-links{display:flex;gap:16px}
+17|.topbar-links a{color:var(--text2);transition:color 0.2s}
+18|.topbar-links a:hover{color:var(--gold)}
+19|
+20|/* === HEADER === */
+21|.header{background:var(--card);border-bottom:1px solid var(--border);padding:12px 0;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+22|.header .container{display:flex;align-items:center;gap:20px}
+23|.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+24|.logo img{height:40px;border-radius:50%}
+25|.logo-text{font-size:18px;font-weight:700;color:var(--gold)}
+26|.search{flex:1;position:relative;max-width:500px}
+27|.search input{width:100%;padding:10px 44px 10px 16px;border:2px solid var(--border);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;transition:border 0.2s}
+28|.search input:focus{outline:none;border-color:var(--gold)}
+29|.search button{position:absolute;left:4px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:var(--gold);border:none;border-radius:8px;color:#fff;font-size:16px;cursor:pointer}
+30|.header-icons{display:flex;gap:12px;align-items:center}
+31|.header-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg2);color:var(--text);font-size:18px;transition:all 0.2s;position:relative;cursor:pointer}
+32|.header-icon:hover{background:var(--gold);color:#fff}
+33|.cart-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:var(--danger);color:#fff;border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+34|
+35|/* === NAV === */
+36|.nav{background:var(--card);border-bottom:1px solid var(--border)}
+37|.nav .container{display:flex;align-items:center;gap:0;overflow-x:auto}
+38|.nav a{padding:12px 16px;font-size:13px;font-weight:500;color:var(--text2);white-space:nowrap;transition:all 0.2s;border-bottom:2px solid transparent}
+39|.nav a:hover,.nav a.active{color:var(--gold);border-bottom-color:var(--gold)}
+40|
+41|/* === PAGE HERO === */
+42|.page-hero{padding:48px 0 32px;text-align:center;background:linear-gradient(135deg,var(--bg2),var(--bg))}
+43|.page-hero h1{font-size:32px;font-weight:800;margin-bottom:12px}
+44|.page-hero h1 span{color:var(--gold)}
+45|.page-hero p{font-size:15px;color:var(--text2);max-width:600px;margin:0 auto;line-height:1.8}
+46|.breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;color:var(--text2);margin-bottom:16px}
+47|.breadcrumb a{color:var(--gold);transition:color 0.2s}
+48|.breadcrumb a:hover{color:var(--rose)}
+49|
+50|/* === CONTACT MAIN === */
+51|.contact-main{padding:48px 0}
+52|.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+53|
+54|/* === CONTACT FORM === */
+55|.contact-form-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:32px}
+56|.contact-form-wrap h2{font-size:20px;font-weight:700;margin-bottom:24px}
+57|.contact-form-wrap h2 span{color:var(--gold)}
+58|.form-group{margin-bottom:20px}
+59|.form-group label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--text)}
+60|.form-group label .required{color:var(--rose);margin-right:2px}
+61|.form-group input,.form-group textarea,.form-group select{width:100%;padding:12px 16px;border:2px solid var(--border);border-radius:8px;background:var(--bg2);color:var(--text);font-family:inherit;font-size:14px;transition:border 0.2s;direction:rtl}
+62|.form-group input:focus,.form-group textarea:focus,.form-group select:focus{outline:none;border-color:var(--gold)}
+63|.form-group textarea{resize:vertical;min-height:120px}
+64|.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+65|.btn-submit{width:100%;padding:14px;background:var(--gold);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:all 0.3s}
+66|.btn-submit:hover{background:#b8956a;transform:translateY(-2px);box-shadow:0 6px 20px rgba(201,169,110,0.3)}
+67|.btn-submit:active{transform:translateY(0)}
+68|.form-note{font-size:12px;color:var(--text2);margin-top:12px;line-height:1.8}
+69|
+70|/* === CONTACT INFO === */
+71|.contact-info-wrap{display:flex;flex-direction:column;gap:20px}
+72|.info-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;transition:all 0.3s}
+73|.info-card:hover{border-color:var(--gold);box-shadow:var(--shadow)}
+74|.info-card-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+75|.info-card-icon{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,rgba(201,169,110,0.15),rgba(183,110,121,0.15));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+76|.info-card-title{font-size:15px;font-weight:700}
+77|.info-card-content{font-size:14px;color:var(--text2);line-height:1.8}
+78|.info-card-content a{color:var(--gold);transition:color 0.2s}
+79|.info-card-content a:hover{color:var(--rose)}
+80|.info-card-content a.dir-ltr{direction:ltr;display:inline-block}
+81|
+82|/* === SOCIAL CONNECT === */
+83|.social-section{padding:48px 0;background:var(--bg2)}
+84|.social-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:40px;text-align:center}
+85|.social-box h3{font-size:20px;font-weight:700;margin-bottom:8px}
+86|.social-box h3 span{color:var(--gold)}
+87|.social-box p{font-size:14px;color:var(--text2);margin-bottom:24px;line-height:1.8}
+88|.social-links{display:flex;justify-content:center;gap:16px;flex-wrap:wrap}
+89|.social-link{display:flex;align-items:center;gap:10px;padding:14px 28px;border-radius:var(--radius);font-weight:600;font-size:14px;transition:all 0.3s;text-decoration:none}
+90|.social-link-instagram{background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff}
+91|.social-link-instagram:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(131,58,180,0.3)}
+92|.social-link-telegram{background:#0088cc;color:#fff}
+93|.social-link-telegram:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,136,204,0.3)}
+94|.social-link-phone{background:var(--gold);color:#fff}
+95|.social-link-phone:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(201,169,110,0.3)}
+96|
+97|/* === MAP === */
+98|.map-section{padding:0 0 48px}
+99|.map-wrapper{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);position:relative;height:300px;background:var(--card)}
+100|.map-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--bg2),var(--card));gap:12px}
+101|.map-placeholder .map-icon{font-size:48px;opacity:0.6}
+102|.map-placeholder .map-text{font-size:14px;color:var(--text2);line-height:1.8}
+103|.map-placeholder .map-address{font-size:13px;color:var(--gold);font-weight:600}
+104|
+105|/* === FAQ === */
+106|.faq-section{padding:48px 0}
+107|.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+108|.faq-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color 0.3s}
+109|.faq-item:hover{border-color:var(--gold)}
+110|.faq-question{padding:16px 20px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+111|.faq-question::after{content:'▾';color:var(--gold);transition:transform 0.3s}
+112|.faq-answer{padding:0 20px 16px;font-size:13px;color:var(--text2);line-height:1.8;display:none}
+113|
+114|/* === FOOTER === */
+115|.footer{background:var(--card);border-top:1px solid var(--border);margin-top:32px;padding:32px 0}
+116|.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:24px}
+117|.footer-title{font-size:15px;font-weight:700;color:var(--gold);margin-bottom:12px}
+118|.footer-links{list-style:none}
+119|.footer-links li{margin-bottom:8px}
+120|.footer-links a{font-size:13px;color:var(--text2);transition:color 0.2s}
+121|.footer-links a:hover{color:var(--gold)}
+122|.footer-social{display:flex;gap:12px;margin-top:12px}
+123|.footer-social a{width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:16px;transition:all 0.2s}
+124|.footer-social a:hover{background:var(--gold);color:#fff}
+125|.footer-bottom{border-top:1px solid var(--border);margin-top:24px;padding-top:16px;text-align:center;font-size:12px;color:var(--text2)}
+126|
+127|/* === THEME TOGGLE === */
+128|.theme-toggle{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--radius);background:var(--bg2);border:none;color:var(--text);font-size:18px;cursor:pointer;transition:all 0.2s}
+129|.theme-toggle:hover{background:var(--gold);color:#fff}
+130|
+131|/* === MOBILE NAV === */
+132|.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);padding:8px 0;z-index:100}
+133|.mobile-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--text2);padding:4px 12px}
+134|.mobile-nav a.active{color:var(--gold)}
+135|.mobile-nav a .icon{font-size:20px}
+136|
+137|/* === SCROLL TOP === */
+138|.scroll-top{position:fixed;bottom:80px;left:20px;width:44px;height:44px;background:var(--gold);color:#fff;border:none;border-radius:50%;font-size:20px;cursor:pointer;display:none;z-index:99;box-shadow:0 4px 12px rgba(201,169,110,0.4);transition:all 0.2s}
+139|.scroll-top:hover{transform:scale(1.1)}
+140|
+141|/* === TOAST === */
+142|.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#43a047;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;font-family:Vazirmatn;display:none}
+143|
+144|/* === RESPONSIVE === */
+145|@media(max-width:768px){
+146|  .mobile-nav{display:flex;justify-content:space-around}
+147|  .page-hero h1{font-size:24px}
+148|  .contact-grid{grid-template-columns:1fr;gap:24px}
+149|  .form-row{grid-template-columns:1fr}
+150|  .faq-grid{grid-template-columns:1fr}
+151|  .footer-grid{grid-template-columns:1fr 1fr}
+152|  .scroll-top{bottom:80px}
+153|  .social-links{flex-direction:column;align-items:center}
+154|}
+155|@media(max-width:480px){
+156|  .footer-grid{grid-template-columns:1fr}
+157|  .contact-form-wrap{padding:20px}
+158|}
+159|@media(min-width:769px){.scroll-top{bottom:20px}}
+160|</style>
+161|</head>
+162|<body>
+163|
+164|<!-- Top Bar -->
+165|<div class="topbar">
+166|<div class="container">
+167|<div class="topbar-links">
+168|<a href="/products">همه محصولات</a>
+169|<a href="/about">درباره ما</a>
+170|<a href="/contact">تماس با ما</a>
+171|</div>
+172|<div style="display:flex;align-items:center;gap:12px">
+173|<span>📞 ۰۹۱۰۰۵۹۹۸۰۵</span>
+174|<button class="theme-toggle" onclick="toggleTheme()" title="حالت روز/شب">🌙</button>
+175|</div>
+176|</div>
+177|</div>
+178|
+179|<!-- Header -->
+180|<div class="header">
+181|<div class="container">
+182|<a href="/" class="logo">
+183|<img src="/static/images/logo.jpg" alt="مزون هدیه">
+184|<div class="logo-text">مزون <span style="font-weight:400;font-size:14px">هدیه</span></div>
+185|</a>
+186|<div class="search">
+187|<input type="text" placeholder="جستجو در محصولات..." id="searchInput">
+188|<button onclick="doSearch()">🔍</button>
+189|</div>
+190|<div class="header-icons">
+191|<a href="/profile" class="header-icon" title="حساب کاربری">👤</a>
+192|<a href="/cart" class="header-icon" title="سبد خرید">
+193|🛒
+194|<span class="cart-badge" id="cartCount" style="display:none">0</span>
+195|</a>
+196|</div>
+197|</div>
+198|</div>
+199|
+200|<!-- Nav -->
+201|<div class="nav">
+202|<div class="container">
+203|<a href="/">خانه</a>
+204|<a href="/products">همه محصولات</a>
+205|<a href="/about">درباره ما</a>
+206|<a href="/contact" class="active">تماس با ما</a>
+207|</div>
+208|</div>
+209|
+210|<!-- Page Hero -->
+211|<div class="page-hero">
+212|<div class="container">
+213|<div class="breadcrumb">
+214|<a href="/">خانه</a>
+215|<span>›</span>
+216|<span>تماس با ما</span>
+217|</div>
+218|<h1>تماس با <span>مزون هدیه</span></h1>
+219|<p>ما همیشه آماده شنیدن صدای شما هستیم. برای هرگونه سؤال، پیشنهاد یا مشکل، با ما در تماس باشید.</p>
+220|</div>
+221|</div>
+222|
+223|<!-- Contact Form + Info -->
+224|<div class="contact-main">
+225|<div class="container">
+226|<div class="contact-grid">
+227|
+228|<!-- Contact Form -->
+229|<div class="contact-form-wrap">
+230|<h2>📬 پیام <span>برای ما</span></h2>
+231|<form id="contactForm" onsubmit="submitContact(event)">
+232|<div class="form-row">
+233|<div class="form-group">
+234|<label><span class="required">*</span>نام و نام خانوادگی</label>
+235|<input type="text" name="name" placeholder="مثال: سارا محمدی" required>
+236|</div>
+237|<div class="form-group">
+238|<label><span class="required">*</span>شماره تماس</label>
+239|<input type="tel" name="phone" placeholder="۰۹۱۲XXXXXXX" required dir="ltr">
+240|</div>
+241|</div>
+242|<div class="form-group">
+243|<label>ایمیل</label>
+244|<input type="email" name="email" placeholder="example@email.com" dir="ltr">
+245|</div>
+246|<div class="form-group">
+247|<label>موضوع</label>
+248|<select name="subject">
+249|<option value="">انتخاب کنید...</option>
+250|<option value="سفارش">سؤال درباره سفارش</option>
+251|<option value="محصول">سؤال درباره محصول</option>
+252|<option value="تعویض">درخواست تعویض</option>
+253|<option value="همکاری">پیشنهاد همکاری</option>
+254|<option value="شکایت">شکایت یا انتقاد</option>
+255|<option value="سایر">سایر</option>
+256|</select>
+257|</div>
+258|<div class="form-group">
+259|<label><span class="required">*</span>پیام شما</label>
+260|<textarea name="message" placeholder="پیام خود را اینجا بنویسید..." required></textarea>
+261|</div>
+262|<button type="submit" class="btn-submit" id="submitBtn">✉️ ارسال پیام</button>
+263|<div class="form-note">فیلدهای ستاره‌دار الزامی هستند. پاسخ شما ظرف ۲۴ ساعت ارسال خواهد شد.</div>
+264|</form>
+265|</div>
+266|
+267|<!-- Contact Info -->
+268|<div class="contact-info-wrap">
+269|
+270|<div class="info-card">
+271|<div class="info-card-header">
+272|<div class="info-card-icon">📞</div>
+273|<div class="info-card-title">تلفن تماس</div>
+274|</div>
+275|<div class="info-card-content">
+276|<p>با ما تماس بگیرید، کارشناسان ما آماده پاسخگویی هستند</p>
+277|<p style="margin-top:8px"><a href="tel:09100599805" class="dir-ltr">۰۹۱۰-۰۵۹-۹۸۰۵</a></p>
+278|<p style="font-size:12px;color:var(--text2);margin-top:4px">همه روزه | ساعت ۴ الی ۱۱</p>
+279|</div>
+280|</div>
+281|
+282|<div class="info-card">
+283|<div class="info-card-header">
+284|<div class="info-card-icon">📧</div>
+285|
+286|
+287|</div>
+288|</div>
+289|</div>
+290|
+291|<!-- Social Connect -->
+292|<div class="social-section">
+293|<div class="container">
+294|<div class="social-box">
+295|<h3>ما را <span>دنبال کنید</span></h3>
+296|<p>برای اطلاع از جدیدترین محصولات، تخفیف‌ها و محتوای جذاب مد، ما را در شبکه‌های اجتماعی دنبال کنید</p>
+297|<div class="social-links">
+298|<a href="https://instagram.com/mezonehediye.qom" target="_blank" class="social-link social-link-instagram">📷 اینستاگرام</a>
+299|300|<a href="tel:09100599805" class="social-link social-link-phone">📞 تماس تلفنی</a>
+301|</div>
+302|</div>
+303|</div>
+304|</div>
+305|
+306|<!-- Map -->
+307|<div class="map-section">
+308|<div class="container">
+309|<div class="map-wrapper">
+310|<div class="map-placeholder">
+311|<div class="map-icon">🗺️</div>
+312|<div class="map-text">فروشگاه آنلاین مزون هدیه</div>
+313|<div class="map-address">📍 قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶</div>
+314|</div>
+315|</div>
+316|</div>
+317|</div>
+318|
+319|<!-- FAQ -->
+320|<div class="faq-section">
+321|<div class="container">
+322|<div class="section-header" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid var(--border)">
+323|<div class="section-title" style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px">❓ <span style="color:var(--gold)">سوالات متداول</span></div>
+324|</div>
+325|<div class="faq-grid">
+326|<div class="faq-item">
+327|<div class="faq-question" onclick="toggleFaq(this)">چقدر طول می‌کشد تا سفارش من برسد؟</div>
+328|<div class="faq-answer">ارسال سفارشات در تهران و قم ۱ تا ۲ روز کاری و در سایر شهرها ۲ تا ۴ روز کاری زمان می‌برد.</div>
+329|</div>
+330|<div class="faq-item">
+331|<div class="faq-question" onclick="toggleFaq(this)">آیا امکان تعویض محصول وجود دارد؟</div>
+332|<div class="faq-answer">بله، تا ۷ روز پس از دریافت محصول، امکان تعویض با شرط سالم بودن و عدم استفاده وجود دارد.</div>
+333|</div>
+334|<div class="faq-item">
+335|<div class="faq-question" onclick="toggleFaq(this)">نحوه پرداخت چگونه است؟</div>
+336|<div class="faq-answer">شما می‌توانید از طریق درگاه بانکی امن، کارت به کارت، تیپاکس یا پس‌کرایه اقدام کنید.</div>
+337|</div>
+338|<div class="faq-item">
+339|<div class="faq-question" onclick="toggleFaq(this)">آیا ارسال رایگان دارید؟</div>
+340|<div class="faq-answer">بله، برای خریدهای بالای ۱۰ میلیون تومان، ارسال رایگان خواهد بود. هزینه ارسال برای سفارشات کمتر ۵۰,۰۰۰ تومان است.</div>
+341|</div>
+342|</div>
+343|</div>
+344|</div>
+345|
+346|<!-- Footer -->
+347|<div class="footer">
+348|<div class="container">
+349|<div class="footer-grid">
+350|<div>
+351|<div class="footer-title">مزون هدیه</div>
+352|<p style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:12px">فروشگاه آنلاین مد و پوشاک زنانه با بهترین کیفیت و قیمت مناسب</p>
+353|<div class="footer-social">
+354|<a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام">📷</a>
+355|356|<a href="tel:09100599805" title="تماس">📞</a>
+357|</div>
+358|</div>
+359|<div>
+360|<div class="footer-title">دسترسی سریع</div>
+361|<ul class="footer-links">
+362|<li><a href="/">خانه</a></li>
+363|<li><a href="/products">محصولات</a></li>
+364|<li><a href="/cart">سبد خرید</a></li>
+365|<li><a href="/profile">حساب کاربری</a></li>
+366|</ul>
+367|</div>
+368|<div>
+369|<div class="footer-title">خدمات مشتریان</div>
+370|<ul class="footer-links">
+371|<li><a href="/about">درباره ما</a></li>
+372|<li><a href="/contact">تماس با ما</a></li>
+373|<li><a href="/faq">سوالات متداول</a></li>
+374|<li><a href="/rules">قوانین خرید</a></li>
+375|</ul>
+376|</div>
+377|<div>
+378|<div class="footer-title">اطلاعات فروشگاه</div>
+379|<ul class="footer-links">
+380|<li>📍 قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶</li>
+381|<li>📞 ۰۹۱۰۰۵۹۹۸۰۵</li>
+382|<li>🕐 همه روزه</li>
+383|</ul>
+384|</div>
+385|</div>
+386|<div class="footer-bottom">
+387|© ۱۴۰۵ مزون هدیه — تمامی حقوق محفوظ است
+388|</div>
+389|</div>
+390|</div>
+391|
+392|<!-- Mobile Nav -->
+393|<div class="mobile-nav">
+394|<a href="/"><span class="icon">🏠</span>خانه</a>
+395|<a href="/products"><span class="icon">🛍️</span>محصولات</a>
+396|<a href="/cart"><span class="icon">🛒</span>سبد</a>
+397|<a href="/profile"><span class="icon">👤</span>پروفایل</a>
+398|</div>
+399|
+400|<!-- Scroll Top -->
+401|<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+402|
+403|<!-- Toast -->
+404|<div class="toast" id="toast"></div>
+405|
+406|<script>
+407|// Theme toggle
+408|var theme=localStorage.getItem('theme')||'light';
+409|document.documentElement.setAttribute('data-theme',theme);
+410|updateThemeBtn();
+411|function toggleTheme(){
+412|    theme=theme==='light'?'dark':'light';
+413|    document.documentElement.setAttribute('data-theme',theme);
+414|    localStorage.setItem('theme',theme);
+415|    updateThemeBtn();
+416|}
+417|function updateThemeBtn(){
+418|    var btn=document.querySelector('.theme-toggle');
+419|    if(btn)btn.textContent=theme==='dark'?'☀️':'🌙';
+420|}
+421|
+422|// Search
+423|function doSearch(){
+424|    var q=document.getElementById('searchInput').value;
+425|    if(q)window.location.href='/products?q='+encodeURIComponent(q);
+426|}
+427|document.getElementById('searchInput').addEventListener('keypress',function(e){if(e.key==='Enter')doSearch()});
+428|
+429|// Scroll top
+430|window.addEventListener('scroll',function(){
+431|    var btn=document.getElementById('scrollTop');
+432|    if(window.scrollY>300)btn.style.display='flex';else btn.style.display='none';
+433|});
+434|
+435|// Contact form
+436|function submitContact(e){
+437|    e.preventDefault();
+438|    var form=document.getElementById('contactForm');
+439|    var btn=document.getElementById('submitBtn');
+440|    var data=new FormData(form);
+441|    btn.textContent='⏳ در حال ارسال...';
+442|    btn.disabled=true;
+443|    
+444|    fetch('/contact/submit',{
+445|        method:'POST',
+446|        body:data
+447|    }).then(function(r){return r.json()}).then(function(d){
+448|        if(d.success){
+449|            showToast('✅ پیام شما با موفقیت ارسال شد');
+450|            form.reset();
+451|        }else{
+452|            showToast('❌ خطا در ارسال پیام. لطفاً دوباره تلاش کنید');
+453|        }
+454|        btn.textContent='✉️ ارسال پیام';
+455|        btn.disabled=false;
+456|    }).catch(function(){
+457|        showToast('❌ خطا در ارتباط با سرور');
+458|        btn.textContent='✉️ ارسال پیام';
+459|        btn.disabled=false;
+460|    });
+461|}
+462|
+463|function showToast(msg){
+464|    var t=document.getElementById('toast');
+465|    t.textContent=msg;
+466|    t.style.display='block';
+467|    setTimeout(function(){t.style.display='none'},4000);
+468|}
+469|
+470|// FAQ toggle
+471|function toggleFaq(el){
+472|    var answer=el.nextElementSibling;
+473|    if(answer.style.display==='block'){
+474|        answer.style.display='none';
+475|    }else{
+476|        answer.style.display='block';
+477|    }
+478|}
+479|</script>
+480|</body>
+481|</html>
+482|
