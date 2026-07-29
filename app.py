@@ -586,8 +586,8 @@ def register():
         full_name = request.form.get('full_name', '')
         phone = request.form.get('phone', '')
         
-        if not username or not email or not password:
-            flash('لطفاً تمام فیلدها را پر کنید', 'warning')
+        if not username or not password:
+            flash('لطفاً نام کاربری و رمز عبور را وارد کنید', 'warning')
             return render_template('register.html')
         elif len(password) < 6:
             flash('رمز عبور باید حداقل ۶ کاراکتر باشد', 'warning')
@@ -597,7 +597,7 @@ def register():
         try:
             db.execute('''INSERT INTO users (username, email, password, full_name, phone)
                 VALUES (?, ?, ?, ?, ?)''',
-                (username, email, generate_password_hash(password), full_name, phone))
+                (username, email or '', generate_password_hash(password), full_name, phone))
             db.commit()
             flash('ثبت‌نام موفقیت‌آمیز بود! 🎉', 'success')
             # Send welcome SMS
