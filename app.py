@@ -112,6 +112,15 @@ def init_db():
             FOREIGN KEY (product_id) REFERENCES products(id)
         );
         
+        CREATE TABLE IF NOT EXISTS product_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            product_id INTEGER NOT NULL,
+            image TEXT NOT NULL,
+            color_name TEXT DEFAULT '',
+            color_hex TEXT DEFAULT '',
+            sort_order INTEGER DEFAULT 0,
+            FOREIGN KEY (product_id) REFERENCES products(id)
+        );
         CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             key TEXT UNIQUE NOT NULL,
