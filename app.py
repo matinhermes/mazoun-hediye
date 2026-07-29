@@ -1134,6 +1134,10 @@ def zarinpal_request(order_id):
         return redirect(url_for('order_detail', order_id=order_id))
     
     merchant_id = ZARINPAL_MERCHANT_ID
+    if not merchant_id or 'XXXX' in merchant_id:
+        flash('درگاه پرداخت هنوز فعال نشده. لطفاً با مدیر سایت تماس بگیرید.', 'warning')
+        return redirect(url_for('order_detail', order_id=order_id))
+    
     amount = order['total_amount']
     description = f'پرداخت سفارش شماره {order_id} - مزون هدیه'
     callback_url = request.host_url + 'payment/verify'
