@@ -3,16 +3,47 @@
 {% block content %}
 <h1 class="page-title">تنظیمات فروشگاه</h1>
 
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for cat, msg in messages %}
+<div class="flash flash-{{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!-- اطلاعات فروشگاه -->
 <div class="card">
 <h3 style="color:#c9a96e;margin-bottom:16px">🏪 اطلاعات فروشگاه</h3>
 <form method="POST">
-<div class="form-row"><div class="form-group"><label class="form-label">نام فروشگاه</label><input name="shop_name" class="form-input" value="{{ settings.get('shop_name', 'مزون هدیه') }}"></div>
-<div class="form-group"><label class="form-label">شماره تماس</label><input name="phone" class="form-input" value="{{ settings.get('phone', '') }}"></div></div>
-<div class="form-group"><label class="form-label">آدرس</label><input name="address" class="form-input" value="{{ settings.get('address', '') }}"></div>
-<div class="form-row"><div class="form-group"><label class="form-label">ایمیل</label><input name="email" class="form-input" value="{{ settings.get('email', '') }}"></div>
-<div class="form-group"><label class="form-label">اینستاگرام</label><input name="instagram" class="form-input" value="{{ settings.get('instagram', '') }}"></div></div>
-<button type="submit" class="btn btn-primary">ذخیره</button></form></div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">نام فروشگاه</label>
+<input name="shop_name" class="form-input" value="{{ settings.get('shop_name', 'مزون هدیه') }}">
+</div>
+<div class="form-group">
+<label class="form-label">شماره تماس</label>
+<input name="shop_phone" class="form-input" value="{{ settings.get('shop_phone', '') }}">
+</div>
+</div>
+<div class="form-group">
+<label class="form-label">آدرس</label>
+<input name="shop_address" class="form-input" value="{{ settings.get('shop_address', '') }}">
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">اینستاگرام</label>
+<input name="instagram" class="form-input" value="{{ settings.get('instagram', '') }}">
+</div>
+<div class="form-group">
+<label class="form-label">توضیحات</label>
+<input name="shop_description" class="form-input" value="{{ settings.get('shop_description', '') }}">
+</div>
+</div>
+<button type="submit" class="btn btn-primary">ذخیره اطلاعات</button>
+</form>
+</div>
 
+<!-- روش‌های ارسال -->
 <div class="card">
 <h3 style="color:#c9a96e;margin-bottom:16px">🚚 روش‌های ارسال</h3>
 <form method="POST" action="/admin/shipping-methods">
@@ -25,59 +56,73 @@
 ] %}
 {% for m in methods %}
 <div style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px">
-<label class="checkbox-label" style="margin-bottom:8px"><input type="checkbox" name="{{ m.key }}_enabled" value="1" {{ 'checked' if settings.get(m.key+'_enabled', '0') == '1' }}> {{ m.name }}</label>
-{% if m.key != 'shipping_collect' %}<input name="{{ m.key }}_cost" type="number" class="form-input" value="{{ settings.get(m.key+'_cost', m.cost) }}" placeholder="هزینه">
-</div>{% endfor %}</div>
-<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره روش‌های ارسال</button></form></div>
+<label class="checkbox-label" style="margin-bottom:8px">
+<input type="checkbox" name="{{ m.key }}_enabled" value="1" {{ 'checked' if settings.get(m.key+'_enabled', '0') == '1' }}> {{ m.name }}
+</label>
+{% if m.key != 'shipping_collect' %}
+<input name="{{ m.key }}_cost" type="number" class="form-input" value="{{ settings.get(m.key+'_cost', m.cost) }}" placeholder="هزینه (تومان)">
+{% endif %}
+</div>
+{% endfor %}
+</div>
+<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره روش‌های ارسال</button>
+</form>
+</div>
 
+<!-- درگاه‌های پرداخت -->
 <div class="card">
 <h3 style="color:#c9a96e;margin-bottom:16px">💳 درگاه‌های پرداخت</h3>
+<p style="color:#888;font-size:12px;margin-bottom:16px">کد مرچنت هر درگاه رو وارد کنید و درگاه رو فعال کنید</p>
 <form method="POST" action="/admin/payment-gateways">
 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
 {% set gateways = [
-  {'key':'gateway_zarinpal','name':'زرین‌پال'},
-  {'key':'gateway_snapp','name':'اسنپ‌پی'},
-  {'key':'gateway_digipay','name':'دیجی‌پی'},
-  {'key':'gateway_idpay','name':'آیدی‌پی'},
-  {'key':'gateway_nextpay','name':'نکست‌پی'}
+  {'key':'gateway_zarinpal','name':'زرین‌پال','color':'#00bcd4'},
+  {'key':'gateway_snapp','name':'اسنپ‌پی','color':'#6cc24a'},
+  {'key':'gateway_digipay','name':'دیجی‌پی','color':'#f57c00'},
+  {'key':'gateway_idpay','name':'آیدی‌پی','color':'#7c4dff'},
+  {'key':'gateway_nextpay','name':'نکست‌پی','color':'#2196f3'}
 ] %}
 {% for g in gateways %}
-<div style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px">
-<label class="checkbox-label" style="margin-bottom:8px"><input type="checkbox" name="{{ g.key }}_enabled" value="1" {{ 'checked' if settings.get(g.key+'_enabled', '0') == '1' }}> {{ g.name }}</label>
-<input name="{{ g.key }}_merchant" class="form-input" value="{{ settings.get(g.key+'_merchant', '') }}" placeholder="MERCHANT ID">
-</div>{% endfor %}</div>
-<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره درگاه‌ها</button></form></div>
+<div style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;border-right:3px solid {{ g.color }}">
+<label class="checkbox-label" style="margin-bottom:8px">
+<input type="checkbox" name="{{ g.key }}_enabled" value="1" {{ 'checked' if settings.get(g.key+'_enabled', '0') == '1' }}> {{ g.name }}
+</label>
+<input name="{{ g.key }}_merchant" class="form-input" value="{{ settings.get(g.key+'_merchant', '') }}" placeholder="Merchant ID / API Key">
+</div>
+{% endfor %}
+</div>
+<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره درگاه‌ها</button>
+</form>
+</div>
 
+<!-- ارسال رایگان -->
+<div class="card">
+<h3 style="color:#c9a96e;margin-bottom:16px">🎁 ارسال رایگان</h3>
+<form method="POST">
+<div class="form-group">
+<label class="form-label">حداقل مبلغ خرید برای ارسال رایگان (تومان)</label>
+<input name="free_shipping_min" type="number" class="form-input" value="{{ settings.get('free_shipping_min', '10000000') }}">
+</div>
+<div class="form-group">
+<label class="form-label">هزینه ارسال پیش‌فرض (تومان)</label>
+<input name="shipping_cost" type="number" class="form-input" value="{{ settings.get('shipping_cost', '30000') }}">
+</div>
+<button type="submit" class="btn btn-primary">ذخیره</button>
+</form>
+</div>
+
+<!-- کاور صفحه اصلی -->
 <div class="card">
 <h3 style="color:#c9a96e;margin-bottom:16px">🖼️ کاور صفحه اصلی</h3>
 <form method="POST" action="/admin/cover" enctype="multipart/form-data">
-<div style="display:flex;gap:20px;align-items:start">
-<div>{% if settings.get('cover_image') %}<img src="{{ settings.get('cover_image') }}" style="max-width:300px;border-radius:8px;border:1px solid #222;margin-bottom:12px">
-<div class="image-upload" style="width:300px;height:120px"><input type="file" name="cover_image" accept="image/*"><div style="text-align:center"><div style="font-size:28px">📷</div><div style="color:#888;font-size:12px">انتخاب عکس کاور</div></div></div></div>
-<div style="flex:1"><p style="color:#888;font-size:12px;line-height:2">ابعاد: 1920×600 | فرمت: JPG/PNG | حداکثر: 2MB</p>
-<button type="submit" class="btn btn-primary" style="margin-top:8px">ذخیره کاور</button></div></div></form></div>
+{% if settings.get('cover_image') %}
+<img src="{{ settings.get('cover_image') }}" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid #222;margin-bottom:12px">
+{% endif %}
+<div class="form-group">
+<input type="file" name="cover_image" accept="image/*" class="form-input">
+</div>
+<button type="submit" class="btn btn-primary">ذخیره کاور</button>
+</form>
+</div>
 
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">📁 دسته‌بندی‌ها</h3>
-<form method="POST" action="/admin/add-category" style="display:flex;gap:8px;margin-bottom:12px">
-<input name="name" class="form-input" placeholder="نام دسته جدید" style="flex:1">
-<input name="icon" class="form-input" placeholder="📁" style="width:60px" value="📁">
-<button type="submit" class="btn btn-sm btn-primary">افزودن</button></form>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-{% for c in categories %}<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:#0a0a0a;border:1px solid #222;border-radius:6px;font-size:13px">{{ c.icon }} {{ c.name }}<form method="POST" action="/admin/delete-category/{{ c.id }}" onsubmit="return confirm('حذف؟')"><button type="submit" style="background:none;border:none;color:#dc3545;cursor:pointer">✕</button></form></div>{% endfor %}
-</div></div>
-
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">👤 تغییر نام کاربری</h3>
-<form method="POST" action="/admin/change-username" style="display:flex;gap:8px">
-<input name="new_username" class="form-input" value="{{ session.get('username', '') }}" style="flex:1">
-<button type="submit" class="btn btn-primary">تغییر</button></form></div>
-
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">🔒 تغییر رمز عبور</h3>
-<form method="POST" action="/admin/change-password">
-<div class="form-group"><label class="form-label">رمز فعلی</label><input name="current_password" type="password" class="form-input" required></div>
-<div class="form-row"><div class="form-group"><label class="form-label">رمز جدید</label><input name="new_password" type="password" class="form-input" required minlength="6"></div>
-<div class="form-group"><label class="form-label">تکرار رمز</label><input name="confirm_password" type="password" class="form-input" required></div></div>
-<button type="submit" class="btn btn-primary">تغییر رمز</button></form></div>
 {% endblock %}

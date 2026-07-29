@@ -20,9 +20,17 @@ app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = 86400  # 24 hours
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
-# ZarinPal Settings (TODO: Fill with your merchant ID)
+# Payment Gateway Settings
 ZARINPAL_MERCHANT_ID = os.environ.get('ZARINPAL_MERCHANT', 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX')
 ZARINPAL_SANDBOX = True  # Set to False in production
+
+# Snapp Pay Settings
+SNAPP_PAY_API_KEY = os.environ.get('SNAPP_PAY_API_KEY', '')
+SNAPP_PAY_SECRET_KEY = os.environ.get('SNAPP_PAY_SECRET_KEY', '')
+
+# Digi Pay Settings  
+DIGIPAY_MERCHANT_ID = os.environ.get('DIGIPAY_MERCHANT', '')
+DIGIPAY_SECRET_KEY = os.environ.get('DIGIPAY_SECRET_KEY', '')
 
 # ==================== DATABASE ====================
 def get_db():
@@ -523,8 +531,14 @@ def checkout_confirm():
     # Clear cart
     session['cart'] = []
     
-    # Redirect to ZarinPal payment
-    return redirect(url_for('zarinpal_request', order_id=order_id))
+    # Redirect to selected payment gateway
+    payment_gateway = request.form.get('payment_gateway', 'zarinpal')
+    if payment_gateway == 'snapp':
+        return redirect(url_for('snapp_pay_request', order_id=order_id))
+    elif payment_gateway == 'digipay':
+        return redirect(url_for('digipay_request', order_id=order_id))
+    else:
+        return redirect(url_for('zarinpal_request', order_id=order_id))
 
 @app.route('/order/<int:order_id>')
 @login_required
@@ -1033,7 +1047,6 @@ def admin_payment_gateways():
         {'key': 'gateway_digipay', 'name': 'دیجی‌پی'},
         {'key': 'gateway_idpay', 'name': 'آیدی‌پی'},
         {'key': 'gateway_nextpay', 'name': 'نکست‌پی'},
-        {'key': 'gateway_cod', 'name': 'پرداخت درب منزل'},
     ]
     
     for gw in gateways:
@@ -1112,6 +1125,175 @@ def virtual_tryon(product_id):
     
     return render_template('tryon.html', product=product, colors=colors, 
                          mannequin_colors=mannequin_colors, settings=settings)
+
+
+
+# ==================== SNAPP PAY ====================
+@app.route('/payment/snapp/<int:order_id>')
+@login_required
+def snapp_pay_request(order_id):
+    db = get_db()
+    order = db.execute('SELECT * FROM orders WHERE id = ? AND user_id = ?',
+                      (order_id, session['user_id'])).fetchone()
+    if not order:
+        flash('سفارش یافت نشد', 'warning')
+        return redirect(url_for('home'))
+    
+    if order['payment_status'] == 'paid':
+        flash('این سفارش قبلاً پرداخت شده', 'info')
+        return redirect(url_for('order_detail', order_id=order_id))
+    
+    api_key = SNAPP_PAY_API_KEY
+    if not api_key or api_key == '':
+        flash('درگاه اسنپ‌پی هنوز فعال نشده. لطفاً با مدیر سایت تماس بگیرید.', 'warning')
+        return redirect(url_for('order_detail', order_id=order_id))
+    
+    try:
+        # Snapp Pay API call
+        payload = {
+            'amount': order['total_amount'],
+            'phone_number': order['phone'],
+            'description': f'پرداخت سفارش شماره {order_id} - مزون هدیه',
+            'callback_url': request.host_url + 'payment/snapp/verify',
+            'order_id': str(order_id)
+        }
+        headers = {'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'}
+        response = req_lib.post('https://api.snapp.ir/payment/v1/pay', json=payload, headers=headers, timeout=10)
+        result = response.json()
+        
+        if result.get('status') == 200 or result.get('data', {}).get('payment_url'):
+            payment_url = result['data']['payment_url']
+            session['snapp_authority'] = result['data'].get('authority', '')
+            session['snapp_order_id'] = order_id
+            return redirect(payment_url)
+        else:
+            flash('خطا در اتصال به اسنپ‌پی', 'danger')
+            return redirect(url_for('order_detail', order_id=order_id))
+    except Exception as e:
+        flash('خطا در اتصال به اسنپ‌پی', 'danger')
+        return redirect(url_for('order_detail', order_id=order_id))
+
+@app.route('/payment/snapp/verify')
+@login_required
+def snapp_pay_verify():
+    db = get_db()
+    order_id = session.get('snapp_order_id')
+    if not order_id:
+        flash('خطا در تأیید پرداخت', 'danger')
+        return redirect(url_for('home'))
+    
+    authority = session.get('snapp_authority', '')
+    status = request.args.get('status')
+    
+    if status == 'OK':
+        try:
+            api_key = SNAPP_PAY_API_KEY
+            payload = {'authority': authority, 'amount': db.execute('SELECT total_amount FROM orders WHERE id = ?', (order_id,)).fetchone()[0]}
+            headers = {'Authorization': f'Bearer {api_key}', 'Content-Type': 'application/json'}
+            response = req_lib.post('https://api.snapp.ir/payment/v1/verify', json=payload, headers=headers, timeout=10)
+            result = response.json()
+            
+            if result.get('status') in [200, 201]:
+                db.execute("UPDATE orders SET payment_status = 'paid', status = 'confirmed' WHERE id = ?", (order_id,))
+                db.commit()
+                flash('پرداخت موفقیت‌آمیز بود! 🎉', 'success')
+            else:
+                flash('پرداخت ناموفق بود', 'danger')
+        except:
+            flash('خطا در تأیید پرداخت', 'danger')
+    else:
+        flash('پرداخت لغو شد', 'warning')
+    
+    session.pop('snapp_authority', None)
+    session.pop('snapp_order_id', None)
+    return redirect(url_for('order_detail', order_id=order_id))
+
+# ==================== DIGI PAY ====================
+@app.route('/payment/digipay/<int:order_id>')
+@login_required
+def digipay_request(order_id):
+    db = get_db()
+    order = db.execute('SELECT * FROM orders WHERE id = ? AND user_id = ?',
+                      (order_id, session['user_id'])).fetchone()
+    if not order:
+        flash('سفارش یافت نشد', 'warning')
+        return redirect(url_for('home'))
+    
+    if order['payment_status'] == 'paid':
+        flash('این سفارش قبلاً پرداخت شده', 'info')
+        return redirect(url_for('order_detail', order_id=order_id))
+    
+    merchant_id = DIGIPAY_MERCHANT_ID
+    if not merchant_id or merchant_id == '':
+        flash('درگاه دیجی‌پی هنوز فعال نشده. لطفاً با مدیر سایت تماس بگیرید.', 'warning')
+        return redirect(url_for('order_detail', order_id=order_id))
+    
+    try:
+        import hashlib
+        sign_str = f"{merchant_id}:{order['total_amount']}:{DIGIPAY_SECRET_KEY}"
+        sign = hashlib.sha256(sign_str.encode()).hexdigest()
+        
+        payload = {
+            'merchant_id': merchant_id,
+            'amount': order['total_amount'],
+            'phone': order['phone'],
+            'description': f'پرداخت سفارش شماره {order_id}',
+            'callback_url': request.host_url + 'payment/digipay/verify',
+            'sign': sign
+        }
+        response = req_lib.post('https://api.digipay.cash/payments', json=payload, timeout=10)
+        result = response.json()
+        
+        if result.get('status') == 1 or result.get('data', {}).get('payment_url'):
+            payment_url = result['data']['payment_url']
+            session['digipay_authority'] = result['data'].get('authority', '')
+            session['digipay_order_id'] = order_id
+            return redirect(payment_url)
+        else:
+            flash('خطا در اتصال به دیجی‌پی', 'danger')
+            return redirect(url_for('order_detail', order_id=order_id))
+    except Exception as e:
+        flash('خطا در اتصال به دیجی‌پی', 'danger')
+        return redirect(url_for('order_detail', order_id=order_id))
+
+@app.route('/payment/digipay/verify')
+@login_required
+def digipay_verify():
+    db = get_db()
+    order_id = session.get('digipay_order_id')
+    if not order_id:
+        flash('خطا در تأیید پرداخت', 'danger')
+        return redirect(url_for('home'))
+    
+    authority = session.get('digipay_authority', '')
+    status = request.args.get('status')
+    
+    if status == 'OK' or request.args.get('success') == 'true':
+        try:
+            merchant_id = DIGIPAY_MERCHANT_ID
+            amount = db.execute('SELECT total_amount FROM orders WHERE id = ?', (order_id,)).fetchone()[0]
+            import hashlib
+            sign_str = f"{merchant_id}:{amount}:{DIGIPAY_SECRET_KEY}"
+            sign = hashlib.sha256(sign_str.encode()).hexdigest()
+            
+            payload = {'merchant_id': merchant_id, 'authority': authority, 'amount': amount, 'sign': sign}
+            response = req_lib.post('https://api.digipay.cash/payments/verify', json=payload, timeout=10)
+            result = response.json()
+            
+            if result.get('status') == 1 or result.get('data', {}).get('verified'):
+                db.execute("UPDATE orders SET payment_status = 'paid', status = 'confirmed' WHERE id = ?", (order_id,))
+                db.commit()
+                flash('پرداخت موفقیت‌آمیز بود! 🎉', 'success')
+            else:
+                flash('پرداخت ناموفق بود', 'danger')
+        except:
+            flash('خطا در تأیید پرداخت', 'danger')
+    else:
+        flash('پرداخت لغو شد', 'warning')
+    
+    session.pop('digipay_authority', None)
+    session.pop('digipay_order_id', None)
+    return redirect(url_for('order_detail', order_id=order_id))
 
 # ==================== API ====================
 
