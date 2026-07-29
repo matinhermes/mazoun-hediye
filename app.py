@@ -625,15 +625,21 @@ def profile_update():
 @app.route('/about')
 def about():
     settings = {}
-    db = get_db()
-    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    try:
+        db = get_db()
+        settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    except:
+        pass
     return render_template('about.html', settings=settings)
 
 @app.route('/contact')
 def contact():
     settings = {}
-    db = get_db()
-    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    try:
+        db = get_db()
+        settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    except:
+        pass
     return render_template('contact.html', settings=settings)
 
 @app.route('/contact/submit', methods=['POST'])
