@@ -32,7 +32,7 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 .hanger svg{width:120px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}
 
 /* Color overlay on clothing */
-.color-overlay{position:absolute;inset:0;border-radius:0;pointer-events:none;transition:all 0.3s;mix-blend-mode:multiply;opacity:0}
+
 
 .glow{position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.06),transparent 60%);pointer-events:none}
 
@@ -104,13 +104,15 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 </div>
 
 <div class="card-face" id="cardFace" style="position:relative">
+<div style="position:relative;line-height:0">
 {% if product.image %}
-<img src="{{ product.image }}" alt="{{ product.name }}" id="frontImg" style="position:relative;z-index:1">
+<img src="{{ product.image }}" alt="{{ product.name }}" id="frontImg" style="width:100%;display:block;position:relative;z-index:1">
 {% endif %}
 {% if product.image_back %}
-<img src="{{ product.image_back }}" alt="{{ product.name }} پشت" id="backImg" style="display:none;position:absolute;inset:0;z-index:2;width:100%;height:100%;object-fit:cover">
+<img src="{{ product.image_back }}" alt="{{ product.name }} پشت" id="backImg" style="display:none;width:100%;position:relative;z-index:2">
 {% endif %}
-<div class="color-overlay" id="colorOverlay" style="position:absolute;inset:0;z-index:3;pointer-events:none;mix-blend-mode:multiply;opacity:0"></div>
+<div id="colorOverlay" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;pointer-events:none;mix-blend-mode:multiply;opacity:0;border-radius:0"></div>
+</div>
 </div>
 
 <!-- Front/Back tabs -->
