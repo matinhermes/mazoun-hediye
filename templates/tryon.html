@@ -5,37 +5,32 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height:100vh}
-
 .topbar{background:#111;border-bottom:1px solid #222;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
 .topbar a{color:#c9a96e;text-decoration:none;font-size:13px}
-
 .page{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 48px)}
 @media(max-width:800px){.page{grid-template-columns:1fr}}
 
-/* 3D Display */
+/* Display */
 .display{display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at center 40%,#151515,#0a0a0a);position:relative;overflow:hidden;perspective:1200px}
 @media(max-width:800px){.display{min-height:70vh}}
-
 .card-3d{position:relative;transform-style:preserve-3d;transition:transform 0.12s ease-out;will-change:transform}
 
-.card-face{position:relative;width:280px;border-radius:12px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,169,110,0.1)}
-@media(max-width:480px){.card-face{width:230px}}
+/* Image container - THIS is what gets colored */
+.img-wrap{position:relative;width:280px;border-radius:12px;overflow:hidden;box-shadow:0 25px 60px rgba(0,0,0,0.6),0 0 0 1px rgba(201,169,110,0.1)}
+@media(max-width:480px){.img-wrap{width:230px}}
+.img-wrap img{width:100%;height:auto;display:block}
 
-.card-face img{width:100%;height:auto;display:block;transition:opacity 0.4s}
-
-/* 3D side */
-.card-3d::before{content:'';position:absolute;top:4px;right:-8px;width:8px;height:calc(100% - 8px);background:linear-gradient(to right,#1a1a1a,#111);border-radius:0 4px 4px 0;transform:rotateY(90deg);transform-origin:right}
-.card-3d::after{content:'';position:absolute;bottom:-8px;left:4px;width:calc(100% - 8px);height:8px;background:linear-gradient(to bottom,#1a1a1a,#111);border-radius:0 0 4px 4px;transform:rotateX(90deg);transform-origin:bottom}
+/* Color tint - ONLY on the image */
+.tint{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;opacity:0;transition:opacity 0.3s;border-radius:12px}
 
 /* Hanger */
 .hanger{position:absolute;top:-30px;left:50%;transform:translateX(-50%);z-index:2}
 .hanger svg{width:120px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}
 
-/* Color overlay on clothing */
-
-
+/* Glow */
 .glow{position:absolute;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(201,169,110,0.06),transparent 60%);pointer-events:none}
 
+/* Reflection */
 .reflection{position:absolute;bottom:0;left:50%;transform:translateX(-50%) scaleY(-1);width:280px;height:100px;opacity:0.15;filter:blur(3px);pointer-events:none;border-radius:12px;overflow:hidden}
 .reflection img{width:100%;height:auto;display:block}
 @media(max-width:480px){.reflection{width:230px}}
@@ -51,34 +46,25 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 /* Sidebar */
 .sidebar{background:#111;border-right:1px solid #222;display:flex;flex-direction:column;overflow-y:auto;max-height:calc(100vh - 48px)}
 @media(max-width:800px){.sidebar{max-height:none;border-right:none;border-top:1px solid #222}}
-
 .sb-hd{padding:20px;border-bottom:1px solid #222}
 .sb-hd h2{font-size:18px;color:#c9a96e;line-height:1.5}
 .sb-hd .price{font-size:20px;font-weight:700;color:#c9a96e;margin-top:6px}
-
 .sb-bd{flex:1;padding:16px 20px}
-
 .grp{margin-bottom:20px}
 .grp-l{font-size:12px;color:#666;margin-bottom:8px}
 .row{display:flex;gap:8px;flex-wrap:wrap}
-
 .cb{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:all 0.2s}
 .cb:hover{transform:scale(1.1)}
 .cb.on{border-color:#c9a96e;box-shadow:0 0 0 3px rgba(201,169,110,0.25)}
-
 .sb{padding:9px 16px;background:#0a0a0a;border:1px solid #333;border-radius:20px;color:#eee;cursor:pointer;font-family:inherit;font-size:13px;transition:all 0.2s}
 .sb:hover{border-color:#c9a96e}
 .sb.on{background:#c9a96e;color:#000;border-color:#c9a96e;font-weight:600}
-
 .vb{flex:1;padding:8px;background:#0a0a0a;border:1px solid #333;border-radius:8px;color:#888;cursor:pointer;font-family:inherit;font-size:12px;transition:all 0.2s}
 .vb:hover{color:#eee}
 .vb.on{background:#1a1a1a;border-color:#c9a96e;color:#c9a96e}
-
 .cta{width:100%;padding:14px;background:linear-gradient(135deg,#c9a96e,#b8956a);border:none;border-radius:10px;color:#000;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:auto;transition:all 0.3s}
 .cta:hover{box-shadow:0 6px 20px rgba(201,169,110,0.3)}
-
 .sb-ft{padding:16px 20px;border-top:1px solid #222}
-
 @media(max-width:480px){.sb-hd{padding:14px}.sb-bd{padding:12px 16px}.sb-ft{padding:12px 16px}}
 </style>
 </head><body>
@@ -103,19 +89,17 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 </svg>
 </div>
 
-<div class="card-face" id="cardFace" style="position:relative">
-<div style="position:relative;line-height:0">
+<!-- Image + Tint container -->
+<div class="img-wrap" id="imgWrap">
 {% if product.image %}
-<img src="{{ product.image }}" alt="{{ product.name }}" id="frontImg" style="width:100%;display:block;position:relative;z-index:1">
+<img src="{{ product.image }}" alt="{{ product.name }}" id="frontImg">
 {% endif %}
 {% if product.image_back %}
-<img src="{{ product.image_back }}" alt="{{ product.name }} پشت" id="backImg" style="display:none;width:100%;position:relative;z-index:2">
+<img src="{{ product.image_back }}" alt="{{ product.name }} پشت" id="backImg" style="display:none">
 {% endif %}
-<div id="colorOverlay" style="position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;pointer-events:none;mix-blend-mode:multiply;opacity:0;border-radius:0"></div>
-</div>
+<div class="tint" id="tint"></div>
 </div>
 
-<!-- Front/Back tabs -->
 {% if product.image_back %}
 <div class="img-tabs">
 <button class="img-tab on" onclick="showFront(this)">جلو</button>
@@ -124,23 +108,19 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 {% endif %}
 
 <div class="reflection">
-{% if product.image %}
-<img src="{{ product.image }}" alt="">
-{% endif %}
+{% if product.image %}<img src="{{ product.image }}" alt="">{% endif %}
 </div>
 </div>
 
 <div class="hint">↔ بکش تا بچرخه</div>
 </div>
 
-<!-- Sidebar -->
 <div class="sidebar">
 <div class="sb-hd">
 <h2>{{ product.name }}</h2>
 <div class="price">{{ "{:,}".format(product.price) }} تومان</div>
 </div>
 <div class="sb-bd">
-<!-- Color -->
 <div class="grp">
 <div class="grp-l">🎨 رنگ لباس</div>
 <div class="row">
@@ -154,8 +134,6 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 <button class="cb" style="background:#F5E6D3" data-color="#F5E6D3" onclick="setColor(this)"></button>
 </div>
 </div>
-
-<!-- View -->
 <div class="grp">
 <div class="grp-l">👁️ نمای لباس</div>
 <div class="row">
@@ -164,8 +142,6 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 <button class="vb" onclick="setView('back',this)">پشت</button>
 </div>
 </div>
-
-<!-- Size -->
 <div class="grp">
 <div class="grp-l">📐 سایز</div>
 <div class="row">
@@ -186,34 +162,30 @@ body{font-family:'Vazirmatn',sans-serif;background:#0a0a0a;color:#eee;min-height
 var curSize='{{ sizes[0] if sizes else "36" }}';
 
 function setColor(el){
-    document.querySelectorAll('.cb').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.cb').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
-    var color=el.getAttribute('data-color');
-    var overlay=document.getElementById('colorOverlay');
-    overlay.style.backgroundColor=color;
-    overlay.style.mixBlendMode='multiply';
-    overlay.style.opacity='0.35';
+    var c=el.getAttribute('data-color');
+    var t=document.getElementById('tint');
+    t.style.backgroundColor=c;
+    t.style.mixBlendMode='multiply';
+    t.style.opacity='0.3';
 }
 
 function showFront(el){
-    document.querySelectorAll('.img-tab').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.img-tab').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
-    var f=document.getElementById('frontImg');
-    var b=document.getElementById('backImg');
-    if(f)f.style.display='block';
-    if(b)b.style.display='none';
+    document.getElementById('frontImg').style.display='block';
+    var b=document.getElementById('backImg');if(b)b.style.display='none';
 }
 function showBack(el){
-    document.querySelectorAll('.img-tab').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.img-tab').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
-    var f=document.getElementById('frontImg');
-    var b=document.getElementById('backImg');
-    if(f)f.style.display='none';
-    if(b)b.style.display='block';
+    document.getElementById('frontImg').style.display='none';
+    var b=document.getElementById('backImg');if(b)b.style.display='block';
 }
 
 function setView(v,el){
-    document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.vb').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
     var c=document.getElementById('card3d');
     if(v==='front')c.style.transform='rotateY(0)';
@@ -223,29 +195,28 @@ function setView(v,el){
 
 function setSize(s,el){
     curSize=s;
-    document.querySelectorAll('.sb').forEach(b=>b.classList.remove('on'));
+    document.querySelectorAll('.sb').forEach(function(b){b.classList.remove('on')});
     el.classList.add('on');
 }
 
 function addToCart(){
-    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:curSize,quantity:1})}).then(r=>r.json()).then(d=>{
+    fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:{{ product.id }},size:curSize,quantity:1})}).then(function(r){return r.json()}).then(function(d){
         if(d.success){
             var t=document.createElement('div');
             t.style.cssText='position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#28a745;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn';
             t.textContent='✓ به سبد اضافه شد';
-            document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
+            document.body.appendChild(t);setTimeout(function(){t.remove()},3000);
         }
     });
 }
 
-// 3D drag rotation
 var d=document.getElementById('display'),c=document.getElementById('card3d');
 var drag=false,sx=0,rot=0;
-d.addEventListener('mousedown',e=>{drag=true;sx=e.clientX});
-document.addEventListener('mousemove',e=>{if(!drag)return;rot+=(e.clientX-sx)*0.25;rot=Math.max(-30,Math.min(30,rot));c.style.transform='rotateY('+rot+'deg)';sx=e.clientX});
-document.addEventListener('mouseup',()=>{drag=false});
-d.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;drag=true});
-d.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();rot+=(e.touches[0].clientX-sx)*0.25;rot=Math.max(-30,Math.min(30,rot));c.style.transform='rotateY('+rot+'deg)';sx=e.touches[0].clientX},{passive:false});
-d.addEventListener('touchend',()=>{drag=false});
+d.addEventListener('mousedown',function(e){drag=true;sx=e.clientX});
+document.addEventListener('mousemove',function(e){if(!drag)return;rot+=(e.clientX-sx)*0.25;rot=Math.max(-30,Math.min(30,rot));c.style.transform='rotateY('+rot+'deg)';sx=e.clientX});
+document.addEventListener('mouseup',function(){drag=false});
+d.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;drag=true});
+d.addEventListener('touchmove',function(e){if(!drag)return;e.preventDefault();rot+=(e.touches[0].clientX-sx)*0.25;rot=Math.max(-30,Math.min(30,rot));c.style.transform='rotateY('+rot+'deg)';sx=e.touches[0].clientX},{passive:false});
+d.addEventListener('touchend',function(){drag=false});
 </script>
 </body></html>
