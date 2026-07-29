@@ -1021,34 +1021,7 @@ def admin_cover():
     return redirect(url_for('admin_settings'))
 
 
-@app.route('/tryon/<int:product_id>')
-def virtual_tryon(product_id):
-    db = get_db()
-    product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
-    if not product:
-        flash('محصول یافت نشد', 'warning')
-        return redirect(url_for('home'))
-    
-    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    
-    # Get available colors
-    colors = []
-    if product['colors']:
-        colors = [c.strip() for c in product['colors'].split(',')]
-    
-    # Default mannequin colors
-    mannequin_colors = [
-        {'name': 'سفید', 'hex': '#FFFFFF'},
-        {'name': 'کرم', 'hex': '#F5F5DC'},
-        {'name': 'صورتی', 'hex': '#FFB6C1'},
-        {'name': 'طوسی', 'hex': '#808080'},
-        {'name': 'مشکی', 'hex': '#000000'},
-    ]
-    
-    return render_template('tryon.html', product=product, colors=colors, 
-                         mannequin_colors=mannequin_colors, settings=settings)
 
-# ==================== API ====================
 @app.route('/api/cart/add', methods=['POST'])
 def api_cart_add():
     data = request.get_json()
@@ -1154,7 +1127,7 @@ def admin_product_image_delete(product_id, image_id):
     flash('تصویر حذف شد', 'success')
     return redirect(url_for('admin_product_images', product_id=product_id))
 
-@app.route('/tryon/<int:product_id>')
+
 def tryon(product_id):
     db = get_db()
     product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
