@@ -72,7 +72,7 @@ a{color:inherit;text-decoration:none}
 <header class="hdr">
 <div class="hdr-top">
 <div class="hdr-left"><a href="/" class="hdr-icon">🔍</a></div>
-<div class="hdr-center"><a href="/" class="logo-text">Maison Hediye</a></div>
+<div class="hdr-center"><a href="/" style="display:flex;align-items:center;gap:8px"><img src="/static/images/logo.jpg" alt="مزون هدیه" style="height:36px;border-radius:50%"><span class="logo-text">Maison Hediye</span></a></div>
 <div class="hdr-right">
 <a href="/login" class="hdr-icon">👤</a>
 <a href="/cart" class="hdr-icon">🛒</a>
@@ -102,7 +102,7 @@ a{color:inherit;text-decoration:none}
 <input type="text" placeholder="جستجو..." value="{{ current_search }}" id="searchInput">
 <button onclick="doSearch()">🔍</button>
 </div>
-<select onchange="window.location.href='?sort='+this.value+'&category={{ current_category }}'">
+<select onchange="window.location.href='?sort='+this.value+'&category={{ current_category }}&search={{ current_search }}'">
 <option value="default">مرتب‌سازی</option>
 <option value="cheapest">ارزان‌ترین</option>
 <option value="expensive">گران‌ترین</option>
