@@ -1,0 +1,56 @@
+{% extends "admin/base.html" %}
+{% block title %}تصاویر رنگ‌ها - {{ product.name }}{% endblock %}
+{% block content %}
+<h1 class="page-title">🎨 تصاویر رنگ‌ها: {{ product.name }}</h1>
+
+<div class="card" style="margin-bottom:20px">
+<h3 style="color:#c9a96e;margin-bottom:16px">آپلود تصویر رنگ جدید</h3>
+<form method="POST" enctype="multipart/form-data" action="/admin/product/{{ product.id }}/images/add">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end">
+<div>
+<label class="form-label">عکس</label>
+<input type="file" name="image" accept="image/*" required class="form-input" style="padding:8px">
+</div>
+<div>
+<label class="form-label">نام رنگ</label>
+<input name="color_name" class="form-input" placeholder="مثال: صورتی، مشکی">
+</div>
+<div>
+<label class="form-label">کد رنگ</label>
+<input name="color_hex" type="color" value="#c9a96e" class="form-input" style="height:42px;padding:4px">
+</div>
+<button type="submit" class="btn btn-primary" style="height:42px">افزودن</button>
+</div>
+</form>
+</div>
+
+<div class="card">
+<h3 style="color:#c9a96e;margin-bottom:16px">تصاویر فعلی</h3>
+{% if images %}
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+{% for img in images %}
+<div style="background:#0a0a0a;border:1px solid #222;border-radius:8px;overflow:hidden">
+<img src="{{ img.image }}" style="width:100%;height:200px;object-fit:cover">
+<div style="padding:10px;display:flex;align-items:center;justify-content:space-between">
+<div>
+<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:{{ img.color_hex if img.color_hex else '#888' }};vertical-align:middle;margin-left:6px;border:1px solid #444"></span>
+<span style="font-size:13px">{{ img.color_name if img.color_name else 'بدون نام' }}</span>
+</div>
+<a href="/admin/product/{{ product.id }}/images/delete/{{ img.id }}" style="color:#dc3545;font-size:12px" onclick="return confirm('حذف شود؟')">🗑️ حذف</a>
+</div>
+</div>
+{% endfor %}
+</div>
+{% else %}
+<div style="text-align:center;padding:30px;color:#666">
+<div style="font-size:32px;margin-bottom:8px">📷</div>
+<div>هنوز تصویری آپلود نشده</div>
+<div style="font-size:12px;margin-top:4px">عکس‌های هر رنگ لباس رو اینجا اضافه کن</div>
+</div>
+{% endif %}
+</div>
+
+<div style="margin-top:20px">
+<a href="/admin/products" style="color:#888;text-decoration:none">← بازگشت به لیست محصولات</a>
+</div>
+{% endblock %}

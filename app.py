@@ -1077,6 +1077,21 @@ with app.app_context():
 import os
 
 
+
+@app.route('/admin/migrate-product-images')
+def migrate_product_images():
+    from flask import session as sess
+    if not sess.get('user_id'):
+        return redirect(url_for('login'))
+    db = get_db()
+    try:
+        db.execute('CREATE TABLE IF NOT EXISTS product_images (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER NOT NULL, image TEXT NOT NULL, color_name TEXT DEFAULT "", color_hex TEXT DEFAULT "", sort_order INTEGER DEFAULT 0, FOREIGN KEY (product_id) REFERENCES products(id))')
+        db.commit()
+        flash('جداول تصاویر رنگ‌ها ساخته شد', 'success')
+    except Exception as e:
+        flash('خطا: ' + str(e), 'danger')
+    return redirect(url_for('admin_products'))
+
 @app.route('/admin/migrate-add-image-back')
 def migrate_image_back():
     """Add image_back column to products table"""
@@ -1091,6 +1106,63 @@ def migrate_image_back():
     except:
         flash('ستون قبلاً اضافه شده بود', 'info')
     return redirect(url_for('admin_products'))
+
+
+@app.route('/admin/product/<int:product_id>/images')
+def admin_product_images(product_id):
+    from flask import session as sess
+    if not sess.get('user_id'):
+        return redirect(url_for('login'))
+    db = get_db()
+    product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
+    if not product:
+        flash('محصول یافت نشد', 'danger')
+        return redirect(url_for('admin_products'))
+    images = db.execute('SELECT * FROM product_images WHERE product_id = ? ORDER BY sort_order', (product_id,)).fetchall()
+    return render_template('admin/product_images.html', product=product, images=images)
+
+@app.route('/admin/product/<int:product_id>/images/add', methods=['POST'])
+def admin_product_image_add(product_id):
+    from flask import session as sess
+    if not sess.get('user_id'):
+        return redirect(url_for('login'))
+    db = get_db()
+    if 'image' in request.files and request.files['image'].filename:
+        image = request.files['image']
+        filename = 'product_' + secrets.token_hex(8) + os.path.splitext(image.filename)[1]
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        os.makedirs(os.path.dirname(filepath), exist_ok=True)
+        image.save(filepath)
+        image_path = '/uploads/' + filename
+        color_name = request.form.get('color_name', '')
+        color_hex = request.form.get('color_hex', '')
+        sort_order = db.execute('SELECT COUNT(*) FROM product_images WHERE product_id = ?', (product_id,)).fetchone()[0]
+        db.execute('INSERT INTO product_images (product_id, image, color_name, color_hex, sort_order) VALUES (?, ?, ?, ?, ?)',
+                   (product_id, image_path, color_name, color_hex, sort_order))
+        db.commit()
+        flash('تصویر اضافه شد ✓', 'success')
+    return redirect(url_for('admin_product_images', product_id=product_id))
+
+@app.route('/admin/product/<int:product_id>/images/delete/<int:image_id>')
+def admin_product_image_delete(product_id, image_id):
+    from flask import session as sess
+    if not sess.get('user_id'):
+        return redirect(url_for('login'))
+    db = get_db()
+    db.execute('DELETE FROM product_images WHERE id = ? AND product_id = ?', (image_id, product_id))
+    db.commit()
+    flash('تصویر حذف شد', 'success')
+    return redirect(url_for('admin_product_images', product_id=product_id))
+
+@app.route('/tryon/<int:product_id>')
+def tryon(product_id):
+    db = get_db()
+    product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
+    if not product:
+        flash('محصول یافت نشد', 'danger')
+        return redirect(url_for('products_page'))
+    product_images = db.execute('SELECT * FROM product_images WHERE product_id = ? ORDER BY sort_order', (product_id,)).fetchall()
+    return render_template('tryon.html', product=product, product_images=product_images)
 
 @app.route('/admin/setup-demo-images')
 def setup_demo_images():

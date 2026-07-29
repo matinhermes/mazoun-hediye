@@ -17,6 +17,7 @@
 <td style="color:#c9a96e;font-weight:600">{{ "{:,}".format(p.price) }}</td>
 <td>{{ p.stock }}</td>
 <td style="white-space:nowrap">
+<a href="/admin/product/{{ p.id }}/images" class="btn btn-sm" style="background:rgba(183,110,121,0.15);color:#b76e79">🎨 رنگ‌ها</a>
 <a href="/admin/products/edit/{{ p.id }}" class="btn btn-sm" style="background:rgba(201,169,110,0.15);color:#c9a96e">ویرایش</a>
 <form method="POST" action="/admin/products/delete/{{ p.id }}" style="display:inline" onsubmit="return confirm('حذف شود؟')">
 <button type="submit" class="btn btn-sm btn-danger">حذف</button></form></td></tr>
