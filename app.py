@@ -160,16 +160,16 @@ def init_db():
     
     # Insert sample products
     products = [
-        ('شومیز سفید ابریشمی', 'شومیز زنانه ابریشمی با کیفیت بالا و طراحی شیک', 450000, 580000, 1, '/static/images/products/1.jpg', '36,38,40,42,44,46', 'سفید', 50, 22, 1, 4.5, 23),
-        ('مانتو کلاسیک مشکی', 'مانتو زنانه کلاسیک مناسب استفاده روزمره', 890000, 1100000, 2, '/static/images/products/2.jpg', '36,38,40,42,44,46', 'مشکی', 30, 19, 1, 4.8, 45),
-        ('ست مجلسی طلایی', 'ست مجلسی زنانه با طراحی خاص و شیک', 1200000, 1500000, 3, '/static/images/products/3.jpg', '36,38,40,42', 'طلایی', 20, 20, 1, 4.9, 67),
-        ('شلوار مام استایل جین', 'شلوار جین زنانه مام استایل با کیفیت بالا', 380000, 450000, 4, '/static/images/products/4.jpg', '36,38,40,42,44,46', 'آبی', 40, 16, 0, 4.3, 18),
-        ('شومیز گلدار صورتی', 'شومیز زنانه گلدار با رنگ صورتی زیبا', 320000, 400000, 1, '/static/images/products/5.jpg', '36,38,40,42', 'صورتی', 35, 20, 0, 4.6, 31),
-        ('مانتو اسپرت سبز', 'مانتو زنانه اسپرت مناسب استفاده روزمره', 750000, 950000, 2, '/static/images/products/6.jpg', '38,40,42,44,46', 'سبز', 25, 21, 0, 4.4, 28),
-        ('ست راحتی خانگی', 'ست راحتی زنانه مناسب استفاده در منزل', 290000, 350000, 3, '/static/images/products/7.jpg', '36,38,40,42,44,46', 'نارنجی', 60, 17, 0, 4.2, 15),
-        ('شومیز حریر مشکی', 'شومیز زنانه حریر با طراحی مجلسی', 410000, 520000, 1, '/static/images/products/8.jpg', '36,38,40,42', 'مشکی', 30, 21, 1, 4.7, 38),
-        ('مانتو مجلسی سفید', 'مانتو زنانه مجلسی با طراحی شیک و خاص', 980000, 1250000, 2, '/static/images/products/9.jpg', '36,38,40,42', 'سفید', 15, 22, 1, 4.9, 52),
-        ('شلوار کتان کرم', 'شلوار زنانه کتان با رنگ کرم زیبا', 350000, 420000, 4, '/static/images/products/10.jpg', '38,40,42,44,46', 'کرم', 45, 17, 0, 4.1, 12),
+        ('شومیز سفید ابریشمی', 'شومیز زنانه ابریشمی با کیفیت بالا و طراحی شیک', 450000, 580000, 1, '/static/images/products/1_shomiz.jpg', '36,38,40,42,44,46', 'سفید', 50, 22, 1, 4.5, 23),
+        ('مانتو کلاسیک مشکی', 'مانتو زنانه کلاسیک مناسب استفاده روزمره', 890000, 1100000, 2, '/static/images/products/2_manto.jpg', '36,38,40,42,44,46', 'مشکی', 30, 19, 1, 4.8, 45),
+        ('ست مجلسی طلایی', 'ست مجلسی زنانه با طراحی خاص و شیک', 1200000, 1500000, 3, '/static/images/products/3_set.jpg', '36,38,40,42', 'طلایی', 20, 20, 1, 4.9, 67),
+        ('شلوار مام استایل جین', 'شلوار جین زنانه مام استایل با کیفیت بالا', 380000, 450000, 4, '/static/images/products/4_shalvar.jpg', '36,38,40,42,44,46', 'آبی', 40, 16, 0, 4.3, 18),
+        ('شومیز گلدار صورتی', 'شومیز زنانه گلدار با رنگ صورتی زیبا', 320000, 400000, 1, '/static/images/products/5_shomiz2.jpg', '36,38,40,42', 'صورتی', 35, 20, 0, 4.6, 31),
+        ('مانتو اسپرت سبز', 'مانتو زنانه اسپرت مناسب استفاده روزمره', 750000, 950000, 2, '/static/images/products/6_manto2.jpg', '38,40,42,44,46', 'سبز', 25, 21, 0, 4.4, 28),
+        ('ست راحتی خانگی', 'ست راحتی زنانه مناسب استفاده در منزل', 290000, 350000, 3, '/static/images/products/7_set2.jpg', '36,38,40,42,44,46', 'نارنجی', 60, 17, 0, 4.2, 15),
+        ('شومیز حریر مشکی', 'شومیز زنانه حریر با طراحی مجلسی', 410000, 520000, 1, '/static/images/products/8_shomiz3.jpg', '36,38,40,42', 'مشکی', 30, 21, 1, 4.7, 38),
+        ('مانتو مجلسی سفید', 'مانتو زنانه مجلسی با طراحی شیک و خاص', 980000, 1250000, 2, '/static/images/products/9_manto3.jpg', '36,38,40,42', 'سفید', 15, 22, 1, 4.9, 52),
+        ('شلوار کتان کرم', 'شلوار زنانه کتان با رنگ کرم زیبا', 350000, 420000, 4, '/static/images/products/10_shalvar2.jpg', '38,40,42,44,46', 'کرم', 45, 17, 0, 4.1, 12),
     ]
     
     for p in products:
@@ -501,15 +501,20 @@ def checkout_confirm():
                 (order_id, product['id'], product['name'], 
                  item.get('size', ''), item.get('color', ''), item['quantity'], product['price']))
     
+    # Decrease stock
+    for item in cart_items:
+        product = db.execute('SELECT * FROM products WHERE id = ?', (item['product_id'],)).fetchone()
+        if product:
+            new_stock = max(0, product['stock'] - item['quantity'])
+            db.execute('UPDATE products SET stock = ? WHERE id = ?', (new_stock, product['id']))
+    
     db.commit()
     
     # Clear cart
     session['cart'] = []
     
-    # Redirect to payment (ZarinPal)
-    # For now, just show order confirmation
-    flash(f'سفارش شما با شماره {order_id} ثبت شد! 🎉', 'success')
-    return redirect(url_for('order_detail', order_id=order_id))
+    # Redirect to ZarinPal payment
+    return redirect(url_for('zarinpal_request', order_id=order_id))
 
 @app.route('/order/<int:order_id>')
 @login_required
@@ -573,6 +578,7 @@ def register():
         
         if not username or not email or not password:
             flash('لطفاً تمام فیلدها را پر کنید', 'warning')
+            return render_template('register.html')
         elif len(password) < 6:
             flash('رمز عبور باید حداقل ۶ کاراکتر باشد', 'warning')
             return render_template('register.html')
@@ -649,7 +655,14 @@ def contact_submit():
     subject = request.form.get('subject', '')
     message = request.form.get('message', '')
     if name and email and message:
-        flash('پیام شما با موفقیت ارسال شد ✓', 'success')
+        db = get_db()
+        try:
+            db.execute('''INSERT INTO messages (name, email, subject, message)
+                VALUES (?, ?, ?, ?)''', (name, email, subject, message))
+            db.commit()
+            flash('پیام شما با موفقیت ارسال شد ✓', 'success')
+        except:
+            flash('خطا در ذخیره پیام', 'danger')
     else:
         flash('لطفاً تمام فیلدها را پر کنید', 'warning')
     return redirect(url_for('contact'))
@@ -1091,25 +1104,143 @@ def virtual_tryon(product_id):
                          mannequin_colors=mannequin_colors, settings=settings)
 
 # ==================== API ====================
-@app.route('/api/cart/add', methods=['POST'])
-def api_cart_add():
-    data = request.get_json()
-    cart = session.get('cart', [])
+
+
+# ==================== ZARINPAL PAYMENT ====================
+import requests as req_lib
+
+@app.route('/payment/<int:order_id>')
+@login_required
+def zarinpal_request(order_id):
+    db = get_db()
+    order = db.execute('SELECT * FROM orders WHERE id = ? AND user_id = ?',
+                      (order_id, session['user_id'])).fetchone()
+    if not order:
+        flash('سفارش یافت نشد', 'warning')
+        return redirect(url_for('home'))
     
-    for item in cart:
-        if (item['product_id'] == data['product_id'] and 
-            item.get('size') == data.get('size')):
-            item['quantity'] += data.get('quantity', 1)
-            session['cart'] = cart
-            return jsonify({'success': True, 'count': sum(i['quantity'] for i in cart)})
+    if order['payment_status'] == 'paid':
+        flash('این سفارش قبلاً پرداخت شده', 'info')
+        return redirect(url_for('order_detail', order_id=order_id))
     
-    cart.append({
-        'product_id': data['product_id'],
-        'size': data.get('size', ''),
-        'quantity': data.get('quantity', 1)
-    })
-    session['cart'] = cart
-    return jsonify({'success': True, 'count': sum(i['quantity'] for i in cart)})
+    merchant_id = ZARINPAL_MERCHANT_ID
+    amount = order['total_amount']
+    description = f'پرداخت سفارش شماره {order_id} - مزون هدیه'
+    callback_url = request.host_url + 'payment/verify'
+    
+    if ZARINPAL_SANDBOX:
+        zarinpal_url = 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentRequest.json'
+    else:
+        zarinpal_url = 'https://api.zarinpal.com/pg/rest/WebGate/PaymentRequest.json'
+    
+    try:
+        payload = {
+            'MerchantID': merchant_id,
+            'Amount': amount,
+            'Description': description,
+            'CallbackURL': callback_url,
+        }
+        response = req_lib.post(zarinpal_url, json=payload, timeout=10)
+        result = response.json()
+        
+        if result.get('Status') == 100:
+            authority = result['Data']['Authority']
+            # Store authority in session for verification
+            session['payment_authority'] = authority
+            session['payment_order_id'] = order_id
+            
+            if ZARINPAL_SANDBOX:
+                pay_url = f'https://sandbox.zarinpal.com/pg/StartPay/{authority}'
+            else:
+                pay_url = f'https://www.zarinpal.com/pg/StartPay/{authority}'
+            
+            return redirect(pay_url)
+        else:
+            flash('خطا در اتصال به درگاه پرداخت', 'danger')
+            return redirect(url_for('order_detail', order_id=order_id))
+    except Exception as e:
+        flash('خطا در اتصال به درگاه پرداخت', 'danger')
+        return redirect(url_for('order_detail', order_id=order_id))
+
+@app.route('/payment/verify')
+@login_required
+def zarinpal_verify():
+    db = get_db()
+    authority = session.get('payment_authority')
+    order_id = session.get('payment_order_id')
+    
+    if not authority or not order_id:
+        flash('خطا در تأیید پرداخت', 'danger')
+        return redirect(url_for('home'))
+    
+    order = db.execute('SELECT * FROM orders WHERE id = ?', (order_id,)).fetchone()
+    if not order:
+        flash('سفارش یافت نشد', 'warning')
+        return redirect(url_for('home'))
+    
+    status = request.args.get('Status')
+    if status != 'OK':
+        flash('پرداخت لغو شد', 'warning')
+        return redirect(url_for('order_detail', order_id=order_id))
+    
+    merchant_id = ZARINPAL_MERCHANT_ID
+    amount = order['total_amount']
+    
+    if ZARINPAL_SANDBOX:
+        verify_url = 'https://sandbox.zarinpal.com/pg/rest/WebGate/PaymentVerification.json'
+    else:
+        verify_url = 'https://api.zarinpal.com/pg/rest/WebGate/PaymentVerification.json'
+    
+    try:
+        payload = {
+            'MerchantID': merchant_id,
+            'Amount': amount,
+            'Authority': authority,
+        }
+        response = req_lib.post(verify_url, json=payload, timeout=10)
+        result = response.json()
+        
+        if result.get('Status') in [100, 101]:
+            # Payment successful
+            db.execute("UPDATE orders SET payment_status = 'paid', status = 'confirmed' WHERE id = ?", (order_id,))
+            db.commit()
+            flash('پرداخت موفقیت‌آمیز بود! 🎉', 'success')
+        else:
+            flash('پرداخت ناموفق بود', 'danger')
+        
+        # Clear payment session data
+        session.pop('payment_authority', None)
+        session.pop('payment_order_id', None)
+        
+        return redirect(url_for('order_detail', order_id=order_id))
+    except Exception as e:
+        flash('خطا در تأیید پرداخت', 'danger')
+        return redirect(url_for('order_detail', order_id=order_id))
+
+
+@app.route('/admin/messages')
+@admin_required
+def admin_messages():
+    db = get_db()
+    messages = db.execute('SELECT * FROM messages ORDER BY created_at DESC').fetchall()
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/messages.html', messages=messages, settings=settings)
+
+@app.route('/admin/messages/<int:msg_id>/read', methods=['POST'])
+@admin_required
+def admin_message_read(msg_id):
+    db = get_db()
+    db.execute('UPDATE messages SET is_read = 1 WHERE id = ?', (msg_id,))
+    db.commit()
+    return jsonify({'success': True})
+
+@app.route('/admin/messages/<int:msg_id>/delete', methods=['POST'])
+@admin_required
+def admin_message_delete(msg_id):
+    db = get_db()
+    db.execute('DELETE FROM messages WHERE id = ?', (msg_id,))
+    db.commit()
+    return jsonify({'success': True})
 
 # ==================== INIT DB ON STARTUP ====================
 with app.app_context():
@@ -1132,16 +1263,16 @@ def download_images():
     db = get_db()
     
     image_urls = {
-        1: '/static/images/products/1.jpg',
-        2: '/static/images/products/2.jpg',
-        3: '/static/images/products/3.jpg',
-        4: '/static/images/products/4.jpg',
-        5: '/static/images/products/5.jpg',
-        6: '/static/images/products/6.jpg',
-        7: '/static/images/products/7.jpg',
-        8: '/static/images/products/8.jpg',
-        9: '/static/images/products/9.jpg',
-        10: '/static/images/products/10.jpg',
+        1: '/static/images/products/1_shomiz.jpg',
+        2: '/static/images/products/2_manto.jpg',
+        3: '/static/images/products/3_set.jpg',
+        4: '/static/images/products/4_shalvar.jpg',
+        5: '/static/images/products/5_shomiz2.jpg',
+        6: '/static/images/products/6_manto2.jpg',
+        7: '/static/images/products/7_set2.jpg',
+        8: '/static/images/products/8_shomiz3.jpg',
+        9: '/static/images/products/9_manto3.jpg',
+        10: '/static/images/products/10_shalvar2.jpg',
     }
     
     downloaded = 0
@@ -1186,16 +1317,16 @@ def setup_demo_images():
     """Setup demo images for products - run once"""
     db = get_db()
     demo_images = {
-        1: '/static/images/products/1.jpg',
-        2: '/static/images/products/2.jpg',
-        3: '/static/images/products/3.jpg',
-        4: '/static/images/products/4.jpg',
-        5: '/static/images/products/5.jpg',
-        6: '/static/images/products/6.jpg',
-        7: '/static/images/products/7.jpg',
-        8: '/static/images/products/8.jpg',
-        9: '/static/images/products/9.jpg',
-        10: '/static/images/products/10.jpg',
+        1: '/static/images/products/1_shomiz.jpg',
+        2: '/static/images/products/2_manto.jpg',
+        3: '/static/images/products/3_set.jpg',
+        4: '/static/images/products/4_shalvar.jpg',
+        5: '/static/images/products/5_shomiz2.jpg',
+        6: '/static/images/products/6_manto2.jpg',
+        7: '/static/images/products/7_set2.jpg',
+        8: '/static/images/products/8_shomiz3.jpg',
+        9: '/static/images/products/9_manto3.jpg',
+        10: '/static/images/products/10_shalvar2.jpg',
     }
     
     for pid, url in demo_images.items():
