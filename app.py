@@ -5,8 +5,7 @@ import secrets
 import json
 from datetime import datetime
 from functools import wraps
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, g, abort
-from functools import wraps
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, g, abort, send_from_directory
 import time
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -112,15 +111,6 @@ def init_db():
             FOREIGN KEY (product_id) REFERENCES products(id)
         );
         
-        CREATE TABLE IF NOT EXISTS product_images (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            product_id INTEGER NOT NULL,
-            image TEXT NOT NULL,
-            color_name TEXT DEFAULT '',
-            color_hex TEXT DEFAULT '',
-            sort_order INTEGER DEFAULT 0,
-            FOREIGN KEY (product_id) REFERENCES products(id)
-        );
         CREATE TABLE IF NOT EXISTS settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             key TEXT UNIQUE NOT NULL,
@@ -274,7 +264,6 @@ def send_welcome_sms(phone, name):
 
 
 # ==================== MAIN ROUTES ====================
-
 @app.route('/')
 def home():
     db = get_db()
@@ -507,10 +496,10 @@ def checkout_confirm():
         product = db.execute('SELECT * FROM products WHERE id = ?', (item['product_id'],)).fetchone()
         if product:
             db.execute('''INSERT INTO order_items 
-                (order_id, product_id, product_name, size, quantity, price)
-                VALUES (?, ?, ?, ?, ?, ?)''',
+                (order_id, product_id, product_name, size, color, quantity, price)
+                VALUES (?, ?, ?, ?, ?, ?, ?)''',
                 (order_id, product['id'], product['name'], 
-                 item.get('size', ''), item['quantity'], product['price']))
+                 item.get('size', ''), item.get('color', ''), item['quantity'], product['price']))
     
     db.commit()
     
@@ -631,6 +620,33 @@ def profile_update():
     db.commit()
     flash('پروفایل بروزرسانی شد ✓', 'success')
     return redirect(url_for('profile'))
+
+
+@app.route('/about')
+def about():
+    settings = {}
+    db = get_db()
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('about.html', settings=settings)
+
+@app.route('/contact')
+def contact():
+    settings = {}
+    db = get_db()
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('contact.html', settings=settings)
+
+@app.route('/contact/submit', methods=['POST'])
+def contact_submit():
+    name = request.form.get('name', '')
+    email = request.form.get('email', '')
+    subject = request.form.get('subject', '')
+    message = request.form.get('message', '')
+    if name and email and message:
+        flash('پیام شما با موفقیت ارسال شد ✓', 'success')
+    else:
+        flash('لطفاً تمام فیلدها را پر کنید', 'warning')
+    return redirect(url_for('contact'))
 
 # ==================== ADMIN PANEL ====================
 @app.route('/admin')
@@ -914,6 +930,7 @@ def admin_change_username():
 @app.route('/admin/add-category', methods=['POST'])
 @admin_required
 def admin_add_category():
+    import re
     name = request.form.get('name', '').strip()
     icon = request.form.get('icon', '📁').strip()
     
@@ -922,7 +939,16 @@ def admin_add_category():
         return redirect(url_for('admin_settings'))
     
     db = get_db()
-    db.execute('INSERT INTO categories (name, icon, is_active) VALUES (?, ?, 1)', (name, icon))
+    
+    # Build a unique slug from the name (categories.slug is UNIQUE NOT NULL)
+    base_slug = re.sub(r'[^a-z0-9\u0600-\u06FF]+', '-', name.lower()).strip('-') or 'category'
+    slug = base_slug
+    counter = 1
+    while db.execute('SELECT id FROM categories WHERE slug = ?', (slug,)).fetchone():
+        counter += 1
+        slug = f'{base_slug}-{counter}'
+    
+    db.execute('INSERT INTO categories (name, slug, icon) VALUES (?, ?, ?)', (name, slug, icon))
     db.commit()
     flash(f'دسته‌بندی "{name}" اضافه شد ✓', 'success')
     return redirect(url_for('admin_settings'))
@@ -1031,7 +1057,34 @@ def admin_cover():
     return redirect(url_for('admin_settings'))
 
 
+@app.route('/tryon/<int:product_id>')
+def virtual_tryon(product_id):
+    db = get_db()
+    product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
+    if not product:
+        flash('محصول یافت نشد', 'warning')
+        return redirect(url_for('home'))
+    
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    
+    # Get available colors
+    colors = []
+    if product['colors']:
+        colors = [c.strip() for c in product['colors'].split(',')]
+    
+    # Default mannequin colors
+    mannequin_colors = [
+        {'name': 'سفید', 'hex': '#FFFFFF'},
+        {'name': 'کرم', 'hex': '#F5F5DC'},
+        {'name': 'صورتی', 'hex': '#FFB6C1'},
+        {'name': 'طوسی', 'hex': '#808080'},
+        {'name': 'مشکی', 'hex': '#000000'},
+    ]
+    
+    return render_template('tryon.html', product=product, colors=colors, 
+                         mannequin_colors=mannequin_colors, settings=settings)
 
+# ==================== API ====================
 @app.route('/api/cart/add', methods=['POST'])
 def api_cart_add():
     data = request.get_json()
@@ -1060,27 +1113,10 @@ with app.app_context():
 import os
 
 
-
-@app.route('/admin/migrate-product-images')
-def migrate_product_images():
-    from flask import session as sess
-    if not sess.get('user_id'):
-        return redirect(url_for('login'))
-    db = get_db()
-    try:
-        db.execute('CREATE TABLE IF NOT EXISTS product_images (id INTEGER PRIMARY KEY AUTOINCREMENT, product_id INTEGER NOT NULL, image TEXT NOT NULL, color_name TEXT DEFAULT "", color_hex TEXT DEFAULT "", sort_order INTEGER DEFAULT 0, FOREIGN KEY (product_id) REFERENCES products(id))')
-        db.commit()
-        flash('جداول تصاویر رنگ‌ها ساخته شد', 'success')
-    except Exception as e:
-        flash('خطا: ' + str(e), 'danger')
-    return redirect(url_for('admin_products'))
-
 @app.route('/admin/migrate-add-image-back')
+@admin_required
 def migrate_image_back():
     """Add image_back column to products table"""
-    from flask import session as sess
-    if not sess.get('user_id'):
-        return redirect(url_for('login'))
     db = get_db()
     try:
         db.execute('ALTER TABLE products ADD COLUMN image_back TEXT')
@@ -1090,70 +1126,10 @@ def migrate_image_back():
         flash('ستون قبلاً اضافه شده بود', 'info')
     return redirect(url_for('admin_products'))
 
-
-@app.route('/admin/product/<int:product_id>/images')
-def admin_product_images(product_id):
-    from flask import session as sess
-    if not sess.get('user_id'):
-        return redirect(url_for('login'))
-    db = get_db()
-    product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
-    if not product:
-        flash('محصول یافت نشد', 'danger')
-        return redirect(url_for('admin_products'))
-    images = db.execute('SELECT * FROM product_images WHERE product_id = ? ORDER BY sort_order', (product_id,)).fetchall()
-    return render_template('admin/product_images.html', product=product, images=images)
-
-@app.route('/admin/product/<int:product_id>/images/add', methods=['POST'])
-def admin_product_image_add(product_id):
-    from flask import session as sess
-    if not sess.get('user_id'):
-        return redirect(url_for('login'))
-    db = get_db()
-    if 'image' in request.files and request.files['image'].filename:
-        image = request.files['image']
-        filename = 'product_' + secrets.token_hex(8) + os.path.splitext(image.filename)[1]
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        os.makedirs(os.path.dirname(filepath), exist_ok=True)
-        image.save(filepath)
-        image_path = '/uploads/' + filename
-        color_name = request.form.get('color_name', '')
-        color_hex = request.form.get('color_hex', '')
-        sort_order = db.execute('SELECT COUNT(*) FROM product_images WHERE product_id = ?', (product_id,)).fetchone()[0]
-        db.execute('INSERT INTO product_images (product_id, image, color_name, color_hex, sort_order) VALUES (?, ?, ?, ?, ?)',
-                   (product_id, image_path, color_name, color_hex, sort_order))
-        db.commit()
-        flash('تصویر اضافه شد ✓', 'success')
-    return redirect(url_for('admin_product_images', product_id=product_id))
-
-@app.route('/admin/product/<int:product_id>/images/delete/<int:image_id>')
-def admin_product_image_delete(product_id, image_id):
-    from flask import session as sess
-    if not sess.get('user_id'):
-        return redirect(url_for('login'))
-    db = get_db()
-    db.execute('DELETE FROM product_images WHERE id = ? AND product_id = ?', (image_id, product_id))
-    db.commit()
-    flash('تصویر حذف شد', 'success')
-    return redirect(url_for('admin_product_images', product_id=product_id))
-
-
-def tryon(product_id):
-    db = get_db()
-    product = db.execute('SELECT * FROM products WHERE id = ?', (product_id,)).fetchone()
-    if not product:
-        flash('محصول یافت نشد', 'danger')
-        return redirect(url_for('products_page'))
-    product_images = db.execute('SELECT * FROM product_images WHERE product_id = ? ORDER BY sort_order', (product_id,)).fetchall()
-    return render_template('tryon.html', product=product, product_images=product_images)
-
 @app.route('/admin/setup-demo-images')
+@admin_required
 def setup_demo_images():
     """Setup demo images for products - run once"""
-    from flask import session as sess
-    if not sess.get('user_id'):
-        return redirect(url_for('login'))
-    
     db = get_db()
     demo_images = {
         1: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&h=800&fit=crop',
@@ -1175,38 +1151,6 @@ def setup_demo_images():
     flash('عکس‌های نمونه اضافه شد ✓', 'success')
     return redirect(url_for('admin_products'))
 
-
-
-@app.route('/about')
-def about():
-    settings = {}
-    db = get_db()
-    try:
-        settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    except Exception:
-        pass
-    return render_template('about.html', settings=settings)
-@app.route('/contact')
-def contact():
-    settings = {}
-    db = get_db()
-    try:
-        settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    except Exception:
-        pass
-    return render_template('contact.html', settings=settings)
-
-@app.route('/contact/submit', methods=['POST'])
-def contact_submit():
-    name = request.form.get('name', '').strip()
-    phone = request.form.get('phone', '').strip()
-    email = request.form.get('email', '').strip()
-    subject = request.form.get('subject', '').strip()
-    message = request.form.get('message', '').strip()
-    if not name or not phone or not message:
-        return jsonify({'success': False, 'message': 'فیلدهای ضروری را پر کنید'})
-    print(f"[CONTACT] New message from {name} ({phone}) - {subject}: {message}")
-    return jsonify({'success': True, 'message': 'پیام شما با موفقیت ارسال شد'})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
