@@ -125,6 +125,17 @@ def init_db():
             value TEXT
         );
         
+        CREATE TABLE IF NOT EXISTS banners (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT,
+            subtitle TEXT,
+            image TEXT,
+            link TEXT,
+            is_active INTEGER DEFAULT 1,
+            sort_order INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        
         CREATE TABLE IF NOT EXISTS messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -1437,6 +1448,69 @@ def admin_message_delete(msg_id):
     db.execute('DELETE FROM messages WHERE id = ?', (msg_id,))
     db.commit()
     return jsonify({'success': True})
+
+
+# ==================== BANNER MANAGEMENT ====================
+@app.route('/admin/banners')
+@admin_required
+def admin_banners():
+    db = get_db()
+    banners = db.execute('SELECT * FROM banners ORDER BY sort_order ASC').fetchall()
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/banners.html', banners=banners, settings=settings)
+
+@app.route('/admin/banners/add', methods=['POST'])
+@admin_required
+def admin_banner_add():
+    db = get_db()
+    title = request.form.get('title', '')
+    subtitle = request.form.get('subtitle', '')
+    link = request.form.get('link', '/products')
+    sort_order = request.form.get('sort_order', 0, type=int)
+    
+    image_url = ''
+    if 'image' in request.files:
+        file = request.files['image']
+        if file.filename:
+            import base64 as b64
+            ext = file.filename.rsplit('.', 1)[-1].lower()
+            data = file.read()
+            b64_string = b64.b64encode(data).decode()
+            image_url = f'data:image/{ext};base64,{b64_string}'
+    
+    db.execute('INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)',
+               (title, subtitle, image_url, link, sort_order))
+    db.commit()
+    flash('بنر جدید اضافه شد ✓', 'success')
+    return redirect(url_for('admin_banners'))
+
+@app.route('/admin/banners/<int:banner_id>/delete', methods=['POST'])
+@admin_required
+def admin_banner_delete(banner_id):
+    db = get_db()
+    db.execute('DELETE FROM banners WHERE id = ?', (banner_id,))
+    db.commit()
+    flash('بنر حذف شد', 'info')
+    return redirect(url_for('admin_banners'))
+
+@app.route('/admin/banners/<int:banner_id>/toggle', methods=['POST'])
+@admin_required
+def admin_banner_toggle(banner_id):
+    db = get_db()
+    banner = db.execute('SELECT is_active FROM banners WHERE id = ?', (banner_id,)).fetchone()
+    if banner:
+        new_status = 0 if banner['is_active'] else 1
+        db.execute('UPDATE banners SET is_active = ? WHERE id = ?', (new_status, banner_id))
+        db.commit()
+    return jsonify({'success': True})
+
+# Get banners for homepage
+def get_banners():
+    db = get_db()
+    try:
+        return db.execute('SELECT * FROM banners WHERE is_active = 1 ORDER BY sort_order ASC LIMIT 5').fetchall()
+    except:
+        return []
 
 # ==================== INIT DB ON STARTUP ====================
 with app.app_context():

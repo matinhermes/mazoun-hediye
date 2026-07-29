@@ -166,14 +166,50 @@ img{max-width:100%;display:block}
 </div>
 </header>
 
-<!-- Hero -->
-<div class="hero" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%); display:flex; align-items:center; justify-content:center;">
-<div class="hero-content" style="position:relative; bottom:auto; padding:40px;">
-<div class="hero-title" style="color:#c9a96e">مجموعه جدید تابستان ۱۴۰۵</div>
-<div class="hero-sub" style="color:#fff">طراحی شده برای زنان مدرن</div>
-<a href="/products" class="hero-btn" style="border-color:#c9a96e; color:#c9a96e">مشاهده مجموعه</a>
+<!-- Hero - Dynamic Banners -->
+{% if banners %}
+<div class="hero" style="position:relative;height:70vh;min-height:400px;overflow:hidden">
+{% for banner in banners %}
+<div class="banner-slide" style="position:absolute;inset:0;opacity:{{ 1 if loop.first else 0 }};transition:opacity 0.5s" data-index="{{ loop.index0 }}">
+{% if banner.image %}
+<img src="{{ banner.image }}" alt="{{ banner.title }}" style="width:100%;height:100%;object-fit:cover">
+<div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.6))"></div>
+{% else %}
+<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#2d2d2d)"></div>
+{% endif %}
+<div style="position:absolute;bottom:60px;left:0;right:0;text-align:center;color:#fff;padding:0 20px">
+{% if banner.title %}<div style="font-size:36px;font-weight:700;margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,0.5)">{{ banner.title }}</div>{% endif %}
+{% if banner.subtitle %}<div style="font-size:16px;margin-bottom:20px;opacity:0.9">{{ banner.subtitle }}</div>{% endif %}
+<a href="{{ banner.link or '/products' }}" style="display:inline-block;padding:14px 40px;border:1px solid #fff;color:#fff;font-size:13px;letter-spacing:1px;transition:all 0.3s" onmouseover="this.style.background='#fff';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#fff'">مشاهده</a>
 </div>
 </div>
+{% endfor %}
+{% if banners|length > 1 %}
+<div style="position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:10">
+{% for banner in banners %}
+<div class="banner-dot" style="width:10px;height:10px;border-radius:50%;background:{{ '#fff' if loop.first else 'rgba(255,255,255,0.4)' }};cursor:pointer" onclick="goToBanner({{ loop.index0 }})"></div>
+{% endfor %}
+</div>
+{% endif %}
+</div>
+{% else %}
+<!-- Default hero if no banners -->
+<div class="hero" style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center">
+<div style="text-align:center;padding:40px">
+<div style="font-size:40px;font-weight:700;color:#c9a96e;margin-bottom:16px">مجموعه جدید تابستان ۱۴۰۵</div>
+<div style="color:#fff;margin-bottom:24px">طراحی شده برای زنان مدرن</div>
+<a href="/products" style="display:inline-block;padding:14px 40px;border:1px solid #c9a96e;color:#c9a96e;font-size:13px">مشاهده مجموعه</a>
+</div>
+</div>
+{% endif %}
+
+<script>
+var currentBanner=0;var totalBanners={{ banners|length if banners else 0 }};
+function goToBanner(n){var slides=document.querySelectorAll('.banner-slide');var dots=document.querySelectorAll('.banner-dot');slides.forEach(function(s){s.style.opacity='0'});dots.forEach(function(d){d.style.background='rgba(255,255,255,0.4)'});if(slides[n]){slides[n].style.opacity='1'}if(dots[n]){dots[n].style.background='#fff'}currentBanner=n}
+{% if banners and banners|length > 1 %}
+setInterval(function(){var next=(currentBanner+1)%totalBanners;goToBanner(next)},4000);
+{% endif %}
+</script>
 
 <!-- Features -->
 <div class="feats">

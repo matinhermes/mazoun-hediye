@@ -142,6 +142,18 @@ a{color:inherit;text-decoration:none}
 
 <p class="pi-desc">{{ product.description }}</p>
 
+{% if product.colors %}
+<div style="margin-bottom:16px">
+<div class="size-label">🎨 انتخاب رنگ</div>
+<div class="sizes" id="colorBtns">
+{% set color_list = product.colors.split(',') if product.colors else [] %}
+{% for c in color_list %}
+<button class="size-btn {% if loop.first %}active{% endif %}" onclick="selectColor(this,'{{ c }}')" style="min-width:60px">{{ c }}</button>
+{% endfor %}
+</div>
+</div>
+{% endif %}
+
 <div class="size-label">📐 انتخاب سایز</div>
 <div class="sizes">
 {% set size_list = product.sizes.split(',') if product.sizes else ['36','38','40','42','44','46'] %}
@@ -174,10 +186,12 @@ a{color:inherit;text-decoration:none}
 
 <script>
 var selectedSize="{{ size_list[0] }}";
+var selectedColor="{{ product.colors.split(',')[0] if product.colors else '' }}";
 var qty=1;
-function selectSize(el,s){document.querySelectorAll('.size-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');selectedSize=s}
+function selectSize(el,s){document.querySelectorAll('.sizes:not(#colorBtns) .size-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');selectedSize=s}
+function selectColor(el,c){document.querySelectorAll('#colorBtns .size-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');selectedColor=c}
 function changeQty(d){qty=Math.max(1,qty+d);document.getElementById('qty').textContent=qty}
-function addToCart(id){fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,size:selectedSize,quantity:qty})}).then(function(r){return r.json()}).then(function(d){if(d.success){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#43a047;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn';t.textContent='✓ به سبد اضافه شد';document.body.appendChild(t);setTimeout(function(){t.remove()},3000)}})}
+function addToCart(id){fetch('/cart/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({product_id:id,size:selectedSize,color:selectedColor,quantity:qty})}).then(function(r){return r.json()}).then(function(d){if(d.success){var t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#43a047;color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;z-index:9999;font-family:Vazirmatn';t.textContent='✓ به سبد اضافه شد';document.body.appendChild(t);setTimeout(function(){t.remove()},3000)}})}
 
 // 3D rotation
 var wrap=document.getElementById('pdImage'),card=document.getElementById('card3d');

@@ -1,0 +1,87 @@
+{% extends "admin/base.html" %}
+{% block title %}مدیریت بنرها{% endblock %}
+{% block content %}
+<h1 class="page-title">🖼️ مدیریت بنرها (حداکثر ۵ بنر)</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for cat, msg in messages %}
+<div class="flash flash-{{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!-- اضافه کردن بنر جدید -->
+<div class="card">
+<h3 style="color:#c9a96e;margin-bottom:16px">➕ بنر جدید</h3>
+{% if banners|length < 5 %}
+<form method="POST" action="/admin/banners/add" enctype="multipart/form-data">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+<div class="form-group">
+<label class="form-label">عنوان بنر</label>
+<input name="title" class="form-input" placeholder="مثلاً: مجموعه جدید تابستان">
+</div>
+<div class="form-group">
+<label class="form-label">زیرعنوان</label>
+<input name="subtitle" class="form-input" placeholder="مثلاً: ۳۰٪ تخفیف ویژه">
+</div>
+<div class="form-group">
+<label class="form-label">لینک</label>
+<input name="link" class="form-input" value="/products" placeholder="/products">
+</div>
+<div class="form-group">
+<label class="form-label">اولویت نمایش</label>
+<input name="sort_order" type="number" class="form-input" value="0">
+</div>
+</div>
+<div class="form-group">
+<label class="form-label">عکس بنر</label>
+<input type="file" name="image" accept="image/*" class="form-input" required>
+<p style="color:#888;font-size:11px;margin-top:4px">ابعاد پیشنهادی: ۱۹۲۰×۶۰۰ پیکسل</p>
+</div>
+<button type="submit" class="btn btn-primary">➕ اضافه کردن بنر</button>
+</form>
+{% else %}
+<p style="color:#e53935;font-size:14px">⚠️ حداکثر ۵ بنر مجاز است. ابتدا یکی را حذف کنید.</p>
+{% endif %}
+</div>
+
+<!-- لیست بنرها -->
+<div class="card">
+<h3 style="color:#c9a96e;margin-bottom:16px">📋 بنرهای فعلی ({{ banners|length }}/۵)</h3>
+{% if banners %}
+{% for banner in banners %}
+<div style="display:flex;gap:16px;align-items:center;padding:12px;background:#0a0a0a;border:1px solid #222;border-radius:8px;margin-bottom:8px;{% if not banner.is_read %}border-right:3px solid #c9a96e{% endif %}">
+{% if banner.image %}
+<img src="{{ banner.image }}" style="width:120px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #333">
+{% else %}
+<div style="width:120px;height:60px;background:#222;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#666">بدون عکس</div>
+{% endif %}
+<div style="flex:1">
+<div style="font-weight:600;font-size:14px">{{ banner.title or 'بدون عنوان' }}</div>
+<div style="color:#888;font-size:12px">{{ banner.subtitle or '' }} | لینک: {{ banner.link }}</div>
+<div style="color:#666;font-size:11px;margin-top:4px">اولویت: {{ banner.sort_order }} | وضعیت: {% if banner.is_active %}✅ فعال{% else %}❌ غیرفعال{% endif %}</div>
+</div>
+<div style="display:flex;gap:8px">
+<button class="btn btn-sm" style="background:#333;color:#fff" onclick="toggleBanner({{ banner.id }}, this)">
+{% if banner.is_active %}غیرفعال{% else %}فعال{% endif %}
+</button>
+<form method="POST" action="/admin/banners/{{ banner.id }}/delete" style="display:inline" onsubmit="return confirm('بنر حذف شود؟')">
+<button type="submit" class="btn btn-sm" style="background:#e53935;color:#fff">حذف</button>
+</form>
+</div>
+</div>
+{% endfor %}
+{% else %}
+<p style="color:#888;text-align:center;padding:20px">هنوز بنری اضافه نشده</p>
+{% endif %}
+</div>
+
+<script>
+function toggleBanner(id, btn) {
+    fetch('/admin/banners/' + id + '/toggle', {method:'POST'}).then(function(r){return r.json()}).then(function(d){
+        if(d.success) location.reload();
+    });
+}
+</script>
+{% endblock %}
