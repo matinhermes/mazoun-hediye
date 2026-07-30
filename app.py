@@ -1551,7 +1551,7 @@ def admin_banners():
     db = get_db()
     banners = db.execute('SELECT * FROM banners ORDER BY sort_order ASC').fetchall()
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    return render_template('admin/banners.html', banners=banners, settings=settings)
+    return render_template('admin/banners.html', banners=banners, settings=settings, default_banners=DEFAULT_BANNERS)
 
 @app.route('/admin/banners/add', methods=['POST'])
 @admin_required

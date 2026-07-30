@@ -17,38 +17,6 @@
     <a href="/admin/default-banners/add-all" class="btn btn-sm" style="background:#c9a96e;color:#000" onclick="return confirm('۳۰ بنر پیش‌فرض اضافه شود؟')">➕ افزودن همه (۳۰ بنر)</a>
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
-{% set default_banners = [
-    {"title": "مجموعه جدید تابستان", "subtitle": "تا ۳۰٪ تخفیف ویژه", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)"},
-    {"title": "ارسال رایگان", "subtitle": "برای خریدهای بالای ۱۰ میلیون تومان", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)"},
-    {"title": "شومیز مجلسی", "subtitle": "طراحی خاص و منحصر بفرد", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)"},
-    {"title": "ست زنانه", "subtitle": "هماهنگ و شیک", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)"},
-    {"title": "مانتو کلاسیک", "subtitle": "کیفیت تضمینی", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)"},
-    {"title": "فروش ویژه", "subtitle": "تا ۵۰٪ تخفیف", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)"},
-    {"title": "شلوار راحتی", "subtitle": "راحت و شیک", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)"},
-    {"title": "کلکسیون پاییزه", "subtitle": "جدیدترین مدهای پاییز", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)"},
-    {"title": "ست اداری", "subtitle": "حرفه‌ای و مدرن", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)"},
-    {"title": "لباس مجلسی", "subtitle": "برای مهمانی‌های خاص", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)"},
-    {"title": "تخفیف فصلی", "subtitle": "بهترین فرصت خرید", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)"},
-    {"title": "شومیز ابریشمی", "subtitle": "لوکس و باکیفیت", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)"},
-    {"title": "ست زمستانه", "subtitle": "گرم و شیک", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)"},
-    {"title": "مانتو اسپرت", "subtitle": "راحت و مدرن", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)"},
-    {"title": "پیشنهاد ویژه", "subtitle": "فقط تا پایان هفته", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)"},
-    {"title": "شلوار مجلسی", "subtitle": "شیک و متفاوت", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)"},
-    {"title": "کلکسیون بهاره", "subtitle": "سبک و راحت", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)"},
-    {"title": "ست کژوال", "subtitle": "روزانه و راحت", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)"},
-    {"title": "لباس راحتی", "subtitle": "کیفیت عالی", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)"},
-    {"title": "تخفیف ویژه", "subtitle": "فقط اعضای باشگاه", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)"},
-    {"title": "شومیز کلاسیک", "subtitle": "ساده و زیبا", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)"},
-    {"title": "ست مجلسی", "subtitle": "لوکس و خاص", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)"},
-    {"title": "مانتو مجلسی", "subtitle": "برای مراسم خاص", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)"},
-    {"title": "حراج پایان فصل", "subtitle": "تا ۷۰٪ تخفیف", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)"},
-    {"title": "شلوار راحتی", "subtitle": "نرم و سبک", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)"},
-    {"title": "ست تابستانه", "subtitle": "خنک و شیک", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)"},
-    {"title": "شومیز زمستانه", "subtitle": "گرم و شیک", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)"},
-    {"title": "مانتو اداری", "subtitle": "حرفه‌ای و مدرن", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)"},
-    {"title": "ست راحتی", "subtitle": "برای روزمره", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)"},
-    {"title": "پیشنهاد ویژه", "subtitle": "محبوب‌ترین‌های مزون هدیه", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)"},
-] %}
 {% for b in default_banners %}
 <div style="border-radius:8px;overflow:hidden;border:1px solid #333">
     <div style="background:{{ b.gradient }};height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:8px">
