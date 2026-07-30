@@ -1524,15 +1524,14 @@ with app.app_context():
         print('[SEED] Database was empty - seeded with sample data')
 
 
-@app.route('/admin/download-images')
+@app.route('/admin/fix-images')
 @admin_required
-def download_images():
-    """Download product images and store as base64 so they work in Iran"""
-    import urllib.request
-    import base64 as b64
+def fix_images():
+    """Fix all products - replace CSS gradients with actual image paths"""
     db = get_db()
     
-    image_urls = {
+    # Map product IDs to correct image paths
+    image_map = {
         1: '/static/images/products/1_shomiz.jpg',
         2: '/static/images/products/2_manto.jpg',
         3: '/static/images/products/3_set.jpg',
@@ -1545,8 +1544,65 @@ def download_images():
         10: '/static/images/products/10_shalvar2.jpg',
     }
     
-    downloaded = 0
-    errors = 0
+    fixed = 0
+    for pid, img_path in image_map.items():
+        db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
+        fixed += 1
+    
+    # Also fix any products with gradient images
+    db.execute("UPDATE products SET image = '/static/images/products/1_shomiz.jpg' WHERE image LIKE '%gradient%'")
+    
+    db.commit()
+    flash(f'تصاویر {fixed} محصول بروزرسانی شد ✓', 'success')
+    return redirect(url_for('admin_products'))
+
+@app.route('/admin/download-images')
+@admin_required
+def download_images():
+    """Legacy route - redirects to fix-images"""
+    return redirect(url_for('fix_images'))
+
+@app.route('/admin/fix-all')
+@admin_required
+def fix_all():
+    """Fix all site issues at once"""
+    db = get_db()
+    
+    # 1. Fix product images
+    image_map = {
+        1: '/static/images/products/1_shomiz.jpg',
+        2: '/static/images/products/2_manto.jpg',
+        3: '/static/images/products/3_set.jpg',
+        4: '/static/images/products/4_shalvar.jpg',
+        5: '/static/images/products/5_shomiz2.jpg',
+        6: '/static/images/products/6_manto2.jpg',
+        7: '/static/images/products/7_set2.jpg',
+        8: '/static/images/products/8_shomiz3.jpg',
+        9: '/static/images/products/9_manto3.jpg',
+        10: '/static/images/products/10_shalvar2.jpg',
+    }
+    for pid, img_path in image_map.items():
+        db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
+    db.execute("UPDATE products SET image = '/static/images/products/1_shomiz.jpg' WHERE image LIKE '%gradient%'")
+    
+    # 2. Add default banners if empty
+    banner_count = db.execute('SELECT COUNT(*) FROM banners').fetchone()[0]
+    if banner_count == 0:
+        db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
+                   ('مجموعه جدید تابستان', 'تا ۳۰٪ تخفیف ویژه', '', '/products', 1))
+        db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
+                   ('ارسال رایگان', 'برای خریدهای بالای ۱۰ میلیون تومان', '', '/products', 2))
+    
+    # 3. Fix settings
+    db.execute("DELETE FROM settings WHERE key = 'shop_email'")
+    
+    db.commit()
+    flash('همه مشکلات سایت برطرف شد ✓', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+# Legacy route
+def download_images_old():
+    pass
     for pid, url in image_urls.items():
         try:
             req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
