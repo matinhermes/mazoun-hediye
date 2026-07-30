@@ -1,0 +1,128 @@
+{% extends "admin/base.html" %}
+{% block title %}ویرایش صفحات{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">📄 ویرایش صفحات</div>
+  <a href="/admin" style="font-size:12px;color:var(--primary)">بازگشت</a>
+</div>
+
+<!-- About Page -->
+<div class="section">
+  <div class="section-title"><span class="icon">📋</span> صفحه درباره ما</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/pages">
+      <input type="hidden" name="page" value="about">
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">عنوان صفحه</label>
+        <input type="text" name="about_title" value="{{ settings.get('about_title', 'درباره مزون هدیه') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">معرفی فروشگاه</label>
+        <textarea name="about_intro" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('about_intro', 'مزون هدیه فروشگاه تخصصی پوشاک زنانه با طراحی اختصاصی و کیفیت بالا.') }}</textarea>
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">داستان ما</label>
+        <textarea name="about_story" rows="4" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('about_story', '') }}</textarea>
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">چشم‌انداز ما</label>
+        <textarea name="about_vision" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('about_vision', '') }}</textarea>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">اینستاگرام</label>
+          <input type="text" name="about_instagram" value="{{ settings.get('about_instagram', '@mezonehediye.qom') }}" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">تلفن</label>
+          <input type="text" name="about_phone" value="{{ settings.get('about_phone', '۰۹۱۰۰۵۹۹۸۰۵') }}" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit" dir="ltr">
+        </div>
+      </div>
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره درباره ما</button>
+    </form>
+  </div>
+</div>
+
+<!-- Contact Page -->
+<div class="section">
+  <div class="section-title"><span class="icon">📞</span> صفحه تماس</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/pages">
+      <input type="hidden" name="page" value="contact">
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">عنوان صفحه</label>
+        <input type="text" name="contact_title" value="{{ settings.get('contact_title', 'تماس با ما') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">آدرس کامل</label>
+        <textarea name="contact_address" rows="2" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('contact_address', 'قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶') }}</textarea>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">تلفن</label>
+          <input type="text" name="contact_phone" value="{{ settings.get('contact_phone', '۰۹۱۰۰۵۹۹۸۰۵') }}" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit" dir="ltr">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">ساعت کاری</label>
+          <input type="text" name="contact_hours" value="{{ settings.get('contact_hours', 'همه روزه ساعت ۴ الی ۱۱') }}" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit">
+        </div>
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">ایمیل پشتیبانی</label>
+        <input type="text" name="contact_email" value="{{ settings.get('contact_email', '') }}" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره تماس</button>
+    </form>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section">
+  <div class="section-title"><span class="icon">❓</span> سوالات متداول</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/pages">
+      <input type="hidden" name="page" value="faq">
+      
+      {% for i in range(1, 6) %}
+      <div style="margin-bottom:12px;padding:10px;background:var(--bg);border-radius:8px">
+        <div style="font-size:12px;font-weight:600;margin-bottom:6px">سوال {{ i }}</div>
+        <input type="text" name="faq_q{{ i }}" value="{{ settings.get('faq_q' ~ i, '') }}" placeholder="سوال" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;margin-bottom:4px">
+        <textarea name="faq_a{{ i }}" rows="2" placeholder="پاسخ" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;resize:none">{{ settings.get('faq_a' ~ i, '') }}</textarea>
+      </div>
+      {% endfor %}
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره FAQ</button>
+    </form>
+  </div>
+</div>
+
+<!-- Return Policy -->
+<div class="section">
+  <div class="section-title"><span class="icon">🔄</span> شرایط مرجوعی</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/pages">
+      <input type="hidden" name="page" value="return">
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">متن شرایط مرجوعی</label>
+        <textarea name="return_policy" rows="4" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('return_policy', 'محصولات ظرف ۷ روز پس از تحویل قابل مرجوع هستند.') }}</textarea>
+      </div>
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره شرایط</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

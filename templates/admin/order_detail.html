@@ -1,41 +1,84 @@
 {% extends "admin/base.html" %}
 {% block title %}سفارش #{{ order.id }}{% endblock %}
 {% block content %}
-<h1 class="page-title">سفارش #{{ order.id }}</h1>
-<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
-<div>
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">اطلاعات مشتری</h3>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-<div><strong>نام:</strong> {{ order.full_name }}</div>
-<div><strong>تلفن:</strong> {{ order.phone }}</div>
-<div style="grid-column:1/-1"><strong>آدرس:</strong> {{ order.address }}</div>
-</div></div>
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">محصولات</h3>
-<table class="table">
-<tr><th>محصول</th><th>سایز</th><th>تعداد</th><th>قیمت</th></tr>
-{% for item in items %}
-<tr><td>{{ item.product_name }}</td><td>{{ item.size }}</td><td>{{ item.quantity }}</td><td style="color:#c9a96e">{{ "{:,}".format(item.price) }}</td></tr>
-{% endfor %}</table></div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">📋 سفارش #{{ order.id }}</div>
+  <a href="/admin/orders" style="font-size:12px;color:var(--primary)">بازگشت</a>
 </div>
-<div>
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">بروزرسانی وضعیت</h3>
-<form method="POST" action="/admin/orders/{{ order.id }}/status">
-<div class="form-group"><label class="form-label">وضعیت</label>
-<select name="status" class="form-input">
-<option value="pending" {{ "selected" if order.status == "pending" }}>در انتظار</option>
-<option value="processing" {{ "selected" if order.status == "processing" }}>پردازش</option>
-<option value="shipped" {{ "selected" if order.status == "shipped" }}>ارسال شده</option>
-<option value="delivered" {{ "selected" if order.status == "delivered" }}>تحویل شده</option>
-<option value="cancelled" {{ "selected" if order.status == "cancelled" }}>لغو شده</option></select></div>
-<div class="form-group"><label class="form-label">کد رهگیری</label><input name="tracking_code" value="{{ order.tracking_code or '' }}" class="form-input"></div>
-<div class="form-group"><label class="form-label">یادداشت</label><input name="note" value="{{ order.note or '' }}" class="form-input"></div>
-<button type="submit" class="btn btn-primary" style="width:100%">بروزرسانی</button></form></div>
-<div class="card">
-<div style="text-align:center"><div style="color:#888;font-size:13px">مبلغ کل</div><div style="font-size:28px;font-weight:700;color:#c9a96e">{{ "{:,}".format(order.total_amount) }} تومان</div></div>
+
+<!-- Order Info -->
+<div class="section">
+  <div class="panel" style="padding:14px">
+    <div class="order-row"><span class="order-label">مشتری</span><span class="order-value">{{ order.full_name or order.username or 'ناشناس' }}</span></div>
+    <div class="order-row"><span class="order-label">تلفن</span><span class="order-value" style="direction:ltr">{{ order.phone or '—' }}</span></div>
+    <div class="order-row"><span class="order-label">آدرس</span><span class="order-value" style="font-size:11px;text-align:left;flex:1;margin-right:12px">{{ order.address or '—' }}</span></div>
+    <div class="order-row"><span class="order-label">تاریخ</span><span class="order-value">{{ order.created_at[:16] if order.created_at else '—' }}</span></div>
+    <div class="order-row"><span class="order-label">مبلغ</span><span class="order-value" style="color:var(--primary);font-size:15px">{{ '{:,}'.format(order.total_amount|int) }} تومان</span></div>
+    <div class="order-row"><span class="order-label">وضعیت پرداخت</span>
+      {% if order.payment_status == 'paid' %}
+      <span class="order-status status-sent">پرداخت شده</span>
+      {% else %}
+      <span class="order-status status-pending">در انتظار</span>
+      {% endif %}
+    </div>
+    {% if order.tracking_code %}
+    <div class="order-row"><span class="order-label">کد رهگیری</span><span class="order-value" style="direction:ltr;color:var(--green)">{{ order.tracking_code }}</span></div>
+    {% endif %}
+    {% if order.note %}
+    <div class="order-row"><span class="order-label">یادداشت</span><span class="order-value" style="font-size:11px">{{ order.note }}</span></div>
+    {% endif %}
+  </div>
 </div>
-</div></div>
-<a href="/admin/orders" style="color:#c9a96e;display:inline-block;margin-top:16px">← بازگشت</a>
+
+<!-- Order Items -->
+<div class="section">
+  <div class="section-title"><span class="icon">📦</span> اقلام سفارش</div>
+  <div class="panel">
+    {% for item in items %}
+    <div class="panel-item">
+      <div class="pi-icon">📦</div>
+      <div class="pi-text">
+        <div style="font-size:13px;font-weight:500">{{ item.name or 'محصول حذف شده' }}</div>
+        <div style="font-size:11px;color:var(--text2)">{{ item.quantity }} عدد × {{ '{:,}'.format(item.price|int) }} تومان</div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--primary)">{{ '{:,}'.format((item.quantity * item.price)|int) }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<!-- Update Status -->
+<div class="section">
+  <div class="section-title"><span class="icon">✏️</span> بروزرسانی سفارش</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/orders/{{ order.id }}/update">
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">وضعیت سفارش</label>
+        <select name="status" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+          <option value="pending" {% if order.status == 'pending' %}selected{% endif %}>⏳ در انتظار پرداخت</option>
+          <option value="paid" {% if order.status == 'paid' %}selected{% endif %}>💰 پرداخت شده</option>
+          <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>🔄 در حال آماده‌سازی</option>
+          <option value="sent" {% if order.status == 'sent' %}selected{% endif %}>🚚 ارسال شده</option>
+          <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>✅ تحویل شده</option>
+          <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>❌ لغو شده</option>
+        </select>
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">کد رهگیری پستی</label>
+        <input type="text" name="tracking_code" value="{{ order.tracking_code or '' }}" placeholder="مثلاً: RR123456789IR" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">یادداشت (داخلی)</label>
+        <textarea name="note" rows="2" placeholder="یادداشت برای این سفارش..." style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ order.note or '' }}</textarea>
+      </div>
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره تغییرات</button>
+    </form>
+  </div>
+</div>
+
 {% endblock %}

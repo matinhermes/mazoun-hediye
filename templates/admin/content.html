@@ -1,0 +1,127 @@
+{% extends "admin/base.html" %}
+{% block title %}مدیریت محتوا{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">📝 مدیریت محتوا</div>
+  <a href="/admin" style="font-size:12px;color:var(--primary)">بازگشت</a>
+</div>
+
+<!-- Site Identity -->
+<div class="section">
+  <div class="section-title"><span class="icon">🏪</span> هویت فروشگاه</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/content">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">نام فروشگاه</label>
+        <input type="text" name="shop_name" value="{{ settings.get('shop_name', 'مزون هدیه') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">نام انگلیسی</label>
+        <input type="text" name="shop_name_en" value="{{ settings.get('shop_name_en', 'Maison Hediye') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">دامنه سایت</label>
+        <input type="text" name="domain" value="{{ settings.get('domain', 'mezonehediye.ir') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">توضیحات سایت (SEO)</label>
+        <textarea name="site_description" rows="2" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('site_description', 'فروشگاه آنلاین مد و پوشاک زنانه') }}</textarea>
+      </div>
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+
+<!-- Announcement Bar -->
+<div class="section">
+  <div class="section-title"><span class="icon">📢</span> نوار اعلامیه بالای سایت</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/content">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">متن اعلامیه</label>
+        <input type="text" name="announcement" value="{{ settings.get('announcement', 'ارسال رایگان بالای ۱۰ میلیون تومان') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">لینک (اختیاری)</label>
+        <input type="text" name="announcement_link" value="{{ settings.get('announcement_link', '/products') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+
+<!-- Logo -->
+<div class="section">
+  <div class="section-title"><span class="icon">🎨</span> لوگوی فروشگاه</div>
+  <div class="panel" style="padding:14px;text-align:center">
+    {% if settings.get('logo') %}
+    <img src="{{ settings.get('logo') }}" style="max-height:80px;border-radius:50%;margin-bottom:10px">
+    {% else %}
+    <img src="/static/images/logo.jpg" style="max-height:80px;border-radius:50%;margin-bottom:10px">
+    {% endif %}
+    <form method="POST" action="/admin/logo" enctype="multipart/form-data">
+      <input type="file" name="logo" accept="image/*" style="font-size:12px;margin-bottom:8px">
+      <button type="submit" style="width:100%;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🔄 تغییر لوگو</button>
+    </form>
+  </div>
+</div>
+
+<!-- Footer Content -->
+<div class="section">
+  <div class="section-title"><span class="icon">📄</span> فوتر سایت</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/content">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">متن فوتر</label>
+        <textarea name="footer_text" rows="2" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('footer_text', 'فروشگاه آنلاین مد و پوشاک زنانه با طراحی اختصاصی و کیفیت بالا') }}</textarea>
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">متن کپی‌رایت</label>
+        <input type="text" name="copyright" value="{{ settings.get('copyright', '۱۴۰۵ Maison Hediye. تمامی حقوق محفوظ است.') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+
+<!-- Homepage Texts -->
+<div class="section">
+  <div class="section-title"><span class="icon">🏠</span> متن‌های صفحه اصلی</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/content">
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">عنوان اصلی هیرو</label>
+        <input type="text" name="hero_title" value="{{ settings.get('hero_title', 'مجموعه جدید تابستان ۱۴۰۵') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">زیرعنوان هیرو</label>
+        <input type="text" name="hero_subtitle" value="{{ settings.get('hero_subtitle', 'طراحی شده برای زنان مدرن') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <div style="margin-bottom:10px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">متن دکمه هیرو</label>
+        <input type="text" name="hero_btn" value="{{ settings.get('hero_btn', 'مشاهده مجموعه') }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+
+<!-- Features Section -->
+<div class="section">
+  <div class="section-title"><span class="icon">✨</span> ویژگی‌های سایت</div>
+  <div class="panel" style="padding:14px">
+    <form method="POST" action="/admin/content">
+      {% for i in range(1, 5) %}
+      <div style="margin-bottom:10px;padding:10px;background:var(--bg);border-radius:8px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">ویژگی {{ i }}</label>
+        <input type="text" name="feature_{{ i }}" value="{{ settings.get('feature_' ~ i, '') }}" placeholder="مثلاً: طراحی اختصاصی" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;margin-bottom:4px">
+        <input type="text" name="feature_{{ i }}_sub" value="{{ settings.get('feature_' ~ i ~ '_sub', '') }}" placeholder="زیرعنوان" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit">
+      </div>
+      {% endfor %}
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -947,8 +947,11 @@ def admin_orders():
 def admin_order_detail(order_id):
     db = get_db()
     order = db.execute('SELECT * FROM orders WHERE id = ?', (order_id,)).fetchone()
-    items = db.execute('''SELECT oi.*, p.image FROM order_items oi
-        JOIN products p ON oi.product_id = p.id
+    if not order:
+        flash('سفارش یافت نشد', 'danger')
+        return redirect(url_for('admin_orders'))
+    items = db.execute('''SELECT oi.*, p.name, p.image FROM order_items oi
+        LEFT JOIN products p ON oi.product_id = p.id
         WHERE oi.order_id = ?''', (order_id,)).fetchall()
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
     return render_template('admin/order_detail.html', order=order, items=items, settings=settings)
@@ -1867,6 +1870,61 @@ def setup_demo_images():
     flash('عکس‌های نمونه اضافه شد ✓', 'success')
     return redirect(url_for('admin_products'))
 
+
+
+# ====== CONTENT MANAGEMENT ======
+@app.route('/admin/content', methods=['GET', 'POST'])
+@admin_required
+def admin_content():
+    db = get_db()
+    if request.method == 'POST':
+        for key in request.form:
+            val = request.form[key]
+            existing = db.execute('SELECT id FROM settings WHERE key=?', (key,)).fetchone()
+            if existing:
+                db.execute('UPDATE settings SET value=? WHERE key=?', (val, key))
+            else:
+                db.execute('INSERT INTO settings (key, value) VALUES (?,?)', (key, val))
+        db.commit()
+        flash('محتوا بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_content'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/content.html', settings=settings)
+
+@app.route('/admin/pages', methods=['GET', 'POST'])
+@admin_required
+def admin_pages():
+    db = get_db()
+    if request.method == 'POST':
+        for key in request.form:
+            val = request.form[key]
+            existing = db.execute('SELECT id FROM settings WHERE key=?', (key,)).fetchone()
+            if existing:
+                db.execute('UPDATE settings SET value=? WHERE key=?', (val, key))
+            else:
+                db.execute('INSERT INTO settings (key, value) VALUES (?,?)', (key, val))
+        db.commit()
+        flash('صفحه بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_pages'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/pages.html', settings=settings)
+
+@app.route('/admin/orders/<int:order_id>/update', methods=['POST'])
+@admin_required
+def admin_order_update(order_id):
+    db = get_db()
+    status = request.form.get('status', '')
+    tracking = request.form.get('tracking_code', '')
+    note = request.form.get('note', '')
+    if status:
+        db.execute('UPDATE orders SET status=? WHERE id=?', (status, order_id))
+    if tracking:
+        db.execute('UPDATE orders SET tracking_code=? WHERE id=?', (tracking, order_id))
+    if note:
+        db.execute('UPDATE orders SET note=? WHERE id=?', (note, order_id))
+    db.commit()
+    flash('سفارش بروزرسانی شد ✓', 'success')
+    return redirect(url_for('admin_order_detail', order_id=order_id))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
