@@ -300,8 +300,12 @@ def home():
     featured = db.execute('SELECT * FROM products WHERE is_featured = 1 AND is_active = 1 LIMIT 6').fetchall()
     products = db.execute('SELECT * FROM products WHERE is_active = 1 ORDER BY created_at DESC LIMIT 12').fetchall()
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    try:
+        banners = db.execute('SELECT * FROM banners WHERE is_active = 1 ORDER BY sort_order ASC LIMIT 5').fetchall()
+    except:
+        banners = []
     return render_template('index.html', categories=categories, featured=featured, 
-                         products=products, settings=settings)
+                         products=products, settings=settings, banners=banners)
 
 @app.route('/products')
 def products_page():
