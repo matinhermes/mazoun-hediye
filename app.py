@@ -1673,7 +1673,11 @@ def health():
 
 @app.route('/7156027.txt')
 def enamad_verify():
-    return '7156027', 200, {'Content-Type': 'text/plain'}
+    from flask import send_from_directory
+    try:
+        return send_from_directory('static', '7156027.txt')
+    except:
+        return '7156027', 200, {'Content-Type': 'text/plain'}
 
 
 @app.route('/admin/fix-images')
