@@ -1671,6 +1671,10 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok', 'version': '2.0'})
 
+@app.route('/V104927.txt')
+def enamad_verify():
+    return 'V104927', 200, {'Content-Type': 'text/plain'}
+
 
 @app.route('/admin/fix-images')
 @admin_required
