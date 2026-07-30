@@ -163,7 +163,7 @@ a{color:inherit;text-decoration:none}
 <a href="/contact">تماس با ما</a>
 </div>
 <div style="display:flex;align-items:center;gap:12px">
-<span>📞 ۰۹۱۰۰۵۹۹۸۰۵</span>
+<span>📞 {{ settings.get("phone", "۰۹۱۰۰۵۹۹۸۰۵") }}</span>
 <button class="theme-toggle" onclick="toggleTheme()" title="حالت روز/شب">🌙</button>
 </div>
 </div>
@@ -316,9 +316,9 @@ a{color:inherit;text-decoration:none}
 <div>
 <div class="footer-title">اطلاعات فروشگاه</div>
 <ul class="footer-links">
-<li>📍 قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶</li>
-<li>📞 ۰۹۱۰۰۵۹۹۸۰۵</li>
-<li>🕐 همه روزه | ساعت ۴ الی ۱۱</li>
+<li>📍 {{ settings.get("address", "قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶") }}</li>
+<li>📞 {{ settings.get("phone", "۰۹۱۰۰۵۹۹۸۰۵") }}</li>
+<li>🕐 همه روزه | {{ settings.get("working_hours", "همه روزه ساعت ۴ الی ۱۱") }}</li>
 </ul>
 </div>
 </div>

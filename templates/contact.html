@@ -171,7 +171,7 @@ a{color:inherit;text-decoration:none}
 <a href="/contact">تماس با ما</a>
 </div>
 <div style="display:flex;align-items:center;gap:12px">
-<span>📞 ۰۹۱۰۰۵۹۹۸۰۵</span>
+<span>📞 {{ settings.get("phone", "۰۹۱۰۰۵۹۹۸۰۵") }}</span>
 <button class="theme-toggle" onclick="toggleTheme()" title="حالت روز/شب">🌙</button>
 </div>
 </div>
@@ -276,7 +276,7 @@ a{color:inherit;text-decoration:none}
 <div class="info-card-content">
 <p>با ما تماس بگیرید، کارشناسان ما آماده پاسخگویی هستند</p>
 <p style="margin-top:8px"><a href="tel:09100599805" class="dir-ltr">۰۹۱۰-۰۵۹-۹۸۰۵</a></p>
-<p style="font-size:12px;color:var(--text2);margin-top:4px">همه روزه | ساعت ۴ الی ۱۱</p>
+<p style="font-size:12px;color:var(--text2);margin-top:4px">همه روزه | {{ settings.get("working_hours", "همه روزه ساعت ۴ الی ۱۱") }}</p>
 </div>
 </div>
 
@@ -310,7 +310,7 @@ a{color:inherit;text-decoration:none}
 <div class="map-placeholder">
 <div class="map-icon">🗺️</div>
 <div class="map-text">فروشگاه آنلاین مزون هدیه</div>
-<div class="map-address">📍 قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶</div>
+<div class="map-address">📍 {{ settings.get("address", "قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶") }}</div>
 </div>
 </div>
 </div>
@@ -381,8 +381,8 @@ a{color:inherit;text-decoration:none}
 <div>
 <div class="footer-title">اطلاعات فروشگاه</div>
 <ul class="footer-links">
-<li>📍 قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶</li>
-<li>📞 ۰۹۱۰۰۵۹۹۸۰۵</li>
+<li>📍 {{ settings.get("address", "قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶") }}</li>
+<li>📞 {{ settings.get("phone", "۰۹۱۰۰۵۹۹۸۰۵") }}</li>
 <li>🕐 همه روزه</li>
 </ul>
 </div>

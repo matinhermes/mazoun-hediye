@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="fa" dir="rtl"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>7156027 | {{ settings.get('shop_name', 'مزون هدیه') }}</title>
-<meta name="enamad" content="7156027" />
+<meta name="enamad" content="{{ settings.get('enamad_id', '7156027') }}" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -141,7 +141,7 @@ img{max-width:100%;display:block}
 </head>
 <body>
 
-<div class="ann" style="display:flex;justify-content:space-between;padding:8px 40px"><span>ارسال رایگان بالای ۱۰ میلیون تومان</span><span><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> @mezonehediye.qom | 📞 ۰۹۱۰۰۵۹۹۸۰۵</span></div>
+<div class="ann" style="display:flex;justify-content:space-between;padding:8px 40px"><span>{{ settings.get('announcement', 'ارسال رایگان بالای ۱۰ میلیون تومان') }}</span><span><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> @mezonehediye.qom | 📞 ۰۹۱۰۰۵۹۹۸۰۵</span></div>
 
 <header class="hdr">
 <div class="hdr-top">
@@ -149,7 +149,7 @@ img{max-width:100%;display:block}
 <a href="/products" class="hdr-icon">🔍</a>
 </div>
 <div class="hdr-center">
-<a href="/" style="display:flex;align-items:center;gap:8px"><img src="/static/images/logo.jpg" alt="مزون هدیه" style="height:36px;border-radius:50%"><span class="logo-text">Maison Hediye</span></a>
+<a href="/" style="display:flex;align-items:center;gap:8px"><img src="/static/images/logo.jpg" alt="{{ settings.get('shop_name', 'مزون هدیه') }}" style="height:36px;border-radius:50%"><span class="logo-text">{{ settings.get('shop_name_en', 'Maison Hediye') }}</span></a>
 </div>
 <div class="hdr-right">
 <a href="/login" class="hdr-icon">👤</a>
@@ -202,9 +202,9 @@ img{max-width:100%;display:block}
 <!-- Default hero if no banners -->
 <div class="hero" style="background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center">
 <div style="text-align:center;padding:40px">
-<div style="font-size:40px;font-weight:700;color:#c9a96e;margin-bottom:16px">مجموعه جدید تابستان ۱۴۰۵</div>
-<div style="color:#fff;margin-bottom:24px">طراحی شده برای زنان مدرن</div>
-<a href="/products" style="display:inline-block;padding:14px 40px;border:1px solid #c9a96e;color:#c9a96e;font-size:13px">مشاهده مجموعه</a>
+<div style="font-size:40px;font-weight:700;color:#c9a96e;margin-bottom:16px">{{ settings.get('hero_title', 'مجموعه جدید تابستان ۱۴۰۵') }}</div>
+<div style="color:#fff;margin-bottom:24px">{{ settings.get('hero_subtitle', 'طراحی شده برای زنان مدرن') }}</div>
+<a href="/products" style="display:inline-block;padding:14px 40px;border:1px solid #c9a96e;color:#c9a96e;font-size:13px">{{ settings.get('hero_btn', 'مشاهده مجموعه') }}</a>
 </div>
 </div>
 {% endif %}
@@ -239,10 +239,10 @@ initBanner();
 
 <!-- Features -->
 <div class="feats">
-<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">طراحی اختصاصی</div><div class="feat-sub">منحصر به فرد</div></div>
-<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">کیفیت تضمینی</div><div class="feat-sub">۱۰۰٪ اورجینال</div></div>
-<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">ارسال رایگان</div><div class="feat-sub">بالای ۱۰ میلیون</div></div>
-<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">بازگشت آسان</div><div class="feat-sub">تا ۷ روز</div></div>
+<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">{{ settings.get("feature_1", "طراحی اختصاصی") }}</div><div class="feat-sub">{{ settings.get("feature_1_sub", "منحصر به فرد") }}</div></div>
+<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">{{ settings.get("feature_2", "کیفیت تضمینی") }}</div><div class="feat-sub">{{ settings.get("feature_2_sub", "۱۰۰٪ اورجینال") }}</div></div>
+<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">{{ settings.get("feature_3", "ارسال رایگان") }}</div><div class="feat-sub">{{ settings.get("feature_3_sub", "بالای ۱۰ میلیون") }}</div></div>
+<div class="feat"><div class="feat-icon">✦</div><div class="feat-title">{{ settings.get("feature_4", "بازگشت آسان") }}</div><div class="feat-sub">{{ settings.get("feature_4_sub", "تا ۷ روز") }}</div></div>
 </div>
 
 <!-- Categories -->
@@ -350,7 +350,7 @@ initBanner();
 <div class="ftr-grid">
 <div>
 <div class="ftr-brand">Maison Hediye</div>
-<div class="ftr-desc">فروشگاه آنلاین مد و پوشاک زنانه با طراحی اختصاصی و کیفیت بالا</div>
+<div class="ftr-desc">{{ settings.get('footer_text', 'فروشگاه آنلاین مد و پوشاک زنانه با طراحی اختصاصی و کیفیت بالا') }}</div>
 </div>
 <div>
 <div class="ftr-title">دسترسی</div>
@@ -380,7 +380,7 @@ initBanner();
 </div>
 </div>
 <div class="ftr-bottom">
-<span>© ۱۴۰۵ Maison Hediye. تمامی حقوق محفوظ است.</span>
+<span>© {{ settings.get('copyright', '۱۴۰۵ Maison Hediye. تمامی حقوق محفوظ است.') }}</span>
 <div class="ftr-social">
 <a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
 <a href="#">✈️</a>
