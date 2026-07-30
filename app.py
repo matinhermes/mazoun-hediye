@@ -1310,7 +1310,11 @@ def digipay_verify():
 
 
 # ==================== ZARINPAL PAYMENT ====================
-import requests as req_lib
+try:
+    import requests as req_lib
+except ImportError:
+    req_lib = None
+    print('[WARN] requests module not installed - payment gateways disabled')
 
 @app.route('/payment/<int:order_id>')
 @login_required
@@ -1340,6 +1344,9 @@ def zarinpal_request(order_id):
     else:
         zarinpal_url = 'https://api.zarinpal.com/pg/rest/WebGate/PaymentRequest.json'
     
+    if not req_lib:
+        flash('کتابخانه requests نصب نشده. لطفاً با مدیر سایت تماس بگیرید.', 'danger')
+        return redirect(url_for('order_detail', order_id=order_id))
     try:
         payload = {
             'MerchantID': merchant_id,
@@ -1513,61 +1520,69 @@ def get_banners():
         return []
 
 # ==================== INIT DB ON STARTUP ====================
-with app.app_context():
-    init_db()
-    
-    db = get_db()
-    
-    # Auto-seed if DB is empty (after Render redeploy)
-    count = db.execute('SELECT COUNT(*) FROM products').fetchone()[0]
-    if count == 0:
+try:
+    with app.app_context():
         init_db()
-        print('[SEED] Database was empty - seeded with sample data')
-    
-    # AUTO-FIX: Fix gradient images on every startup
-    image_map = {
-        1: '/static/images/products/1_shomiz.jpg',
-        2: '/static/images/products/2_manto.jpg',
-        3: '/static/images/products/3_set.jpg',
-        4: '/static/images/products/4_shalvar.jpg',
-        5: '/static/images/products/5_shomiz2.jpg',
-        6: '/static/images/products/6_manto2.jpg',
-        7: '/static/images/products/7_set2.jpg',
-        8: '/static/images/products/8_shomiz3.jpg',
-        9: '/static/images/products/9_manto3.jpg',
-        10: '/static/images/products/10_shalvar2.jpg',
-    }
-    fixed = 0
-    for pid, img_path in image_map.items():
-        result = db.execute('UPDATE products SET image = ? WHERE id = ? AND (image LIKE ? OR image IS NULL OR image = ?)', 
-                           (img_path, pid, '%gradient%', ''))
-        if result.rowcount > 0:
-            fixed += 1
-    
-    # Also fix any remaining gradient images
-    db.execute("UPDATE products SET image = '/static/images/products/1_shomiz.jpg' WHERE image LIKE '%gradient%'")
-    
-    # Add default banners if empty
-    try:
-        banner_count = db.execute('SELECT COUNT(*) FROM banners').fetchone()[0]
-        if banner_count == 0:
-            db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
-                       ('مجموعه جدید تابستان', 'تا ۳۰٪ تخفیف ویژه', '', '/products', 1))
-            db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
-                       ('ارسال رایگان', 'برای خریدهای بالای ۱۰ میلیون تومان', '', '/products', 2))
-            print('[FIX] Default banners added')
-    except:
-        pass
-    
-    # Fix settings
-    db.execute("DELETE FROM settings WHERE key = 'shop_email'")
-    db.execute("UPDATE settings SET value = '۰۹۱۰۰۵۹۹۸۰۵' WHERE key = 'shop_phone'")
-    db.execute("UPDATE settings SET value = 'قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶' WHERE key = 'shop_address'")
-    db.execute("UPDATE settings SET value = '10000000' WHERE key = 'free_shipping_min'")
-    
-    db.commit()
-    if fixed > 0:
-        print(f'[FIX] Fixed {fixed} product images')
+        
+        db = get_db()
+        
+        # Auto-seed if DB is empty
+        count = db.execute('SELECT COUNT(*) FROM products').fetchone()[0]
+        if count == 0:
+            init_db()
+            print('[SEED] Database was empty - seeded with sample data')
+        
+        # Fix gradient images
+        try:
+            image_map = {
+                1: '/static/images/products/1_shomiz.jpg',
+                2: '/static/images/products/2_manto.jpg',
+                3: '/static/images/products/3_set.jpg',
+                4: '/static/images/products/4_shalvar.jpg',
+                5: '/static/images/products/5_shomiz2.jpg',
+                6: '/static/images/products/6_manto2.jpg',
+                7: '/static/images/products/7_set2.jpg',
+                8: '/static/images/products/8_shomiz3.jpg',
+                9: '/static/images/products/9_manto3.jpg',
+                10: '/static/images/products/10_shalvar2.jpg',
+            }
+            for pid, img_path in image_map.items():
+                db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
+            db.execute("UPDATE products SET image = '/static/images/products/1_shomiz.jpg' WHERE image LIKE '%gradient%'")
+            print('[FIX] Product images fixed')
+        except Exception as e:
+            print(f'[WARN] Image fix failed: {e}')
+        
+        # Add banners if empty
+        try:
+            banner_count = db.execute('SELECT COUNT(*) FROM banners').fetchone()[0]
+            if banner_count == 0:
+                db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
+                           ('مجموعه جدید تابستان', 'تا ۳۰٪ تخفیف ویژه', '', '/products', 1))
+                db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
+                           ('ارسال رایگان', 'برای خریدهای بالای ۱۰ میلیون تومان', '', '/products', 2))
+                print('[FIX] Default banners added')
+        except Exception as e:
+            print(f'[WARN] Banner fix failed: {e}')
+        
+        # Fix settings
+        try:
+            db.execute("DELETE FROM settings WHERE key = 'shop_email'")
+            db.execute("UPDATE settings SET value = '۰۹۱۰۰۵۹۹۸۰۵' WHERE key = 'shop_phone'")
+            db.execute("UPDATE settings SET value = 'قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶' WHERE key = 'shop_address'")
+            db.execute("UPDATE settings SET value = '10000000' WHERE key = 'free_shipping_min'")
+            print('[FIX] Settings fixed')
+        except Exception as e:
+            print(f'[WARN] Settings fix failed: {e}')
+        
+        db.commit()
+except Exception as e:
+    print(f'[ERROR] Startup migration failed: {e}')
+
+# Health check
+@app.route('/health')
+def health():
+    return jsonify({'status': 'ok', 'version': '2.0'})
 
 
 @app.route('/admin/fix-images')
