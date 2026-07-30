@@ -1489,7 +1489,7 @@ def admin_banner_add():
             b64_string = b64.b64encode(data).decode()
             image_url = f'data:image/{ext};base64,{b64_string}'
     
-    db.execute('INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)',
+    db.execute('INSERT INTO banners (title, subtitle, image, link, is_active, sort_order) VALUES (?, ?, ?, ?, 1, ?)',
                (title, subtitle, image_url, link, sort_order))
     db.commit()
     flash('بنر جدید اضافه شد ✓', 'success')

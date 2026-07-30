@@ -204,11 +204,31 @@ img{max-width:100%;display:block}
 {% endif %}
 
 <script>
-var currentBanner=0;var totalBanners={{ banners|length if banners else 0 }};
-function goToBanner(n){var slides=document.querySelectorAll('.banner-slide');var dots=document.querySelectorAll('.banner-dot');slides.forEach(function(s){s.style.opacity='0'});dots.forEach(function(d){d.style.background='rgba(255,255,255,0.4)'});if(slides[n]){slides[n].style.opacity='1'}if(dots[n]){dots[n].style.background='#fff'}currentBanner=n}
-{% if banners and banners|length > 1 %}
-setInterval(function(){var next=(currentBanner+1)%totalBanners;goToBanner(next)},4000);
-{% endif %}
+var currentBanner=0;
+var slides=document.querySelectorAll('.banner-slide');
+var dots=document.querySelectorAll('.banner-dot');
+var totalBanners=slides.length;
+
+function goToBanner(n){
+    slides.forEach(function(s){s.style.opacity='0'});
+    dots.forEach(function(d){d.style.background='rgba(255,255,255,0.4)'});
+    if(slides[n])slides[n].style.opacity='1';
+    if(dots[n])dots[n].style.background='#fff';
+    currentBanner=n;
+}
+
+// Auto rotate
+if(totalBanners>1){
+    setInterval(function(){
+        var next=(currentBanner+1)%totalBanners;
+        goToBanner(next);
+    },4000);
+}
+
+// Show first banner
+if(slides[0])slides[0].style.opacity='1';
+if(dots[0])dots[0].style.background='#fff';
+
 </script>
 
 <!-- Features -->
