@@ -1,64 +1,132 @@
 {% extends "admin/base.html" %}
-{% block title %}{{ "ویرایش" if product else "محصول جدید" }}{% endblock %}
+{% block title %}{% if product %}ویرایش محصول{% else %}افزودن محصول{% endif %}{% endblock %}
 {% block content %}
-<h1 class="page-title">{{ "ویرایش محصول" if product else "محصول جدید" }}</h1>
-<form method="POST" enctype="multipart/form-data">
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">📸 تصویر محصول</h3>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-<div>
-<div style="color:#888;font-size:12px;margin-bottom:6px">عکس جلو</div>
-<div class="image-upload" style="height:150px">
-<input type="file" name="image" accept="image/*" onchange="previewImage(this,'imagePreview','uploadPlaceholder')">
-<div id="uploadPlaceholder"><div style="font-size:32px">📷</div><div style="color:#888;font-size:13px">عکس جلو</div></div>
-<img id="imagePreview" style="max-width:100%;max-height:150px;border-radius:8px;display:none">
-</div>
-{% if product and product.image %}<div style="margin-top:8px"><img src="{{ product.image }}" style="max-width:100%;max-height:100px;border-radius:8px;border:1px solid #222"></div>{% endif %}
-</div>
-<div>
-<div style="color:#888;font-size:12px;margin-bottom:6px">عکس پشت (اختیاری)</div>
-<div class="image-upload" style="height:150px">
-<input type="file" name="image_back" accept="image/*" onchange="previewImage(this,'imageBackPreview','uploadPlaceholder2')">
-<div id="uploadPlaceholder2"><div style="font-size:32px">📷</div><div style="color:#888;font-size:13px">عکس پشت</div></div>
-<img id="imageBackPreview" style="max-width:100%;max-height:150px;border-radius:8px;display:none">
-</div>
-{% if product and product.image_back %}<div style="margin-top:8px"><img src="{{ product.image_back }}" style="max-width:100%;max-height:100px;border-radius:8px;border:1px solid #222"></div>{% endif %}
-</div>
-</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">{% if product %}✏️ ویرایش محصول{% else %}➕ افزودن محصول{% endif %}</div>
+  <a href="/admin/products" style="font-size:12px;color:var(--primary)">بازگشت</a>
 </div>
 
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">📝 اطلاعات</h3>
-<div class="form-group"><label class="form-label">نام محصول *</label><input name="name" class="form-input" value="{{ product.name if product else '' }}" required></div>
-<div class="form-group"><label class="form-label">توضیحات</label><textarea name="description" class="form-input" rows="3">{{ product.description if product else '' }}</textarea></div>
-<div class="form-row">
-<div class="form-group"><label class="form-label">قیمت (تومان) *</label><input name="price" type="number" class="form-input" value="{{ product.price if product else '' }}" required></div>
-<div class="form-group"><label class="form-label">قیمت قبلی</label><input name="old_price" type="number" class="form-input" value="{{ product.old_price if product else '' }}"></div>
+<form method="POST" action="{% if product %}/admin/products/edit/{{ product.id }}{% else %}/admin/products/add{% endif %}" style="padding:0 16px 80px">
+
+<!-- Image Preview -->
+<div style="margin-bottom:12px;text-align:center">
+  {% if product and product.image %}
+  <img id="imgPreview" src="{{ product.image }}" style="max-height:160px;border-radius:10px;border:1px solid var(--border)">
+  {% else %}
+  <div id="imgPreview" style="width:100%;height:120px;background:#f0f0f0;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;border:2px dashed var(--border)">📷 عکس محصول</div>
+  {% endif %}
 </div>
-<div class="form-row">
-<div class="form-group"><label class="form-label">دسته‌بندی</label><select name="category_id" class="form-input">{% for c in categories %}<option value="{{ c.id }}" {{ "selected" if product and product.category_id == c.id }}>{{ c.icon }} {{ c.name }}</option>{% endfor %}</select></div>
-<div class="form-group"><label class="form-label">موجودی</label><input name="stock" type="number" class="form-input" value="{{ product.stock if product else 100 }}"></div>
+
+<!-- Image Upload -->
+<div class="panel" style="padding:14px;margin-bottom:12px">
+  <div style="font-size:13px;font-weight:600;margin-bottom:8px">🖼️ عکس محصول</div>
+  <input type="file" name="image" accept="image/*" id="imageInput" style="width:100%;font-size:12px">
+  <input type="hidden" name="image" id="imageData" value="{{ product.image if product else '' }}">
 </div>
-<div class="form-group"><label class="form-label">سایزها</label>
-<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
-{% set default_sizes = ['36','38','40','42','44','46'] %}
-{% set product_sizes = product.sizes.split(',') if product and product.sizes else default_sizes %}
-{% for size in default_sizes %}
-<label class="checkbox-label" style="padding:8px 12px;background:#0a0a0a;border:1px solid #222;border-radius:6px"><input type="checkbox" name="sizes_list" value="{{ size }}" {{ 'checked' if size in product_sizes }}> {{ size }}</label>
-{% endfor %}</div>
-<input type="hidden" name="sizes" id="sizesInput" value="{{ product.sizes if product else '36,38,40,42,44,46' }}">
-<div style="color:#888;font-size:11px;margin-top:6px">36(XS) | 38(S) | 40(M) | 42(L) | 44(XL) | 46(XXL)</div></div>
-<div class="form-group"><label class="form-label">رنگ‌ها (با کاما)</label><input name="colors" class="form-input" value="{{ product.colors if product else '' }}" placeholder="#000000,#FFFFFF,#FFB6C1"></div>
-<div style="display:flex;gap:16px;margin-top:16px">
-<label class="checkbox-label"><input type="checkbox" name="is_featured" {{ "checked" if product and product.is_featured }}> پرفروش</label>
-{% if product %}<label class="checkbox-label"><input type="checkbox" name="is_active" {{ "checked" if product.is_active }}> فعال</label>{% endif %}
+
+<!-- Basic Info -->
+<div class="panel" style="padding:14px;margin-bottom:12px">
+  <div style="font-size:13px;font-weight:600;margin-bottom:10px">📝 اطلاعات اصلی</div>
+  
+  <div style="margin-bottom:10px">
+    <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">نام محصول *</label>
+    <input type="text" name="name" value="{{ product.name if product else '' }}" required style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+  </div>
+  
+  <div style="margin-bottom:10px">
+    <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">توضیحات</label>
+    <textarea name="description" rows="3" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ product.description if product else '' }}</textarea>
+  </div>
+  
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div>
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">دسته‌بندی</label>
+      <select name="category_id" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+        <option value="0">بدون دسته</option>
+        {% for cat in categories %}
+        <option value="{{ cat.id }}" {% if product and product.category_id == cat.id %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div>
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">رنگ</label>
+      <input type="text" name="color" value="{{ product.color if product else '' }}" placeholder="مثلاً مشکی,سفید" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+    </div>
+  </div>
 </div>
-<div style="display:flex;gap:12px;margin-top:20px">
-<button type="submit" class="btn btn-primary">{{ "ذخیره" if product else "افزودن" }}</button>
-<a href="/admin/products" style="padding:10px 20px;color:#888;text-decoration:none">انصراف</a>
-</div></div></form>
+
+<!-- Price -->
+<div class="panel" style="padding:14px;margin-bottom:12px">
+  <div style="font-size:13px;font-weight:600;margin-bottom:10px">💰 قیمت و موجودی</div>
+  
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+    <div>
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">قیمت (تومان) *</label>
+      <input type="number" name="price" value="{{ product.price if product else '' }}" required style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+    </div>
+    <div>
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">قیمت قبلی (تومان)</label>
+      <input type="number" name="old_price" value="{{ product.old_price if product else '' }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+    </div>
+  </div>
+  
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div>
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">موجودی</label>
+      <input type="number" name="stock" value="{{ product.stock if product else '100' }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+    </div>
+    <div>
+      <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">سایزها</label>
+      <input type="text" name="sizes" value="{{ product.sizes if product else '36,38,40,42,44,46' }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+    </div>
+  </div>
+</div>
+
+<!-- Status -->
+<div class="panel" style="padding:14px;margin-bottom:12px">
+  <div style="font-size:13px;font-weight:600;margin-bottom:10px">⚙️ وضعیت</div>
+  
+  <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer">
+    <input type="checkbox" name="is_active" value="1" {% if not product or product.is_active %}checked{% endif %} style="width:18px;height:18px">
+    <span style="font-size:13px">فعال (نمایش در سایت)</span>
+  </label>
+  
+  <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+    <input type="checkbox" name="is_featured" value="1" {% if product and product.is_featured %}checked{% endif %} style="width:18px;height:18px">
+    <span style="font-size:13px">ویژه (نمایش در صفحه اصلی)</span>
+  </label>
+</div>
+
+<!-- Submit -->
+<button type="submit" style="width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
+  {% if product %}💾 ذخیره تغییرات{% else %}➕ افزودن محصول{% endif %}
+</button>
+
+</form>
+
+<!-- Image Preview JS -->
 <script>
-function previewImage(i,imgId,phId){if(i.files&&i.files[0]){var r=new FileReader();r.onload=function(e){document.getElementById(imgId).src=e.target.result;document.getElementById(imgId).style.display='block';document.getElementById(phId).style.display='none'};r.readAsDataURL(i.files[0])}}
-document.querySelectorAll('input[name="sizes_list"]').forEach(function(cb){cb.addEventListener('change',function(){var s=[];document.querySelectorAll('input[name="sizes_list"]:checked').forEach(function(c){s.push(c.value)});document.getElementById('sizesInput').value=s.join(',')})});
+document.getElementById('imageInput').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    if(file){
+        var reader = new FileReader();
+        reader.onload = function(ev){
+            var preview = document.getElementById('imgPreview');
+            if(preview.tagName === 'IMG'){
+                preview.src = ev.target.result;
+            } else {
+                var img = document.createElement('img');
+                img.id = 'imgPreview';
+                img.src = ev.target.result;
+                img.style.cssText = 'max-height:160px;border-radius:10px;border:1px solid var(--border)';
+                preview.parentNode.replaceChild(img, preview);
+            }
+            document.getElementById('imageData').value = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
 </script>
+
 {% endblock %}

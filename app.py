@@ -967,6 +967,49 @@ def admin_order_status(order_id):
     flash('وضعیت سفارش بروزرسانی شد ✓', 'success')
     return redirect(url_for('admin_order_detail', order_id=order_id))
 
+
+# ====== CATEGORY MANAGEMENT ======
+@app.route('/admin/categories')
+@admin_required
+def admin_categories():
+    db = get_db()
+    categories = db.execute('''SELECT c.*, COUNT(p.id) as product_count 
+        FROM categories c LEFT JOIN products p ON c.id = p.category_id 
+        GROUP BY c.id ORDER BY c.name''').fetchall()
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/categories.html', categories=categories, settings=settings)
+
+@app.route('/admin/categories/add', methods=['POST'])
+@admin_required
+def admin_category_add():
+    db = get_db()
+    name = request.form.get('name', '').strip()
+    if name:
+        db.execute('INSERT INTO categories (name) VALUES (?)', (name,))
+        db.commit()
+        flash(f'دسته \"{name}\" اضافه شد ✓', 'success')
+    return redirect(url_for('admin_categories'))
+
+@app.route('/admin/categories/<int:cat_id>/edit', methods=['POST'])
+@admin_required
+def admin_category_edit(cat_id):
+    db = get_db()
+    name = request.form.get('name', '').strip()
+    if name:
+        db.execute('UPDATE categories SET name = ? WHERE id = ?', (name, cat_id))
+        db.commit()
+        flash('دسته بروزرسانی شد ✓', 'success')
+    return redirect(url_for('admin_categories'))
+
+@app.route('/admin/categories/<int:cat_id>/delete')
+@admin_required
+def admin_category_delete(cat_id):
+    db = get_db()
+    db.execute('DELETE FROM categories WHERE id = ?', (cat_id,))
+    db.commit()
+    flash('دسته حذف شد ✓', 'success')
+    return redirect(url_for('admin_categories'))
+
 @app.route('/admin/settings', methods=['GET', 'POST'])
 @admin_required
 def admin_settings():
