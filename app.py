@@ -1671,13 +1671,13 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok', 'version': '2.0'})
 
-@app.route('/7156027.txt')
+@app.route('/8746527.txt')
 def enamad_verify():
     from flask import send_from_directory
     try:
-        return send_from_directory('static', '7156027.txt')
+        return send_from_directory('static', '8746527.txt')
     except:
-        return '7156027', 200, {'Content-Type': 'text/plain'}
+        return '8746527', 200, {'Content-Type': 'text/plain'}
 
 
 @app.route('/admin/fix-images')
