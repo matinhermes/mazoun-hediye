@@ -1,26 +1,56 @@
 {% extends "admin/base.html" %}
 {% block title %}محصولات{% endblock %}
 {% block content %}
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-<h1 class="page-title" style="margin:0">محصولات</h1>
-<a href="/admin/products/add" class="btn btn-primary">+ محصول جدید</a>
+
+<!-- Header -->
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">📦 محصولات ({{ products|length }})</div>
+  <a href="/admin/products/add" style="padding:6px 14px;background:var(--primary);color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none">➕ افزودن</a>
 </div>
 
-<div class="card" style="overflow-x:auto">
-<table class="table">
-<tr><th>تصویر</th><th>نام</th><th>دسته</th><th>قیمت</th><th>موجودی</th><th>عملیات</th></tr>
-{% for p in products %}
-<tr>
-<td>{% if p.image %}<img src="{{ p.image }}" style="width:50px;height:50px;border-radius:6px;object-fit:cover">{% else %}<div style="width:50px;height:50px;border-radius:6px;background:#1a1a1a;display:flex;align-items:center;justify-content:center">👗</div>{% endif %}</td>
-<td>{{ p.name }}</td>
-<td><span class="badge badge-info">{{ p.category_name or '-' }}</span></td>
-<td style="color:#c9a96e;font-weight:600">{{ "{:,}".format(p.price) }}</td>
-<td>{{ p.stock }}</td>
-<td style="white-space:nowrap">
-<a href="/admin/product/{{ p.id }}/images" class="btn btn-sm" style="background:rgba(183,110,121,0.15);color:#b76e79">🎨 رنگ‌ها</a>
-<a href="/admin/products/edit/{{ p.id }}" class="btn btn-sm" style="background:rgba(201,169,110,0.15);color:#c9a96e">ویرایش</a>
-<form method="POST" action="/admin/products/delete/{{ p.id }}" style="display:inline" onsubmit="return confirm('حذف شود؟')">
-<button type="submit" class="btn btn-sm btn-danger">حذف</button></form></td></tr>
+<!-- Search -->
+<div style="padding:0 16px 12px">
+  <div class="search-box">
+    <span>🔍</span>
+    <span>جستجوی محصول...</span>
+  </div>
+</div>
+
+<!-- Products Grid -->
+{% if not products %}
+<div style="text-align:center;padding:60px 20px;color:var(--text2)">
+  <div style="font-size:40px;margin-bottom:12px">📦</div>
+  <div style="font-size:14px">محصولی یافت نشد</div>
+  <a href="/admin/products/add" style="display:inline-block;margin-top:12px;padding:8px 20px;background:var(--primary);color:#fff;border-radius:8px;font-size:12px;text-decoration:none">افزودن محصول</a>
+</div>
+{% endif %}
+
+<div class="product-grid">
+{% for product in products %}
+<div class="product-card">
+  <div class="product-img">
+    {% if product.image and product.image.startswith('data:') %}
+    <img src="{{ product.image }}" alt="">
+    {% elif product.image and product.image.startswith('/') %}
+    <img src="{{ product.image }}" alt="">
+    {% elif product.image %}
+    <img src="{{ product.image }}" alt="">
+    {% else %}
+    <span style="color:#ccc;font-size:32px">📷</span>
+    {% endif %}
+  </div>
+  <div class="product-info">
+    <div class="product-name">{{ product.name }}</div>
+    <div class="product-price">{{ '{:,}'.format(product.price|int) }} تومان</div>
+    <div class="product-stock">موجودی: {{ product.stock }} عدد</div>
+  </div>
+  <div style="display:flex;border-top:1px solid var(--border)">
+    <a href="/admin/products/{{ product.id }}/edit" style="flex:1;padding:8px;text-align:center;font-size:11px;font-weight:600;color:var(--primary);text-decoration:none;border-left:1px solid var(--border)">✏️ ویرایش</a>
+    <a href="/admin/products/{{ product.id }}/images" style="flex:1;padding:8px;text-align:center;font-size:11px;font-weight:600;color:var(--blue);text-decoration:none;border-left:1px solid var(--border)">🖼️ عکس</a>
+    <a href="/admin/products/{{ product.id }}/delete" style="flex:1;padding:8px;text-align:center;font-size:11px;font-weight:600;color:var(--red);text-decoration:none" onclick="return confirm('حذف شود؟')">🗑️</a>
+  </div>
+</div>
 {% endfor %}
-</table></div>
+</div>
+
 {% endblock %}

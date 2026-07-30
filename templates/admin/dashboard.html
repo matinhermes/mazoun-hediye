@@ -1,31 +1,172 @@
 {% extends "admin/base.html" %}
 {% block title %}داشبورد{% endblock %}
 {% block content %}
-<h1 class="page-title">داشبورد مدیریت</h1>
 
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px">
-<div class="card" style="border-right:3px solid #c9a96e"><div style="font-size:28px;font-weight:700;color:#c9a96e">{{ stats.total_orders }}</div><div style="color:#888;font-size:13px">کل سفارشات</div></div>
-<div class="card" style="border-right:3px solid #ff9800"><div style="font-size:28px;font-weight:700;color:#ff9800">{{ stats.pending_orders }}</div><div style="color:#888;font-size:13px">در انتظار</div></div>
-<div class="card" style="border-right:3px solid #28a745"><div style="font-size:28px;font-weight:700;color:#28a745">{{ stats.total_products }}</div><div style="color:#888;font-size:13px">محصولات</div></div>
-<div class="card" style="border-right:3px solid #b76e79"><div style="font-size:28px;font-weight:700;color:#b76e79">{{ stats.total_users }}</div><div style="color:#888;font-size:13px">کاربران</div></div>
+<!-- Search Bars -->
+<div class="search-row">
+  <div class="search-box">
+    <span>🔍</span>
+    <span>جستجوی محصول</span>
+  </div>
+  <div class="search-box">
+    <span>👤</span>
+    <span>جستجوی مشتری</span>
+  </div>
 </div>
 
-<div class="card" style="background:linear-gradient(135deg,#111,#1a1a1a)">
-<div style="display:flex;justify-content:space-between;align-items:center">
-<div><div style="color:#888;font-size:13px;margin-bottom:4px">درآمد کل</div><div style="font-size:32px;font-weight:700;color:#28a745">{{ "{:,}".format(stats.total_revenue) }} تومان</div></div>
-<div style="font-size:48px;opacity:0.3">💰</div>
-</div></div>
-
-<div class="card">
-<div class="card-header"><div class="card-title">آخرین سفارشات</div><a href="/admin/orders" style="color:#c9a96e;font-size:13px;text-decoration:none">مشاهده همه →</a></div>
-{% for o in recent_orders %}
-<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #222">
-<div><strong>#{{ o.id }}</strong> {{ o.full_name }} <span style="color:#888;font-size:12px">{{ o.phone }}</span></div>
-<div style="display:flex;gap:12px;align-items:center">
-<span class="badge badge-warning">{{ o.status }}</span>
-<span style="color:#c9a96e;font-weight:600">{{ "{:,}".format(o.total_amount) }}</span>
-<a href="/admin/orders/{{ o.id }}" style="color:#c9a96e;text-decoration:none;font-size:12px">مشاهده</a>
-</div></div>
-{% endfor %}
+<!-- Quick Access Buttons -->
+<div class="quick-grid">
+  <a href="/admin/products" class="quick-btn">
+    <span class="icon">📦</span>
+    <span class="label">محصولات</span>
+    {% if product_count %}<span class="badge">{{ product_count }}</span>{% endif %}
+  </a>
+  <a href="/admin/orders" class="quick-btn">
+    <span class="icon">📋</span>
+    <span class="label">سفارشات</span>
+    {% if order_count %}<span class="badge">{{ order_count }}</span>{% endif %}
+  </a>
+  <a href="/admin/orders?status=pending" class="quick-btn">
+    <span class="icon">⏳</span>
+    <span class="label">در انتظار</span>
+    {% if pending_count %}<span class="badge">{{ pending_count }}</span>{% endif %}
+  </a>
+  <a href="/admin/banners" class="quick-btn">
+    <span class="icon">🖼️</span>
+    <span class="label">بنرها</span>
+  </a>
+  <a href="/admin/messages" class="quick-btn">
+    <span class="icon">💬</span>
+    <span class="label">پیام‌ها</span>
+    {% if message_count %}<span class="badge">{{ message_count }}</span>{% endif %}
+  </a>
+  <a href="/admin/users" class="quick-btn">
+    <span class="icon">👥</span>
+    <span class="label">کاربران</span>
+  </a>
+  <a href="/admin/categories" class="quick-btn">
+    <span class="icon">📁</span>
+    <span class="label">دسته‌بندی</span>
+  </a>
+  <a href="/admin/settings" class="quick-btn">
+    <span class="icon">⚙️</span>
+    <span class="label">تنظیمات</span>
+  </a>
+  <a href="/admin/fix-all" class="quick-btn" onclick="return confirm('اعمال اصلاحات؟')">
+    <span class="icon">🔧</span>
+    <span class="label">اصلاح همه</span>
+  </a>
 </div>
+
+<!-- Support Banner -->
+<div style="margin:0 16px 12px;padding:14px 16px;background:linear-gradient(135deg,var(--primary),#7B4FB5);border-radius:10px;color:#fff">
+  <div style="font-size:13px;font-weight:600;margin-bottom:4px">❓ سوال دارید؟ راهنمایی می‌خواهید؟</div>
+  <div style="font-size:11px;opacity:0.9">با پشتیبانی تماس بگیرید</div>
+</div>
+
+<!-- Financial Panel -->
+<div class="section">
+  <div class="section-title"><span class="icon">💰</span> مدیریت مالی</div>
+  <div class="panel">
+    <a href="/admin/orders" class="panel-item">
+      <div class="pi-icon">💰</div>
+      <div class="pi-text">دریافت پول و فروش</div>
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/orders?status=paid" class="panel-item">
+      <div class="pi-icon">📊</div>
+      <div class="pi-text">گزارش فروش</div>
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/settings" class="panel-item">
+      <div class="pi-icon">🏦</div>
+      <div class="pi-text">حساب بانکی</div>
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/messages" class="panel-item">
+      <div class="pi-icon">💬</div>
+      <div class="pi-text">پیام‌ها</div>
+      {% if message_count %}<div class="pi-badge">{{ message_count }}</div>{% endif %}
+      <div class="pi-arrow">‹</div>
+    </a>
+  </div>
+</div>
+
+<!-- Product Panel -->
+<div class="section">
+  <div class="section-title"><span class="icon">📦</span> مدیریت محصولات</div>
+  <div class="panel">
+    <a href="/admin/products" class="panel-item">
+      <div class="pi-icon">📦</div>
+      <div class="pi-text">لیست محصولات</div>
+      {% if product_count %}<div class="pi-badge">{{ product_count }}</div>{% endif %}
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/products/add" class="panel-item">
+      <div class="pi-icon">➕</div>
+      <div class="pi-text">افزودن محصول</div>
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/categories" class="panel-item">
+      <div class="pi-icon">📁</div>
+      <div class="pi-text">دسته‌بندی محصولات</div>
+      {% if category_count %}<div class="pi-badge">{{ category_count }}</div>{% endif %}
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/banners" class="panel-item">
+      <div class="pi-icon">🖼️</div>
+      <div class="pi-text">بنرهای تبلیغاتی</div>
+      <div class="pi-arrow">‹</div>
+    </a>
+  </div>
+</div>
+
+<!-- Orders Panel -->
+<div class="section">
+  <div class="section-title"><span class="icon">📋</span> مدیریت سفارشات</div>
+  <div class="panel">
+    <a href="/admin/orders" class="panel-item">
+      <div class="pi-icon">📋</div>
+      <div class="pi-text">لیست سفارشات</div>
+      {% if order_count %}<div class="pi-badge">{{ order_count }}</div>{% endif %}
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/orders?status=pending" class="panel-item">
+      <div class="pi-icon">⏳</div>
+      <div class="pi-text">سفارشات در انتظار</div>
+      {% if pending_count %}<div class="pi-badge">{{ pending_count }}</div>{% endif %}
+      <div class="pi-arrow">‹</div>
+    </a>
+    <a href="/admin/users" class="panel-item">
+      <div class="pi-icon">👥</div>
+      <div class="pi-text">مشتریان</div>
+      {% if user_count %}<div class="pi-badge">{{ user_count }}</div>{% endif %}
+      <div class="pi-arrow">‹</div>
+    </a>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="section">
+  <div class="section-title"><span class="icon">📊</span> آمار فروشگاه</div>
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">
+    <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;text-align:center">
+      <div style="font-size:24px;font-weight:700;color:var(--primary)">{{ product_count or 0 }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">محصول</div>
+    </div>
+    <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;text-align:center">
+      <div style="font-size:24px;font-weight:700;color:var(--green)">{{ order_count or 0 }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">سفارش</div>
+    </div>
+    <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;text-align:center">
+      <div style="font-size:24px;font-weight:700;color:var(--blue)">{{ user_count or 0 }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">کاربر</div>
+    </div>
+    <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;text-align:center">
+      <div style="font-size:24px;font-weight:700;color:var(--yellow)">{{ '%,d'.format(total_sales|int) if total_sales else '۰' }}</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:4px">تومان فروش</div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

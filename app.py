@@ -794,16 +794,22 @@ def contact_submit():
 @admin_required
 def admin_dashboard():
     db = get_db()
-    stats = {
-        'total_orders': db.execute('SELECT COUNT(*) FROM orders').fetchone()[0],
-        'pending_orders': db.execute("SELECT COUNT(*) FROM orders WHERE status = 'pending'").fetchone()[0],
-        'total_products': db.execute('SELECT COUNT(*) FROM products').fetchone()[0],
-        'total_users': db.execute('SELECT COUNT(*) FROM users').fetchone()[0],
-        'total_revenue': db.execute("SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE payment_status = 'paid'").fetchone()[0],
-    }
-    recent_orders = db.execute('SELECT * FROM orders ORDER BY created_at DESC LIMIT 10').fetchall()
-    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    return render_template('admin/dashboard.html', stats=stats, recent_orders=recent_orders, settings=settings)
+    product_count = db.execute('SELECT COUNT(*) FROM products').fetchone()[0]
+    order_count = db.execute('SELECT COUNT(*) FROM orders').fetchone()[0]
+    pending_count = db.execute("SELECT COUNT(*) FROM orders WHERE status='pending'").fetchone()[0]
+    user_count = db.execute('SELECT COUNT(*) FROM users').fetchone()[0]
+    message_count = 0
+    try:
+        message_count = db.execute('SELECT COUNT(*) FROM messages').fetchone()[0]
+    except:
+        pass
+    category_count = db.execute('SELECT COUNT(*) FROM categories').fetchone()[0]
+    total_sales = db.execute("SELECT COALESCE(SUM(total_amount),0) FROM orders WHERE status IN ('paid','sent')").fetchone()[0]
+    return render_template('admin/dashboard.html',
+        product_count=product_count, order_count=order_count,
+        pending_count=pending_count, user_count=user_count,
+        message_count=message_count, category_count=category_count,
+        total_sales=total_sales)
 
 @app.route('/admin/products')
 @admin_required

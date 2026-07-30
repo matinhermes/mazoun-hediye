@@ -1,25 +1,70 @@
 {% extends "admin/base.html" %}
-{% block title %}سفارشات{% endblock %}
+{% block title %}لیست سفارشات{% endblock %}
 {% block content %}
-<h1 class="page-title">سفارشات</h1>
-<div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
-<a href="/admin/orders" class="btn btn-sm" style="background:#1a1a1a;color:#e8e8e8;border:1px solid #222">همه</a>
-<a href="/admin/orders?status=pending" class="btn btn-sm" style="background:rgba(255,152,0,0.15);color:#ff9800;border:1px solid #ff9800">در انتظار</a>
-<a href="/admin/orders?status=shipped" class="btn btn-sm" style="background:rgba(201,169,110,0.15);color:#c9a96e;border:1px solid #c9a96e">ارسال شده</a>
-<a href="/admin/orders?status=delivered" class="btn btn-sm" style="background:rgba(40,167,69,0.15);color:#28a745;border:1px solid #28a745">تحویل شده</a>
+
+<!-- Header -->
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">📋 سفارشات ({{ orders|length }})</div>
+  <a href="/admin" style="font-size:12px;color:var(--primary)">بازگشت</a>
 </div>
-<div class="card" style="overflow-x:auto">
-<table class="table">
-<tr><th>#</th><th>نام</th><th>تلفن</th><th>مبلغ</th><th>وضعیت</th><th>تاریخ</th><th>عملیات</th></tr>
-{% for o in orders %}
-<tr>
-<td><strong>{{ o.id }}</strong></td>
-<td>{{ o.full_name }}</td>
-<td>{{ o.phone }}</td>
-<td style="color:#c9a96e;font-weight:600">{{ "{:,}".format(o.total_amount) }}</td>
-<td><span class="badge {% if o.status == 'pending' %}badge-warning{% elif o.status == 'shipped' %}badge-info{% else %}badge-success{% endif %}">{{ o.status }}</span></td>
-<td style="font-size:12px;color:#888">{{ o.created_at }}</td>
-<td><a href="/admin/orders/{{ o.id }}" class="btn btn-sm" style="background:rgba(201,169,110,0.15);color:#c9a96e">مشاهده</a></td>
-</tr>{% endfor %}
-</table></div>
+
+<!-- Filters -->
+<div style="display:flex;gap:6px;padding:0 16px 12px;overflow-x:auto">
+  <a href="/admin/orders" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;background:{% if not current_status %}var(--primary);color:#fff{% else %}var(--white);color:var(--text);border:1px solid var(--border){% endif %};text-decoration:none;white-space:nowrap">همه</a>
+  <a href="/admin/orders?status=pending" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;background:{% if current_status == 'pending' %}var(--yellow);color:#fff{% else %}var(--white);color:var(--text);border:1px solid var(--border){% endif %};text-decoration:none;white-space:nowrap">⏳ در انتظار</a>
+  <a href="/admin/orders?status=paid" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;background:{% if current_status == 'paid' %}var(--blue);color:#fff{% else %}var(--white);color:var(--text);border:1px solid var(--border){% endif %};text-decoration:none;white-space:nowrap">💰 پرداخت شده</a>
+  <a href="/admin/orders?status=sent" style="padding:6px 14px;border-radius:16px;font-size:12px;font-weight:500;background:{% if current_status == 'sent' %}var(--green);color:#fff{% else %}var(--white);color:var(--text);border:1px solid var(--border){% endif %};text-decoration:none;white-space:nowrap">🚚 ارسال شده</a>
+</div>
+
+<!-- Orders List -->
+{% if not orders %}
+<div style="text-align:center;padding:60px 20px;color:var(--text2)">
+  <div style="font-size:40px;margin-bottom:12px">📭</div>
+  <div style="font-size:14px">سفارشی یافت نشد</div>
+</div>
+{% endif %}
+
+{% for order in orders %}
+<div class="order-card">
+  <div class="order-card-header">
+    <span style="font-weight:600">سفارش #{{ order.id }}</span>
+    <span style="color:var(--text2)">{{ order.created_at[:10] if order.created_at else '' }}</span>
+  </div>
+  <div class="order-card-body">
+    <div class="order-row">
+      <span class="order-label">مشتری</span>
+      <span class="order-value">{{ order.username or 'ناشناس' }}</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">تلفن</span>
+      <span class="order-value" style="direction:ltr">{{ order.phone or '—' }}</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">مبلغ</span>
+      <span class="order-value" style="color:var(--primary)">{{ '{:,}'.format(order.total_amount|int) }} تومان</span>
+    </div>
+    <div class="order-row">
+      <span class="order-label">وضعیت</span>
+      {% if order.current_status == 'pending' %}
+      <span class="order-status status-pending">⏳ در انتظار</span>
+      {% elif order.current_status == 'paid' %}
+      <span class="order-status status-sent">💰 پرداخت شده</span>
+      {% elif order.current_status == 'sent' %}
+      <span class="order-status status-delivered">🚚 ارسال شده</span>
+      {% else %}
+      <span class="order-status">{{ order.status }}</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="order-actions">
+    <a href="/admin/orders/{{ order.id }}" class="order-btn primary">مشاهده جزئیات</a>
+    {% if order.current_status == 'pending' %}
+    <a href="/admin/orders/{{ order.id }}/status/paid" class="order-btn secondary" onclick="return confirm('تایید پرداخت؟')">تایید پرداخت</a>
+    {% elif order.current_status == 'paid' %}
+    <a href="/admin/orders/{{ order.id }}/status/sent" class="order-btn secondary" onclick="return confirm('ارسال شد؟')">ارسال شد</a>
+    {% endif %}
+  </div>
+</div>
+{% endfor %}
+
 {% endblock %}
