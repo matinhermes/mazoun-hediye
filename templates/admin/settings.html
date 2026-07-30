@@ -1,6 +1,11 @@
 {% extends "admin/base.html" %}
-{% block title %}تنظیمات{% endblock %}
+{% block title %}تنظیمات فروشگاه{% endblock %}
 {% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">⚙️ تنظیمات فروشگاه</div>
+  <a href="/admin" style="font-size:12px;color:var(--primary)">بازگشت</a>
+</div>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 {% for cat, msg in messages %}
@@ -8,190 +13,105 @@
 {% endfor %}
 {% endwith %}
 
-<!-- Store Profile -->
-<div class="section">
-  <div class="section-title"><span class="icon">🏪</span> پروفایل فروشگاه</div>
-  <div class="panel" style="padding:16px">
-    <div style="text-align:center;margin-bottom:16px">
-      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#c9a96e,#b76e79);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700">مـ</div>
-      <div style="font-size:14px;font-weight:600">{{ settings.get('shop_name', 'مزون هدیه') }}</div>
-    </div>
-    
-    <form method="POST" action="/admin/settings">
-      <input type="hidden" name="section" value="store">
-      
-      <div class="form-group">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">نام فروشگاه</label>
-        <input type="text" name="shop_name" value="{{ settings.get('shop_name', 'مزون هدیه') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-      </div>
-      
-      <div class="form-group" style="margin-top:10px">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">دسته فعالیت</label>
-        <input type="text" name="activity" value="{{ settings.get('activity', 'فروشگاه آنلاین پوشاک زنانه') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-      </div>
-      
-      <div class="form-group" style="margin-top:10px">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">نوع فروشگاه</label>
-        <select name="store_type" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-          <option value="online" {% if settings.get('store_type') == 'online' %}selected{% endif %}>فروشگاه آنلاین</option>
-          <option value="physical" {% if settings.get('store_type') == 'physical' %}selected{% endif %}>فروشگاه فیزیکی</option>
-          <option value="both" {% if settings.get('store_type') == 'both' or not settings.get('store_type') %}selected{% endif %}>فروشگاه فیزیکی و آنلاین</option>
-        </select>
-      </div>
-      
-      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره اطلاعات</button>
-    </form>
-  </div>
-</div>
+<!-- Settings Grid -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 80px">
 
-<!-- Address -->
-<div class="section">
-  <div class="section-title"><span class="icon">📍</span> آدرس فروشگاه</div>
-  <div class="panel" style="padding:16px">
-    <form method="POST" action="/admin/settings">
-      <input type="hidden" name="section" value="address">
-      
-      <div class="form-group">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">آدرس</label>
-        <textarea name="address" rows="3" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('address', '') }}</textarea>
-      </div>
-      
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">استان</label>
-          <input type="text" name="province" value="{{ settings.get('province', 'قم') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-        </div>
-        <div>
-          <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">شهر</label>
-          <input type="text" name="city" value="{{ settings.get('city', 'قم') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-        </div>
-      </div>
-      
-      <div class="form-group" style="margin-top:10px">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">کد پستی</label>
-        <input type="text" name="postal_code" value="{{ settings.get('postal_code', '') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره آدرس</button>
-    </form>
-  </div>
-</div>
+  <!-- Account -->
+  <a href="/admin/settings/account" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(91,46,145,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">👤</div>
+    <div style="font-size:12px;font-weight:600">حساب کاربری</div>
+  </a>
 
-<!-- Contact -->
-<div class="section">
-  <div class="section-title"><span class="icon">📞</span> اطلاعات تماس</div>
-  <div class="panel" style="padding:16px">
-    <form method="POST" action="/admin/settings">
-      <input type="hidden" name="section" value="contact">
-      
-      <div class="form-group">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">شماره تماس</label>
-        <input type="text" name="phone" value="{{ settings.get('phone', '') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <div class="form-group" style="margin-top:10px">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">ساعت کاری</label>
-        <input type="text" name="working_hours" value="{{ settings.get('working_hours', 'همه روزه ساعت ۴ الی ۱۱') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-      </div>
-      
-      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره تماس</button>
-    </form>
-  </div>
-</div>
+  <!-- Store Info -->
+  <a href="/admin/settings/store" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(25,118,210,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">🏪</div>
+    <div style="font-size:12px;font-weight:600">اطلاعات فروشگاه</div>
+  </a>
 
-<!-- Social Media -->
-<div class="section">
-  <div class="section-title"><span class="icon">📱</span> شبکه‌های اجتماعی</div>
-  <div class="panel" style="padding:16px">
-    <form method="POST" action="/admin/settings">
-      <input type="hidden" name="section" value="social">
-      
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;background:var(--bg);border-radius:8px">
-        <span style="font-size:18px">📸</span>
-        <input type="text" name="instagram" placeholder="نام کاربری اینستاگرام" value="{{ settings.get('instagram', '') }}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-        {% if settings.get('instagram') %}<span style="color:var(--green)">✓</span>{% endif %}
-      </div>
-      
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;background:var(--bg);border-radius:8px">
-        <span style="font-size:18px">✈️</span>
-        <input type="text" name="telegram" placeholder="لینک تلگرام" value="{{ settings.get('telegram', '') }}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
-        {% if settings.get('telegram') %}<span style="color:var(--green)">✓</span>{% endif %}
-      </div>
-      
-      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border-radius:8px">
-        <span style="font-size:18px">💬</span>
-        <input type="text" name="whatsapp" placeholder="شماره واتساپ" value="{{ settings.get('whatsapp', '') }}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
-        {% if settings.get('whatsapp') %}<span style="color:var(--green)">✓</span>{% endif %}
-      </div>
-      
-      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره شبکه‌ها</button>
-    </form>
-  </div>
-</div>
+  <!-- About -->
+  <a href="/admin/pages" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(46,125,50,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">📋</div>
+    <div style="font-size:12px;font-weight:600">درباره فروشگاه</div>
+  </a>
 
-<!-- Shipping -->
-<div class="section">
-  <div class="section-title"><span class="icon">🚚</span> ارسال و حمل و نقل</div>
-  <div class="panel" style="padding:16px">
-    <form method="POST" action="/admin/settings">
-      <input type="hidden" name="section" value="shipping">
-      
-      <div class="form-group">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">حداقل خرید برای ارسال رایگان (تومان)</label>
-        <input type="number" name="free_shipping_min" value="{{ settings.get('free_shipping_min', '10000000') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <div class="form-group" style="margin-top:10px">
-        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">هزینه ارسال پیش‌فرض (تومان)</label>
-        <input type="number" name="default_shipping" value="{{ settings.get('default_shipping', '30000') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره ارسال</button>
-    </form>
-  </div>
-</div>
+  <!-- Payment -->
+  <a href="/admin/settings/payment" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(255,152,0,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">💳</div>
+    <div style="font-size:12px;font-weight:600">روش‌های پرداخت</div>
+  </a>
 
-<!-- Payment -->
-<div class="section">
-  <div class="section-title"><span class="icon">💳</span> درگاه پرداخت</div>
-  <div class="panel" style="padding:16px">
-    <form method="POST" action="/admin/settings">
-      <input type="hidden" name="section" value="payment">
-      
-      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span style="font-size:16px">💰</span>
-          <span style="font-size:13px;font-weight:600">زرین‌پال</span>
-        </div>
-        <input type="text" name="zarinpal_merchant" placeholder="Merchant ID" value="{{ settings.get('zarinpal_merchant', '') }}" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span style="font-size:16px">🟢</span>
-          <span style="font-size:13px;font-weight:600">اسنپ‌پی</span>
-        </div>
-        <input type="text" name="snapp_api_key" placeholder="API Key" value="{{ settings.get('snapp_api_key', '') }}" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-          <span style="font-size:16px">🔵</span>
-          <span style="font-size:13px;font-weight:600">دیجی‌پی</span>
-        </div>
-        <input type="text" name="digipay_merchant" placeholder="Merchant ID" value="{{ settings.get('digipay_merchant', '') }}" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit" dir="ltr">
-      </div>
-      
-      <button type="submit" style="width:100%;margin-top:8px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره درگاه‌ها</button>
-    </form>
-  </div>
-</div>
+  <!-- Shipping -->
+  <a href="/admin/settings/shipping" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(0,150,136,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">🚚</div>
+    <div style="font-size:12px;font-weight:600">روش‌های ارسال</div>
+  </a>
 
-<!-- Support -->
-<div style="margin:0 16px 80px;padding:16px;background:var(--white);border-radius:12px;border:1px solid var(--border);text-align:center">
-  <div style="font-size:14px;font-weight:600;margin-bottom:4px">❓ سوالی دارید؟</div>
-  <div style="font-size:12px;color:var(--text2);margin-bottom:8px">با پشتیبانی تماس بگیرید</div>
-  <div style="font-size:16px;font-weight:700;color:var(--primary);direction:ltr">۰۹۱۰۰۵۹۹۸۰۵</div>
+  <!-- Badges/Licenses -->
+  <a href="/admin/settings/badges" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(156,39,176,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">🏅</div>
+    <div style="font-size:12px;font-weight:600">نمادها و مجوزها</div>
+  </a>
+
+  <!-- Domain -->
+  <a href="/admin/settings/domain" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(33,150,243,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">🌐</div>
+    <div style="font-size:12px;font-weight:600">دامنه اختصاصی</div>
+  </a>
+
+  <!-- Social -->
+  <a href="/admin/content" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(233,30,99,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">📱</div>
+    <div style="font-size:12px;font-weight:600">شبکه‌های اجتماعی</div>
+  </a>
+
+  <!-- SEO -->
+  <a href="/admin/settings/seo" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(255,87,34,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">🔍</div>
+    <div style="font-size:12px;font-weight:600">سئو</div>
+  </a>
+
+  <!-- Themes -->
+  <a href="/admin/settings/themes" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(121,85,72,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">🎨</div>
+    <div style="font-size:12px;font-weight:600">قالب‌ها</div>
+  </a>
+
+  <!-- Blog -->
+  <a href="/admin/settings/blog" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(76,175,80,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">✍️</div>
+    <div style="font-size:12px;font-weight:600">بلاگ</div>
+  </a>
+
+  <!-- Packaging -->
+  <a href="/admin/settings/packaging" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(139,195,74,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">📦</div>
+    <div style="font-size:12px;font-weight:600">بسته‌بندی</div>
+  </a>
+
+  <!-- Reservation -->
+  <a href="/admin/settings/reservation" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(0,188,212,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">📅</div>
+    <div style="font-size:12px;font-weight:600">زمان رزرو</div>
+  </a>
+
+  <!-- Pre-order -->
+  <a href="/admin/settings/preorder" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(255,193,7,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">⏰</div>
+    <div style="font-size:12px;font-weight:600">پیش‌سفارش</div>
+  </a>
+
+  <!-- Auto-confirm -->
+  <a href="/admin/settings/autoconfirm" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(103,58,183,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">✅</div>
+    <div style="font-size:12px;font-weight:600">تأیید خودکار</div>
+  </a>
+
+  <!-- Customer Info -->
+  <a href="/admin/users" style="background:var(--white);border-radius:12px;border:1px solid var(--border);padding:20px 12px;text-align:center;text-decoration:none;color:var(--text)">
+    <div style="width:44px;height:44px;border-radius:10px;background:rgba(0,150,136,0.1);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:22px">👥</div>
+    <div style="font-size:12px;font-weight:600">اطلاعات مشتری</div>
+  </a>
+
 </div>
 
 {% endblock %}

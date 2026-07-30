@@ -1,0 +1,58 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">{{ icon }} {{ title }}</div>
+  <a href="/admin/settings" style="font-size:12px;color:var(--primary)">بازگشت</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for cat, msg in messages %}
+<div class="flash {{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endwith %}
+
+<form method="POST" action="/admin/settings/{{ section }}" style="padding:0 16px 80px">
+
+{% for field in fields %}
+<div class="panel" style="padding:14px;margin-bottom:10px">
+  <label style="font-size:12px;font-weight:600;display:block;margin-bottom:6px">{{ field.icon }} {{ field.label }}</label>
+  
+  {% if field.type == 'textarea' %}
+  <textarea name="{{ field.key }}" rows="{{ field.rows or 3 }}" placeholder="{{ field.placeholder or '' }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none" dir="{{ field.dir or 'rtl' }}">{{ settings.get(field.key, field.default or '') }}</textarea>
+  
+  {% elif field.type == 'select' %}
+  <select name="{{ field.key }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+    {% for opt in field.options %}
+    <option value="{{ opt.value }}" {% if settings.get(field.key, field.default or '') == opt.value %}selected{% endif %}>{{ opt.label }}</option>
+    {% endfor %}
+  </select>
+  
+  {% elif field.type == 'toggle' %}
+  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:4px">
+    <input type="checkbox" name="{{ field.key }}" value="1" {% if settings.get(field.key, field.default or '') == '1' or settings.get(field.key, field.default or '') == 'true' %}checked{% endif %} style="width:18px;height:18px">
+    <span style="font-size:13px">{{ field.hint or 'فعال' }}</span>
+  </label>
+  
+  {% elif field.type == 'color' %}
+  <div style="display:flex;gap:8px;align-items:center">
+    <input type="color" name="{{ field.key }}" value="{{ settings.get(field.key, field.default or '#000000') }}" style="width:50px;height:36px;border:none;cursor:pointer">
+    <input type="text" name="{{ field.key }}" value="{{ settings.get(field.key, field.default or '') }}" placeholder="#000000" style="flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit" dir="ltr">
+  </div>
+  
+  {% else %}
+  <input type="{{ field.type or 'text' }}" name="{{ field.key }}" value="{{ settings.get(field.key, field.default or '') }}" placeholder="{{ field.placeholder or '' }}" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="{{ field.dir or 'rtl' }}">
+  {% endif %}
+  
+  {% if field.help %}
+  <div style="font-size:11px;color:var(--text2);margin-top:4px">{{ field.help }}</div>
+  {% endif %}
+</div>
+{% endfor %}
+
+<button type="submit" style="width:100%;padding:14px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره تنظیمات</button>
+
+</form>
+
+{% endblock %}

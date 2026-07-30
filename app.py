@@ -1926,6 +1926,267 @@ def admin_order_update(order_id):
     flash('سفارش بروزرسانی شد ✓', 'success')
     return redirect(url_for('admin_order_detail', order_id=order_id))
 
+
+# ====== SETTINGS SUB-PAGES ======
+def save_settings_from_form():
+    db = get_db()
+    for key in request.form:
+        val = request.form[key]
+        existing = db.execute('SELECT id FROM settings WHERE key=?', (key,)).fetchone()
+        if existing:
+            db.execute('UPDATE settings SET value=? WHERE key=?', (val, key))
+        else:
+            db.execute('INSERT INTO settings (key, value) VALUES (?,?)', (key, val))
+    db.commit()
+
+@app.route('/admin/settings/account', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_account():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('حساب کاربری بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_account'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='account', title='حساب کاربری', icon='👤',
+        fields=[
+            {'key':'admin_name','label':'نام مدیر','icon':'👤','default':''},
+            {'key':'admin_email','label':'ایمیل مدیر','icon':'📧','default':'','dir':'ltr','type':'email'},
+            {'key':'admin_phone','label':'تلفن مدیر','icon':'📞','default':'','dir':'ltr'},
+        ])
+
+@app.route('/admin/settings/store', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_store():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('اطلاعات فروشگاه بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_store'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='store', title='اطلاعات فروشگاه', icon='🏪',
+        fields=[
+            {'key':'shop_name','label':'نام فروشگاه','icon':'🏪','default':'مزون هدیه'},
+            {'key':'shop_name_en','label':'نام انگلیسی','icon':'🔤','default':'Maison Hediye','dir':'ltr'},
+            {'key':'shop_slogan','label':'شعار فروشگاه','icon':'💬','default':''},
+            {'key':'activity_type','label':'نوع فعالیت','icon':'📋','default':'فروشگاه آنلاین پوشاک زنانه'},
+            {'key':'store_type','label':'نوع فروشگاه','icon':'🏬','default':'both','type':'select','options':[
+                {'value':'online','label':'فروشگاه آنلاین'},{'value':'physical','label':'فروشگاه فیزیکی'},{'value':'both','label':'فروشگاه فیزیکی و آنلاین'}
+            ]},
+            {'key':'phone','label':'تلفن فروشگاه','icon':'📞','default':'۰۹۱۰۰۵۹۹۸۰۵','dir':'ltr'},
+            {'key':'address','label':'آدرس فروشگاه','icon':'📍','default':'قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶','type':'textarea','rows':2},
+            {'key':'province','label':'استان','icon':'🗺️','default':'قم'},
+            {'key':'city','label':'شهر','icon':'🏙️','default':'قم'},
+            {'key':'postal_code','label':'کد پستی','icon':'📮','default':'','dir':'ltr'},
+            {'key':'working_hours','label':'ساعت کاری','icon':'🕐','default':'همه روزه ساعت ۴ الی ۱۱'},
+        ])
+
+@app.route('/admin/settings/payment', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_payment():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('درگاه‌های پرداخت بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_payment'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='payment', title='روش‌های پرداخت', icon='💳',
+        fields=[
+            {'key':'zarinpal_merchant','label':'زرین‌پال - Merchant ID','icon':'💰','default':'','dir':'ltr','help':'کد merchant زرین‌پال'},
+            {'key':'zarinpal_enabled','label':'فعال‌سازی زرین‌پال','icon':'✅','default':'1','type':'toggle','hint':'زرین‌پال فعال باشد'},
+            {'key':'snapp_api_key','label':'اسنپ‌پی - API Key','icon':'🟢','default':'','dir':'ltr'},
+            {'key':'snapp_enabled','label':'فعال‌سازی اسنپ‌پی','icon':'✅','default':'0','type':'toggle','hint':'اسنپ‌پی فعال باشد'},
+            {'key':'digipay_merchant','label':'دیجی‌پی - Merchant ID','icon':'🔵','default':'','dir':'ltr'},
+            {'key':'digipay_enabled','label':'فعال‌سازی دیجی‌پی','icon':'✅','default':'0','type':'toggle','hint':'دیجی‌پی فعال باشد'},
+        ])
+
+@app.route('/admin/settings/shipping', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_shipping():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('روش‌های ارسال بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_shipping'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='shipping', title='روش‌های ارسال', icon='🚚',
+        fields=[
+            {'key':'free_shipping_min','label':'حداقل خرید ارسال رایگان (تومان)','icon':'🎁','default':'10000000','dir':'ltr','type':'number'},
+            {'key':'default_shipping_cost','label':'هزینه ارسال پیش‌فرض (تومان)','icon':'💰','default':'30000','dir':'ltr','type':'number'},
+            {'key':'shipping_tipax','label':'ارسال تیپاکس','icon':'📦','default':'1','type':'toggle','hint':'تیپاکس فعال باشد'},
+            {'key':'shipping_post','label':'ارسال پستی','icon':'📮','default':'1','type':'toggle','hint':'پست فعال باشد'},
+            {'key':'shipping_peyk','label':'ارسال پیک','icon':'🏍️','default':'0','type':'toggle','hint':'پیک فعال باشد'},
+            {'key':'shipping_tap30','label':'ارسال تپ30','icon':'🚗','default':'0','type':'toggle','hint':'تپ30 فعال باشد'},
+            {'key':'shipping_after_prep','label':'زمان آماده‌سازی (ساعت)','icon':'⏱️','default':'24','dir':'ltr','type':'number','help':'زمان آماده‌سازی بسته به ساعت'},
+        ])
+
+@app.route('/admin/settings/badges', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_badges():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('نمادها بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_badges'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='badges', title='نمادها و مجوزها', icon='🏅',
+        fields=[
+            {'key':'enamad_id','label':'کد اینماد','icon':'🏅','default':'7156027','dir':'ltr'},
+            {'key':'enamad_enabled','label':'فعال‌سازی اینماد','icon':'✅','default':'1','type':'toggle'},
+            {'key':'samandehi_id','label':'کد ساماندهی','icon':'📋','default':'','dir':'ltr'},
+            {'key':'samandehi_enabled','label':'فعال‌سازی ساماندهی','icon':'✅','default':'0','type':'toggle'},
+            {'key':'ecunion_enabled','label':'نماد اتحادیه کسب و کار','icon':'🏛️','default':'0','type':'toggle'},
+        ])
+
+@app.route('/admin/settings/domain', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_domain():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('دامنه بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_domain'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='domain', title='دامنه اختصاصی', icon='🌐',
+        fields=[
+            {'key':'domain','label':'دامنه اصلی','icon':'🌐','default':'mezonehediye.ir','dir':'ltr','help':'دامنه اصلی فروشگاه'},
+            {'key':'domain_redirect','label':'redirect از www','icon':'🔄','default':'1','type':'toggle','hint':'www به اصلی ریدایرکت شود'},
+            {'key':'domain_https','label':'SSL فعال','icon':'🔒','default':'1','type':'toggle','hint':'HTTPS فعال باشد'},
+            {'key':'domain_temp','label':'دامنه موقت Render','icon':'📎','default':'','dir':'ltr','help':'آدرس موقت Render'},
+        ])
+
+@app.route('/admin/settings/seo', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_seo():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('سئو بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_seo'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='seo', title='سئو', icon='🔍',
+        fields=[
+            {'key':'seo_title','label':'عنوان سایت (Title)','icon':'📝','default':'مزون هدیه - فروشگاه آنلاین پوشاک زنانه'},
+            {'key':'seo_description','label':'توضیحات متا (Description)','icon':'📋','default':'فروشگاه آنلاین مد و پوشاک زنانه با طراحی اختصاصی و کیفیت بالا','type':'textarea','rows':2},
+            {'key':'seo_keywords','label':'کلمات کلیدی (Keywords)','icon':'🔑','default':'پوشاک زنانه, مانتو, شومیز, ست زنانه, مزون هدیه','type':'textarea','rows':2},
+            {'key':'seo_og_image','label':'عکس OG Image','icon':'🖼️','default':'','dir':'ltr','help':'لینک عکس برای اشتراک‌گذاری در شبکه‌های اجتماعی'},
+            {'key':'google_analytics','label':'کد Google Analytics','icon':'📊','default':'','dir':'ltr','type':'textarea','rows':2},
+        ])
+
+@app.route('/admin/settings/themes', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_themes():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('قالب بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_themes'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='themes', title='قالب‌ها', icon='🎨',
+        fields=[
+            {'key':'primary_color','label':'رنگ اصلی','icon':'🎨','default':'#5B2E91','type':'color'},
+            {'key':'secondary_color','label':'رنگ ثانویه','icon':'🎨','default':'#c9a96e','type':'color'},
+            {'key':'bg_color','label':'رنگ پس‌زمینه','icon':'🖌️','default':'#F7F8F9','type':'color'},
+            {'key':'text_color','label':'رنگ متن','icon':'✏️','default':'#1A1A1A','type':'color'},
+            {'key':'font_family','label':'فونت سایت','icon':'🔤','default':'Vazirmatn'},
+            {'key':'rtl_mode','label':'RTL (راست به چپ)','icon':'➡️','default':'1','type':'toggle','hint':'سایت راست به چپ باشد'},
+        ])
+
+@app.route('/admin/settings/blog', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_blog():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('بلاگ بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_blog'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='blog', title='بلاگ', icon='✍️',
+        fields=[
+            {'key':'blog_enabled','label':'فعال‌سازی بلاگ','icon':'✅','default':'0','type':'toggle','hint':'صفحه بلاگ فعال باشد'},
+            {'key':'blog_title','label':'عنوان بلاگ','icon':'📝','default':'مجله مزون هدیه'},
+            {'key':'blog_posts_per_page','label':'تعداد پست در هر صفحه','icon':'📄','default':'6','dir':'ltr','type':'number'},
+        ])
+
+@app.route('/admin/settings/packaging', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_packaging():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('بسته‌بندی بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_packaging'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='packaging', title='بسته‌بندی', icon='📦',
+        fields=[
+            {'key':'packaging_enabled','label':'بسته‌بندی اختصاصی','icon':'📦','default':'0','type':'toggle','hint':'بسته‌بندی اختصاصی فعال باشد'},
+            {'key':'packaging_cost','label':'هزینه بسته‌بندی (تومان)','icon':'💰','default':'0','dir':'ltr','type':'number'},
+            {'key':'packaging_note','label':'توضیحات بسته‌بندی','icon':'📝','default':'بسته‌بندی ایمن و شیک','type':'textarea','rows':2},
+            {'key':'gift_wrap','label':'کادوپیچی','icon':'🎁','default':'0','type':'toggle','hint':'امکان کادوپیچی فعال باشد'},
+        ])
+
+@app.route('/admin/settings/reservation', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_reservation():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('زمان رزرو بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_reservation'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='reservation', title='زمان رزرو', icon='📅',
+        fields=[
+            {'key':'reservation_enabled','label':'رزرو آنلاین','icon':'📅','default':'0','type':'toggle','hint':'امکان رزرو محصول فعال باشد'},
+            {'key':'reservation_duration','label':'مدت زمان رزرو (ساعت)','icon':'⏱️','default':'24','dir':'ltr','type':'number'},
+            {'key':'reservation_deposit','label':'پیش‌پرداخت رزرو (تومان)','icon':'💰','default':'0','dir':'ltr','type':'number'},
+        ])
+
+@app.route('/admin/settings/preorder', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_preorder():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('پیش‌سفارش بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_preorder'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='preorder', title='پیش‌سفارش', icon='⏰',
+        fields=[
+            {'key':'preorder_enabled','label':'پیش‌سفارش فعال','icon':'⏰','default':'0','type':'toggle','hint':'امکان پیش‌سفارش فعال باشد'},
+            {'key':'preorder_prep_time','label':'زمان آماده‌سازی (روز)','icon':'📅','default':'7','dir':'ltr','type':'number'},
+            {'key':'preorder_deposit_percent','label':'درصد پیش‌پرداخت','icon':'💰','default':'50','dir':'ltr','type':'number','help':'درصد پیش‌پرداخت برای پیش‌سفارش'},
+        ])
+
+@app.route('/admin/settings/autoconfirm', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_autoconfirm():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('تأیید خودکار بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_autoconfirm'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='autoconfirm', title='تأیید خودکار سفارش', icon='✅',
+        fields=[
+            {'key':'auto_confirm','label':'تأیید خودکار سفارش','icon':'✅','default':'0','type':'toggle','hint':'سفارشات بدون تأیید دستی ارسال شوند'},
+            {'key':'auto_invoice','label':'صدور خودکار فاکتور','icon':'🧾','default':'1','type':'toggle','hint':'فاکتور خودکار صادر شود'},
+            {'key':'sms_notification','label':'اعلامیه پیامکی','icon':'📱','default':'0','type':'toggle','hint':'اعلامیه سفارش به مشتری پیامک شود'},
+            {'key':'email_notification','label':'اعلامیه ایمیلی','icon':'📧','default':'0','type':'toggle','hint':'اعلامیه سفارش به مشتری ایمیل شود'},
+        ])
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(debug=False, host='0.0.0.0', port=port)
