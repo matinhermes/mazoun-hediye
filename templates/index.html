@@ -171,11 +171,16 @@ img{max-width:100%;display:block}
 <div class="hero" style="position:relative;height:70vh;min-height:400px;overflow:hidden">
 {% for banner in banners %}
 <div class="banner-slide" style="position:absolute;inset:0;opacity:{{ 1 if loop.first else 0 }};transition:opacity 0.5s" data-index="{{ loop.index0 }}">
-{% if banner.image %}
+{% if banner.image and banner.image.startswith('data:') %}
+<img src="{{ banner.image }}" alt="{{ banner.title }}" style="width:100%;height:100%;object-fit:cover">
+<div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.6))"></div>
+{% elif banner.image and banner.image.startswith('linear') %}
+<div style="width:100%;height:100%;background:{{ banner.image }};display:flex;align-items:center;justify-content:center">
+{% elif banner.image %}
 <img src="{{ banner.image }}" alt="{{ banner.title }}" style="width:100%;height:100%;object-fit:cover">
 <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,0.6))"></div>
 {% else %}
-<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#2d2d2d)"></div>
+<div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a1a,#2d2d2d);display:flex;align-items:center;justify-content:center">
 {% endif %}
 <div style="position:absolute;bottom:60px;left:0;right:0;text-align:center;color:#fff;padding:0 20px">
 {% if banner.title %}<div style="font-size:36px;font-weight:700;margin-bottom:12px;text-shadow:0 2px 8px rgba(0,0,0,0.5)">{{ banner.title }}</div>{% endif %}

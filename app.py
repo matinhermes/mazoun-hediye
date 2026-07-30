@@ -292,7 +292,77 @@ def send_welcome_sms(phone, name):
     return True
 
 
+
+
+# ==================== DEFAULT BANNERS ====================
+DEFAULT_BANNERS = [
+    {"title": "مجموعه جدید تابستان", "subtitle": "تا ۳۰٪ تخفیف ویژه", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)", "link": "/products"},
+    {"title": "ارسال رایگان", "subtitle": "برای خریدهای بالای ۱۰ میلیون تومان", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)", "link": "/products"},
+    {"title": "شومیز مجلسی", "subtitle": "طراحی خاص و منحصر بفرد", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)", "link": "/products"},
+    {"title": "ست زنانه", "subtitle": "هماهنگ و شیک", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)", "link": "/products"},
+    {"title": "مانتو کلاسیک", "subtitle": "کیفیت تضمینی", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)", "link": "/products"},
+    {"title": "فروش ویژه", "subtitle": "تا ۵۰٪ تخفیف", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)", "link": "/products"},
+    {"title": "شلوار راحتی", "subtitle": "راحت و شیک", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)", "link": "/products"},
+    {"title": "کلکسیون پاییزه", "subtitle": "جدیدترین مدهای پاییز", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)", "link": "/products"},
+    {"title": "ست اداری", "subtitle": "حرفه‌ای و مدرن", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)", "link": "/products"},
+    {"title": "لباس مجلسی", "subtitle": "برای مهمانی‌های خاص", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)", "link": "/products"},
+    {"title": "تخفیف فصلی", "subtitle": "بهترین فرصت خرید", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)", "link": "/products"},
+    {"title": "شومیز ابریشمی", "subtitle": "لوکس و باکیفیت", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)", "link": "/products"},
+    {"title": "ست زمستانه", "subtitle": "گرم و شیک", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)", "link": "/products"},
+    {"title": "مانتو اسپرت", "subtitle": "راحت و مدرن", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)", "link": "/products"},
+    {"title": "پیشنهاد ویژه", "subtitle": "فقط تا پایان هفته", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)", "link": "/products"},
+    {"title": "شلوار مجلسی", "subtitle": "شیک و متفاوت", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)", "link": "/products"},
+    {"title": "کلکسیون بهاره", "subtitle": "سبک و راحت", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)", "link": "/products"},
+    {"title": "ست کژوال", "subtitle": "روزانه و راحت", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)", "link": "/products"},
+    {"title": "لباس راحتی", "subtitle": "کیفیت عالی", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)", "link": "/products"},
+    {"title": "تخفیف ویژه", "subtitle": "فقط اعضای باشگاه", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)", "link": "/products"},
+    {"title": "شومیز کلاسیک", "subtitle": "ساده و زیبا", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)", "link": "/products"},
+    {"title": "ست مجلسی", "subtitle": "لوکس و خاص", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)", "link": "/products"},
+    {"title": "مانتو مجلسی", "subtitle": "برای مراسم خاص", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)", "link": "/products"},
+    {"title": "حراج پایان فصل", "subtitle": "تا ۷۰٪ تخفیف", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)", "link": "/products"},
+    {"title": "شلوار راحتی", "subtitle": "نرم و سبک", "gradient": "linear-gradient(135deg,#1a1a1a,#c9a96e)", "link": "/products"},
+    {"title": "ست تابستانه", "subtitle": "خنک و شیک", "gradient": "linear-gradient(135deg,#2d2d2d,#b76e79)", "link": "/products"},
+    {"title": "شومیز زمستانه", "subtitle": "گرم و شیک", "gradient": "linear-gradient(135deg,#0a0a0a,#c9a96e)", "link": "/products"},
+    {"title": "مانتو اداری", "subtitle": "حرفه‌ای و مدرن", "gradient": "linear-gradient(135deg,#1a1a1a,#b76e79)", "link": "/products"},
+    {"title": "ست راحتی", "subtitle": "برای روزمره", "gradient": "linear-gradient(135deg,#2d2d2d,#c9a96e)", "link": "/products"},
+    {"title": "پیشنهاد ویژه", "subtitle": "محبوب‌ترین‌های مزون هدیه", "gradient": "linear-gradient(135deg,#0a0a0a,#b76e79)", "link": "/products"},
+]
+
 # ==================== MAIN ROUTES ====================
+
+@app.route('/admin/default-banners')
+@admin_required
+def admin_default_banners():
+    """Add a default banner to active banners"""
+    db = get_db()
+    idx = request.args.get('idx', 0, type=int)
+    if 0 <= idx < len(DEFAULT_BANNERS):
+        b = DEFAULT_BANNERS[idx]
+        # Get max sort_order
+        max_sort = db.execute('SELECT COALESCE(MAX(sort_order),0) FROM banners').fetchone()[0]
+        db.execute('INSERT INTO banners (title, subtitle, image, link, is_active, sort_order) VALUES (?, ?, ?, ?, 1, ?)',
+                   (b['title'], b['subtitle'], b['gradient'], b['link'], max_sort + 1))
+        db.commit()
+        flash(f'بنر "{b["title"]}" اضافه شد ✓', 'success')
+    return redirect(url_for('admin_banners'))
+
+@app.route('/admin/default-banners/add-all')
+@admin_required
+def admin_add_all_banners():
+    """Add all 30 default banners"""
+    db = get_db()
+    count = 0
+    for i, b in enumerate(DEFAULT_BANNERS):
+        # Check if already exists
+        exists = db.execute('SELECT id FROM banners WHERE title = ?', (b['title'],)).fetchone()
+        if not exists:
+            db.execute('INSERT INTO banners (title, subtitle, image, link, is_active, sort_order) VALUES (?, ?, ?, ?, 1, ?)',
+                       (b['title'], b['subtitle'], b['gradient'], b['link'], i + 1))
+            count += 1
+    db.commit()
+    flash(f'{count} بنر پیش‌فرض اضافه شد ✓', 'success')
+    return redirect(url_for('admin_banners'))
+
 @app.route('/')
 def home():
     db = get_db()
@@ -495,6 +565,17 @@ def checkout_confirm():
     
     db = get_db()
     
+    # Validate stock BEFORE creating order
+    oversold_items = []
+    for item in cart_items:
+        product = db.execute('SELECT * FROM products WHERE id = ?', (item['product_id'],)).fetchone()
+        if product and product['stock'] < item['quantity']:
+            oversold_items.append(f"{product['name']} (موجودی: {product['stock']})")
+    
+    if oversold_items:
+        flash('موجودی محصولات زیر کافی نیست:\n' + '\n'.join(oversold_items), 'danger')
+        return redirect(url_for('cart'))
+    
     # Get form data
     full_name = request.form.get('full_name', '')
     phone = request.form.get('phone', '')
@@ -534,11 +615,13 @@ def checkout_confirm():
                 (order_id, product['id'], product['name'], 
                  item.get('size', ''), item.get('color', ''), item['quantity'], product['price']))
     
-    # Decrease stock
+    # Decrease stock (with re-check)
     for item in cart_items:
         product = db.execute('SELECT * FROM products WHERE id = ?', (item['product_id'],)).fetchone()
         if product:
-            new_stock = max(0, product['stock'] - item['quantity'])
+            new_stock = product['stock'] - item['quantity']
+            if new_stock < 0:
+                new_stock = 0
             db.execute('UPDATE products SET stock = ? WHERE id = ?', (new_stock, product['id']))
     
     db.commit()
