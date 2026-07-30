@@ -1,128 +1,197 @@
 {% extends "admin/base.html" %}
 {% block title %}تنظیمات{% endblock %}
 {% block content %}
-<h1 class="page-title">تنظیمات فروشگاه</h1>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
-{% if messages %}
 {% for cat, msg in messages %}
-<div class="flash flash-{{ cat }}">{{ msg }}</div>
+<div class="flash {{ cat }}">{{ msg }}</div>
 {% endfor %}
-{% endif %}
 {% endwith %}
 
-<!-- اطلاعات فروشگاه -->
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">🏪 اطلاعات فروشگاه</h3>
-<form method="POST">
-<div class="form-row">
-<div class="form-group">
-<label class="form-label">نام فروشگاه</label>
-<input name="shop_name" class="form-input" value="{{ settings.get('shop_name', 'مزون هدیه') }}">
-</div>
-<div class="form-group">
-<label class="form-label">شماره تماس</label>
-<input name="shop_phone" class="form-input" value="{{ settings.get('shop_phone', '') }}">
-</div>
-</div>
-<div class="form-group">
-<label class="form-label">آدرس</label>
-<input name="shop_address" class="form-input" value="{{ settings.get('shop_address', '') }}">
-</div>
-<div class="form-row">
-<div class="form-group">
-<label class="form-label">اینستاگرام</label>
-<input name="instagram" class="form-input" value="{{ settings.get('instagram', '') }}">
-</div>
-<div class="form-group">
-<label class="form-label">توضیحات</label>
-<input name="shop_description" class="form-input" value="{{ settings.get('shop_description', '') }}">
-</div>
-</div>
-<button type="submit" class="btn btn-primary">ذخیره اطلاعات</button>
-</form>
-</div>
-
-<!-- روش‌های ارسال -->
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">🚚 روش‌های ارسال</h3>
-<form method="POST" action="/admin/shipping-methods">
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
-{% set methods = [
-  {'key':'shipping_tipax','name':'تیپاکس','cost':'25000'},
-  {'key':'shipping_post','name':'پست پیشتاز','cost':'15000'},
-  {'key':'shipping_tnt','name':'TNT','cost':'20000'},
-  {'key':'shipping_collect','name':'پس کرایه','cost':'0'}
-] %}
-{% for m in methods %}
-<div style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px">
-<label class="checkbox-label" style="margin-bottom:8px">
-<input type="checkbox" name="{{ m.key }}_enabled" value="1" {{ 'checked' if settings.get(m.key+'_enabled', '0') == '1' }}> {{ m.name }}
-</label>
-{% if m.key != 'shipping_collect' %}
-<input name="{{ m.key }}_cost" type="number" class="form-input" value="{{ settings.get(m.key+'_cost', m.cost) }}" placeholder="هزینه (تومان)">
-{% endif %}
-</div>
-{% endfor %}
-</div>
-<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره روش‌های ارسال</button>
-</form>
+<!-- Store Profile -->
+<div class="section">
+  <div class="section-title"><span class="icon">🏪</span> پروفایل فروشگاه</div>
+  <div class="panel" style="padding:16px">
+    <div style="text-align:center;margin-bottom:16px">
+      <div style="width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#c9a96e,#b76e79);margin:0 auto 8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:700">مـ</div>
+      <div style="font-size:14px;font-weight:600">{{ settings.get('shop_name', 'مزون هدیه') }}</div>
+    </div>
+    
+    <form method="POST" action="/admin/settings">
+      <input type="hidden" name="section" value="store">
+      
+      <div class="form-group">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">نام فروشگاه</label>
+        <input type="text" name="shop_name" value="{{ settings.get('shop_name', 'مزون هدیه') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      
+      <div class="form-group" style="margin-top:10px">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">دسته فعالیت</label>
+        <input type="text" name="activity" value="{{ settings.get('activity', 'فروشگاه آنلاین پوشاک زنانه') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      
+      <div class="form-group" style="margin-top:10px">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">نوع فروشگاه</label>
+        <select name="store_type" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+          <option value="online" {% if settings.get('store_type') == 'online' %}selected{% endif %}>فروشگاه آنلاین</option>
+          <option value="physical" {% if settings.get('store_type') == 'physical' %}selected{% endif %}>فروشگاه فیزیکی</option>
+          <option value="both" {% if settings.get('store_type') == 'both' or not settings.get('store_type') %}selected{% endif %}>فروشگاه فیزیکی و آنلاین</option>
+        </select>
+      </div>
+      
+      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره اطلاعات</button>
+    </form>
+  </div>
 </div>
 
-<!-- درگاه‌های پرداخت -->
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">💳 درگاه‌های پرداخت</h3>
-<p style="color:#888;font-size:12px;margin-bottom:16px">کد مرچنت هر درگاه رو وارد کنید و درگاه رو فعال کنید</p>
-<form method="POST" action="/admin/payment-gateways">
-<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
-{% set gateways = [
-  {'key':'gateway_zarinpal','name':'زرین‌پال','color':'#00bcd4'},
-  {'key':'gateway_snapp','name':'اسنپ‌پی','color':'#6cc24a'},
-  {'key':'gateway_digipay','name':'دیجی‌پی','color':'#f57c00'},
-  {'key':'gateway_idpay','name':'آیدی‌پی','color':'#7c4dff'},
-  {'key':'gateway_nextpay','name':'نکست‌پی','color':'#2196f3'}
-] %}
-{% for g in gateways %}
-<div style="background:#0a0a0a;border:1px solid #222;border-radius:8px;padding:12px;border-right:3px solid {{ g.color }}">
-<label class="checkbox-label" style="margin-bottom:8px">
-<input type="checkbox" name="{{ g.key }}_enabled" value="1" {{ 'checked' if settings.get(g.key+'_enabled', '0') == '1' }}> {{ g.name }}
-</label>
-<input name="{{ g.key }}_merchant" class="form-input" value="{{ settings.get(g.key+'_merchant', '') }}" placeholder="Merchant ID / API Key">
-</div>
-{% endfor %}
-</div>
-<button type="submit" class="btn btn-primary" style="margin-top:12px">ذخیره درگاه‌ها</button>
-</form>
-</div>
-
-<!-- ارسال رایگان -->
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">🎁 ارسال رایگان</h3>
-<form method="POST">
-<div class="form-group">
-<label class="form-label">حداقل مبلغ خرید برای ارسال رایگان (تومان)</label>
-<input name="free_shipping_min" type="number" class="form-input" value="{{ settings.get('free_shipping_min', '10000000') }}">
-</div>
-<div class="form-group">
-<label class="form-label">هزینه ارسال پیش‌فرض (تومان)</label>
-<input name="shipping_cost" type="number" class="form-input" value="{{ settings.get('shipping_cost', '30000') }}">
-</div>
-<button type="submit" class="btn btn-primary">ذخیره</button>
-</form>
+<!-- Address -->
+<div class="section">
+  <div class="section-title"><span class="icon">📍</span> آدرس فروشگاه</div>
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings">
+      <input type="hidden" name="section" value="address">
+      
+      <div class="form-group">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">آدرس</label>
+        <textarea name="address" rows="3" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit;resize:none">{{ settings.get('address', '') }}</textarea>
+      </div>
+      
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px">
+        <div>
+          <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">استان</label>
+          <input type="text" name="province" value="{{ settings.get('province', 'قم') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">شهر</label>
+          <input type="text" name="city" value="{{ settings.get('city', 'قم') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+        </div>
+      </div>
+      
+      <div class="form-group" style="margin-top:10px">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">کد پستی</label>
+        <input type="text" name="postal_code" value="{{ settings.get('postal_code', '') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره آدرس</button>
+    </form>
+  </div>
 </div>
 
-<!-- کاور صفحه اصلی -->
-<div class="card">
-<h3 style="color:#c9a96e;margin-bottom:16px">🖼️ کاور صفحه اصلی</h3>
-<form method="POST" action="/admin/cover" enctype="multipart/form-data">
-{% if settings.get('cover_image') %}
-<img src="{{ settings.get('cover_image') }}" style="max-width:100%;max-height:200px;border-radius:8px;border:1px solid #222;margin-bottom:12px">
-{% endif %}
-<div class="form-group">
-<input type="file" name="cover_image" accept="image/*" class="form-input">
+<!-- Contact -->
+<div class="section">
+  <div class="section-title"><span class="icon">📞</span> اطلاعات تماس</div>
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings">
+      <input type="hidden" name="section" value="contact">
+      
+      <div class="form-group">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">شماره تماس</label>
+        <input type="text" name="phone" value="{{ settings.get('phone', '') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <div class="form-group" style="margin-top:10px">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">ساعت کاری</label>
+        <input type="text" name="working_hours" value="{{ settings.get('working_hours', 'همه روزه ساعت ۴ الی ۱۱') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+      </div>
+      
+      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره تماس</button>
+    </form>
+  </div>
 </div>
-<button type="submit" class="btn btn-primary">ذخیره کاور</button>
-</form>
+
+<!-- Social Media -->
+<div class="section">
+  <div class="section-title"><span class="icon">📱</span> شبکه‌های اجتماعی</div>
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings">
+      <input type="hidden" name="section" value="social">
+      
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;background:var(--bg);border-radius:8px">
+        <span style="font-size:18px">📸</span>
+        <input type="text" name="instagram" placeholder="نام کاربری اینستاگرام" value="{{ settings.get('instagram', '') }}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+        {% if settings.get('instagram') %}<span style="color:var(--green)">✓</span>{% endif %}
+      </div>
+      
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px;background:var(--bg);border-radius:8px">
+        <span style="font-size:18px">✈️</span>
+        <input type="text" name="telegram" placeholder="لینک تلگرام" value="{{ settings.get('telegram', '') }}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit">
+        {% if settings.get('telegram') %}<span style="color:var(--green)">✓</span>{% endif %}
+      </div>
+      
+      <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border-radius:8px">
+        <span style="font-size:18px">💬</span>
+        <input type="text" name="whatsapp" placeholder="شماره واتساپ" value="{{ settings.get('whatsapp', '') }}" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+        {% if settings.get('whatsapp') %}<span style="color:var(--green)">✓</span>{% endif %}
+      </div>
+      
+      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره شبکه‌ها</button>
+    </form>
+  </div>
+</div>
+
+<!-- Shipping -->
+<div class="section">
+  <div class="section-title"><span class="icon">🚚</span> ارسال و حمل و نقل</div>
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings">
+      <input type="hidden" name="section" value="shipping">
+      
+      <div class="form-group">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">حداقل خرید برای ارسال رایگان (تومان)</label>
+        <input type="number" name="free_shipping_min" value="{{ settings.get('free_shipping_min', '10000000') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <div class="form-group" style="margin-top:10px">
+        <label style="font-size:12px;font-weight:500;color:var(--text2);margin-bottom:4px;display:block">هزینه ارسال پیش‌فرض (تومان)</label>
+        <input type="number" name="default_shipping" value="{{ settings.get('default_shipping', '30000') }}" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <button type="submit" style="width:100%;margin-top:16px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره ارسال</button>
+    </form>
+  </div>
+</div>
+
+<!-- Payment -->
+<div class="section">
+  <div class="section-title"><span class="icon">💳</span> درگاه پرداخت</div>
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings">
+      <input type="hidden" name="section" value="payment">
+      
+      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:16px">💰</span>
+          <span style="font-size:13px;font-weight:600">زرین‌پال</span>
+        </div>
+        <input type="text" name="zarinpal_merchant" placeholder="Merchant ID" value="{{ settings.get('zarinpal_merchant', '') }}" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:16px">🟢</span>
+          <span style="font-size:13px;font-weight:600">اسنپ‌پی</span>
+        </div>
+        <input type="text" name="snapp_api_key" placeholder="API Key" value="{{ settings.get('snapp_api_key', '') }}" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <div style="padding:12px;background:var(--bg);border-radius:8px;margin-bottom:12px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <span style="font-size:16px">🔵</span>
+          <span style="font-size:13px;font-weight:600">دیجی‌پی</span>
+        </div>
+        <input type="text" name="digipay_merchant" placeholder="Merchant ID" value="{{ settings.get('digipay_merchant', '') }}" style="width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit" dir="ltr">
+      </div>
+      
+      <button type="submit" style="width:100%;margin-top:8px;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره درگاه‌ها</button>
+    </form>
+  </div>
+</div>
+
+<!-- Support -->
+<div style="margin:0 16px 80px;padding:16px;background:var(--white);border-radius:12px;border:1px solid var(--border);text-align:center">
+  <div style="font-size:14px;font-weight:600;margin-bottom:4px">❓ سوالی دارید؟</div>
+  <div style="font-size:12px;color:var(--text2);margin-bottom:8px">با پشتیبانی تماس بگیرید</div>
+  <div style="font-size:16px;font-weight:700;color:var(--primary);direction:ltr">۰۹۱۰۰۵۹۹۸۰۵</div>
 </div>
 
 {% endblock %}
