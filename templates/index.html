@@ -1,7 +1,13 @@
 <!DOCTYPE html><html lang="fa" dir="rtl"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>7156027 | {{ settings.get('shop_name', 'مزون هدیه') }}</title>
+<title>{{ settings.get('seo_title', settings.get('shop_name', 'مزون هدیه') + ' - فروشگاه آنلاین پوشاک زنانه') }}</title>
+<meta name="description" content="{{ settings.get('seo_description', 'فروشگاه آنلاین مد و پوشاک زنانه با طراحی اختصاصی و کیفیت بالا') }}">
+<meta name="keywords" content="{{ settings.get('seo_keywords', 'پوشاک زنانه, مانتو, شومیز, ست زنانه, مزون هدیه') }}">
+<meta property="og:title" content="{{ settings.get('seo_title', settings.get('shop_name', 'مزون هدیه')) }}">
+<meta property="og:description" content="{{ settings.get('seo_description', '') }}">
+{% if settings.get('seo_og_image') %}<meta property="og:image" content="{{ settings.get('seo_og_image') }}">{% endif %}
 <meta name="enamad" content="{{ settings.get('enamad_id', '7156027') }}" />
+{% if settings.get('google_analytics') %}{{ settings.get('google_analytics')|safe }}{% endif %}
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -373,17 +379,39 @@ initBanner();
 <div>
 <div class="ftr-title">ارتباط</div>
 <ul class="ftr-links">
-<li><a href="https://instagram.com/mezonehediye.qom"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> اینستاگرام</a></li>
-<li><a href="tel:09100599805">📞 ۰۹۱۰۰۵۹۹۸۰۵</a></li>
-<li></li>
+{% if settings.get('instagram') %}<li><a href="https://instagram.com/{{ settings.get('instagram') }}" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg> اینستاگرام</a></li>{% endif %}
+{% if settings.get('telegram') %}<li><a href="https://t.me/{{ settings.get('telegram') }}" target="_blank">✈️ تلگرام</a></li>{% endif %}
+{% if settings.get('whatsapp') %}<li><a href="https://wa.me/{{ settings.get('whatsapp') }}" target="_blank">💬 واتساپ</a></li>{% endif %}
+{% if settings.get('shop_phone') %}<li><a href="tel:{{ settings.get('shop_phone') }}">📞 {{ settings.get('shop_phone') }}</a></li>{% endif %}
 </ul>
 </div>
 </div>
+
+<!-- Trust badges -->
+{% if settings.get('enamad_enabled') == '1' or settings.get('samandehi_enabled') == '1' or settings.get('ecunion_enabled') == '1' %}
+<div style="display:flex;gap:16px;align-items:center;justify-content:center;flex-wrap:wrap;padding:20px 0;border-top:1px solid rgba(255,255,255,0.1);margin-top:20px">
+{% if settings.get('enamad_enabled') == '1' and settings.get('enamad_id') %}
+<a referrerpolicy="origin" target="_blank" href="https://trustseal.enamad.ir/?id={{ settings.get('enamad_id') }}">
+<img src="https://trustseal.enamad.ir/logo.aspx?id={{ settings.get('enamad_id') }}" alt="نماد اعتماد الکترونیکی" style="height:64px">
+</a>
+{% endif %}
+{% if settings.get('samandehi_enabled') == '1' and settings.get('samandehi_id') %}
+<a referrerpolicy="origin" target="_blank" href="https://logo.samandehi.ir/Verify.aspx?id={{ settings.get('samandehi_id') }}">
+<img src="https://logo.samandehi.ir/logo.aspx?id={{ settings.get('samandehi_id') }}" alt="نماد ساماندهی" style="height:64px">
+</a>
+{% endif %}
+{% if settings.get('ecunion_enabled') == '1' %}
+<div style="height:64px;display:flex;align-items:center;justify-content:center;padding:0 12px;background:rgba(255,255,255,0.06);border-radius:8px;font-size:12px;color:var(--text2)">🏛️ اتحادیه کسب‌وکارهای مجازی</div>
+{% endif %}
+</div>
+{% endif %}
+
 <div class="ftr-bottom">
 <span>© {{ settings.get('copyright', '۱۴۰۵ Maison Hediye. تمامی حقوق محفوظ است.') }}</span>
 <div class="ftr-social">
-<a href="https://instagram.com/mezonehediye.qom" title="اینستاگرام"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
-<a href="#">✈️</a>
+{% if settings.get('instagram') %}<a href="https://instagram.com/{{ settings.get('instagram') }}" target="_blank" title="اینستاگرام"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>{% endif %}
+{% if settings.get('telegram') %}<a href="https://t.me/{{ settings.get('telegram') }}" target="_blank" title="تلگرام">✈️</a>{% endif %}
+{% if settings.get('whatsapp') %}<a href="https://wa.me/{{ settings.get('whatsapp') }}" target="_blank" title="واتساپ">💬</a>{% endif %}
 </div>
 </div>
 </footer>

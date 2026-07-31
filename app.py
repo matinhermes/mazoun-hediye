@@ -2069,6 +2069,24 @@ def admin_settings_badges():
             {'key':'ecunion_enabled','label':'نماد اتحادیه کسب و کار','icon':'🏛️','default':'0','type':'toggle'},
         ])
 
+@app.route('/admin/settings/social', methods=['GET', 'POST'])
+@admin_required
+def admin_settings_social():
+    db = get_db()
+    if request.method == 'POST':
+        save_settings_from_form()
+        flash('شبکه‌های اجتماعی بروزرسانی شد ✓', 'success')
+        return redirect(url_for('admin_settings_social'))
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    return render_template('admin/settings_form.html', settings=settings,
+        section='social', title='شبکه‌های اجتماعی', icon='📱',
+        fields=[
+            {'key':'instagram','label':'آیدی اینستاگرام','icon':'📷','default':'','dir':'ltr','help':'بدون @ وارد کنید، مثلاً: mezonehediye.qom'},
+            {'key':'telegram','label':'آیدی تلگرام','icon':'✈️','default':'','dir':'ltr','help':'بدون @ وارد کنید'},
+            {'key':'whatsapp','label':'شماره واتساپ','icon':'💬','default':'','dir':'ltr','help':'با کد کشور، مثلاً: 989121234567'},
+            {'key':'aparat','label':'آیدی آپارات','icon':'🎬','default':'','dir':'ltr'},
+        ])
+
 @app.route('/admin/settings/domain', methods=['GET', 'POST'])
 @admin_required
 def admin_settings_domain():
