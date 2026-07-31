@@ -5,6 +5,28 @@ import secrets
 import json
 from datetime import datetime
 from functools import wraps
+import socket
+
+def verify_domain_dns(domain):
+    """Check if domain DNS is configured correctly"""
+    results = {'a_record': False, 'cname': False, 'resolved_ip': ''}
+    try:
+        ip = socket.gethostbyname(domain)
+        results['resolved_ip'] = ip
+        # Render's IP range or any valid IP means it resolves
+        if ip and ip != '127.0.0.1':
+            results['a_record'] = True
+    except:
+        pass
+    try:
+        cname = socket.getfqdn(domain)
+        if cname != domain:
+            results['cname'] = True
+    except:
+        pass
+    return results
+
+
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, g, abort, send_from_directory
 import time
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -2053,10 +2075,49 @@ def admin_settings_domain():
     db = get_db()
     if request.method == 'POST':
         save_settings_from_form()
-        flash('دامنه بروزرسانی شد ✓', 'success')
+        # Verify the domain DNS
+        domain = request.form.get('domain', '').strip()
+        if domain:
+            dns = verify_domain_dns(domain)
+            verified = '1' if dns['a_record'] else '0'
+            db.execute("UPDATE settings SET value=? WHERE key='domain_verified'", (verified,))
+            if dns['resolved_ip']:
+                db.execute("UPDATE settings SET value=? WHERE key='domain_resolved_ip'", (dns['resolved_ip'],))
+            db.commit()
+            if dns['a_record']:
+                flash(f'دامنه {domain} تایید شد! IP: {dns["resolved_ip"]} ✓', 'success')
+            else:
+                flash(f'دامنه {domain} هنوز DNS تنظیم نشده. نیم‌سرورها را بررسی کنید.', 'warning')
         return redirect(url_for('admin_settings_domain'))
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    
+    # Re-verify on page load
+    domain = settings.get('domain', '')
+    if domain:
+        dns = verify_domain_dns(domain)
+        settings['domain_verified'] = '1' if dns['a_record'] else '0'
+        settings['domain_resolved_ip'] = dns.get('resolved_ip', '')
+    
     return render_template('admin/domain.html', settings=settings)
+
+@app.route('/admin/settings/domain/verify')
+@admin_required
+def admin_verify_domain():
+    db = get_db()
+    settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    domain = settings.get('domain', '')
+    if domain:
+        dns = verify_domain_dns(domain)
+        verified = '1' if dns['a_record'] else '0'
+        db.execute("UPDATE settings SET value=? WHERE key='domain_verified'", (verified,))
+        if dns['resolved_ip']:
+            db.execute("UPDATE settings SET value=? WHERE key='domain_resolved_ip'", (dns['resolved_ip'],))
+        db.commit()
+        if dns['a_record']:
+            flash(f'دامنه {domain} فعال است! IP: {dns["resolved_ip"]} ✓', 'success')
+        else:
+            flash(f'دامنه {domain} هنوز متصل نیست. DNS را بررسی کنید.', 'danger')
+    return redirect(url_for('admin_settings_domain'))
 
 @app.route('/admin/settings/seo', methods=['GET', 'POST'])
 @admin_required

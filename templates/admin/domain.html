@@ -31,16 +31,21 @@
       </div>
       
       <!-- Status Badge -->
-      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:{% if settings.get('domain_verified') == '1' %}#E8F5E9{% else %}#FFF3E0{% endif %};border-radius:8px;margin-bottom:12px">
-        <span style="font-size:16px">{% if settings.get('domain_verified') == '1' %}✅{% else %}⚠️{% endif %}</span>
-        <div>
-          <div style="font-size:12px;font-weight:600;color:{% if settings.get('domain_verified') == '1' %}#2E7D32{% else %}#E65100{% endif %}">
-            {% if settings.get('domain_verified') == '1' %}دامنه فعال و متصل{% else %}دامنه هنوز متصل نشده{% endif %}
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:{% if settings.get('domain_verified') == '1' %}#E8F5E9{% else %}#FFEBEE{% endif %};border-radius:8px;margin-bottom:12px">
+        <span style="font-size:16px">{% if settings.get('domain_verified') == '1' %}✅{% else %}❌{% endif %}</span>
+        <div style="flex:1">
+          <div style="font-size:12px;font-weight:600;color:{% if settings.get('domain_verified') == '1' %}#2E7D32{% else %}#C62828{% endif %}">
+            {% if settings.get('domain_verified') == '1' %}دامنه فعال و متصل ✓{% else %}❌ دامنه متصل نیست{% endif %}
           </div>
           <div style="font-size:11px;color:var(--text2)">
-            {% if settings.get('domain_verified') == '1' %} ssl فعال | DNS تنظیم شده {% else %}نیم‌سرورها را تنظیم کنید{% endif %}
+            {% if settings.get('domain_verified') == '1' %}
+              IP: {{ settings.get('domain_resolved_ip', '') }} | DNS فعال
+            {% else %}
+              DNS هنوز به سرور متصل نشده
+            {% endif %}
           </div>
         </div>
+        <a href="/admin/settings/domain/verify" style="padding:8px 12px;background:var(--primary);color:#fff;border-radius:6px;font-size:11px;text-decoration:none;white-space:nowrap">🔄 بررسی مجدد</a>
       </div>
       
       <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره دامنه</button>
