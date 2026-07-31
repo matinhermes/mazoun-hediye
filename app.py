@@ -177,7 +177,7 @@ def init_db():
         'shop_address': 'قم، ایران',
         'shop_email': 'info@mezonehediye.ir',
         'instagram': 'mezonehediye.qom',
-        'shipping_cost': '30000',
+        'default_shipping_cost': '30000',
         'free_shipping_min': '500000',
         'currency': 'تومان',
     }
@@ -459,7 +459,7 @@ def cart():
             })
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    shipping = int(settings.get('shipping_cost', 30000))
+    shipping = int(settings.get('default_shipping_cost', settings.get('shipping_cost', 30000)))
     free_min = int(settings.get('free_shipping_min', 10000000))
     
     if total >= free_min:
@@ -548,7 +548,7 @@ def checkout():
                 'total': item_total
             })
     
-    shipping = int(settings.get('shipping_cost', 30000))
+    shipping = int(settings.get('default_shipping_cost', settings.get('shipping_cost', 30000)))
     free_min = int(settings.get('free_shipping_min', 10000000))
     if total >= free_min:
         shipping = 0
@@ -590,7 +590,7 @@ def checkout_confirm():
             total += product['price'] * item['quantity']
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    shipping = int(settings.get('shipping_cost', 30000))
+    shipping = int(settings.get('default_shipping_cost', settings.get('shipping_cost', 30000)))
     free_min = int(settings.get('free_shipping_min', 10000000))
     if total >= free_min:
         shipping = 0
@@ -2001,6 +2001,10 @@ def admin_settings_payment():
             {'key':'snapp_enabled','label':'فعال‌سازی اسنپ‌پی','icon':'✅','default':'0','type':'toggle','hint':'اسنپ‌پی فعال باشد'},
             {'key':'digipay_merchant','label':'دیجی‌پی - Merchant ID','icon':'🔵','default':'','dir':'ltr'},
             {'key':'digipay_enabled','label':'فعال‌سازی دیجی‌پی','icon':'✅','default':'0','type':'toggle','hint':'دیجی‌پی فعال باشد'},
+            {'key':'card_to_card_enabled','label':'پرداخت کارت به کارت','icon':'💳','default':'1','type':'toggle','hint':'پرداخت کارت به کارت فعال باشد'},
+            {'key':'card_number','label':'شماره کارت','icon':'💳','default':'','dir':'ltr','help':'شماره کارت بانکی برای پرداخت کارت به کارت'},
+            {'key':'card_holder','label':'نام صاحب کارت','icon':'👤','default':''},
+            {'key':'card_bank','label':'نام بانک','icon':'🏦','default':''},
         ])
 
 @app.route('/admin/settings/shipping', methods=['GET', 'POST'])
