@@ -2056,14 +2056,7 @@ def admin_settings_domain():
         flash('دامنه بروزرسانی شد ✓', 'success')
         return redirect(url_for('admin_settings_domain'))
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    return render_template('admin/settings_form.html', settings=settings,
-        section='domain', title='دامنه اختصاصی', icon='🌐',
-        fields=[
-            {'key':'domain','label':'دامنه اصلی','icon':'🌐','default':'mezonehediye.ir','dir':'ltr','help':'دامنه اصلی فروشگاه'},
-            {'key':'domain_redirect','label':'redirect از www','icon':'🔄','default':'1','type':'toggle','hint':'www به اصلی ریدایرکت شود'},
-            {'key':'domain_https','label':'SSL فعال','icon':'🔒','default':'1','type':'toggle','hint':'HTTPS فعال باشد'},
-            {'key':'domain_temp','label':'دامنه موقت Render','icon':'📎','default':'','dir':'ltr','help':'آدرس موقت Render'},
-        ])
+    return render_template('admin/domain.html', settings=settings)
 
 @app.route('/admin/settings/seo', methods=['GET', 'POST'])
 @admin_required

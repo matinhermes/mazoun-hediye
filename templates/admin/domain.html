@@ -1,0 +1,276 @@
+{% extends "admin/base.html" %}
+{% block title %}دامنه اختصاصی{% endblock %}
+{% block content %}
+
+<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px">
+  <div style="font-size:15px;font-weight:700">🌐 دامنه اختصاصی</div>
+  <a href="/admin/settings" style="font-size:12px;color:var(--primary)">بازگشت</a>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% for cat, msg in messages %}
+<div class="flash {{ cat }}">{{ msg }}</div>
+{% endfor %}
+{% endwith %}
+
+<!-- Active Domain -->
+<div class="section">
+  <div class="panel" style="padding:16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="font-size:18px">🌐</span>
+      <div>
+        <div style="font-size:14px;font-weight:700">دامنه فعال شما</div>
+        <div style="font-size:11px;color:var(--text2)">دامنه اصلی فروشگاه شما</div>
+      </div>
+    </div>
+    
+    <form method="POST" action="/admin/settings/domain">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+        <input type="text" name="domain" value="{{ settings.get('domain', 'mezonehediye.ir') }}" style="flex:1;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:14px;font-family:inherit;font-weight:600" dir="ltr">
+        <button type="button" onclick="navigator.clipboard.writeText(this.previousElementSibling.value)" style="padding:12px 16px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:14px;cursor:pointer">📋</button>
+      </div>
+      
+      <!-- Status Badge -->
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:{% if settings.get('domain_verified') == '1' %}#E8F5E9{% else %}#FFF3E0{% endif %};border-radius:8px;margin-bottom:12px">
+        <span style="font-size:16px">{% if settings.get('domain_verified') == '1' %}✅{% else %}⚠️{% endif %}</span>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:{% if settings.get('domain_verified') == '1' %}#2E7D32{% else %}#E65100{% endif %}">
+            {% if settings.get('domain_verified') == '1' %}دامنه فعال و متصل{% else %}دامنه هنوز متصل نشده{% endif %}
+          </div>
+          <div style="font-size:11px;color:var(--text2)">
+            {% if settings.get('domain_verified') == '1' %} ssl فعال | DNS تنظیم شده {% else %}نیم‌سرورها را تنظیم کنید{% endif %}
+          </div>
+        </div>
+      </div>
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره دامنه</button>
+    </form>
+  </div>
+</div>
+
+<!-- Domain Verification Toggle -->
+<div class="section">
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings/domain">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:13px;font-weight:600">فعال‌سازی دامنه</div>
+          <div style="font-size:11px;color:var(--text2)">دامنه اختصاصی فعال باشد</div>
+        </div>
+        <label style="position:relative;display:inline-block;width:50px;height:26px">
+          <input type="checkbox" name="domain_active" value="1" {% if settings.get('domain_active', '1') == '1' %}checked{% endif %} style="opacity:0;width:0;height:0" onchange="this.form.submit()">
+          <span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:{% if settings.get('domain_active', '1') == '1' %}var(--primary){% else %}#ccc{% endif %};border-radius:13px;transition:0.3s"></span>
+          <span style="position:absolute;content:'';height:20px;width:20px;left:{% if settings.get('domain_active', '1') == '1' %}26px{% else %}3px{% endif %};bottom:3px;background:white;border-radius:50%;transition:0.3s"></span>
+        </label>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- DNS Instructions -->
+<div class="section">
+  <div class="panel" style="padding:16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <span style="font-size:18px">🔧</span>
+      <div>
+        <div style="font-size:14px;font-weight:700">تنظیم نیم‌سرور (DNS)</div>
+        <div style="font-size:11px;color:var(--text2)">نیم‌سرورهای زیر را در پنل دامنه خود تنظیم کنید</div>
+      </div>
+    </div>
+    
+    <!-- Step 1 -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">۱</div>
+        <div style="font-size:12px;font-weight:600">ورود به پنل مدیریت دامنه</div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);padding-right:28px">
+        وارد پنل مدیریت دامنه خود (Cloudflare, ایران‌سرور, ارنیکا و...) شوید
+      </div>
+    </div>
+    
+    <!-- Step 2 -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">۲</div>
+        <div style="font-size:12px;font-weight:600">تغییر نیم‌سرورها</div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);padding-right:28px;margin-bottom:8px">
+        نیم‌سرورهای فعلی را با مقادیر زیر جایگزین کنید:
+      </div>
+      
+      <!-- NS1 -->
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;padding-right:28px">
+        <div style="flex:1;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:monospace;direction:ltr;text-align:left">
+          {% if settings.get('ns1') %}{{ settings.get('ns1') }}{% else %}ns1.{{ settings.get('domain', 'mezonehediye.ir') }}{% endif %}
+        </div>
+        <button type="button" onclick="copyText(this.previousElementSibling.textContent)" style="padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">📋 کپی</button>
+      </div>
+      
+      <!-- NS2 -->
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px;padding-right:28px">
+        <div style="flex:1;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-size:13px;font-family:monospace;direction:ltr;text-align:left">
+          {% if settings.get('ns2') %}{{ settings.get('ns2') }}{% else %}ns2.{{ settings.get('domain', 'mezonehediye.ir') }}{% endif %}
+        </div>
+        <button type="button" onclick="copyText(this.previousElementSibling.textContent)" style="padding:10px;background:var(--primary);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">📋 کپی</button>
+      </div>
+    </div>
+    
+    <!-- Step 3 -->
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">۳</div>
+        <div style="font-size:12px;font-weight:600">تنظیم رکوردهای DNS</div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);padding-right:28px;margin-bottom:8px">
+        رکوردهای زیر را اضافه کنید:
+      </div>
+      
+      <!-- A Record -->
+      <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;margin-right:28px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">نوع رکورد</span>
+          <span style="font-size:12px;font-weight:600;font-family:monospace">A</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">هاست (Host)</span>
+          <span style="font-size:12px;font-weight:600;font-family:monospace">@</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:var(--text2)">مقدار (Value)</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:12px;font-weight:600;font-family:monospace">76.76.21.21</span>
+            <button type="button" onclick="copyText('76.76.21.21')" style="padding:4px;background:var(--primary);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:10px">📋</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- CNAME Record -->
+      <div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;margin-right:28px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">نوع رکورد</span>
+          <span style="font-size:12px;font-weight:600;font-family:monospace">CNAME</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:11px;color:var(--text2)">هاست (Host)</span>
+          <span style="font-size:12px;font-weight:600;font-family:monospace">www</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:11px;color:var(--text2)">مقدار (Value)</span>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span style="font-size:12px;font-weight:600;font-family:monospace">{{ settings.get('domain', 'mezonehediye.ir') }}</span>
+            <button type="button" onclick="copyText('{{ settings.get('domain', 'mezonehediye.ir') }}')" style="padding:4px;background:var(--primary);color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:10px">📋</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Step 4 -->
+    <div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+        <div style="width:22px;height:22px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700">۴</div>
+        <div style="font-size:12px;font-weight:600">صبر کنید</div>
+      </div>
+      <div style="font-size:12px;color:var(--text2);padding-right:28px">
+        اعمال تغییرات DNS ممکنه ۲۴ تا ۴۸ ساعت طول بکشه. بعد از اون سایت با دامنه شما باز میشه.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cloudflare Instructions -->
+<div class="section">
+  <div class="panel" style="padding:16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+      <span style="font-size:18px">☁️</span>
+      <div>
+        <div style="font-size:14px;font-weight:700">تنظیم در Cloudflare</div>
+        <div style="font-size:11px;color:var(--text2)">اگه دامنه‌تون روی Cloudflare هست</div>
+      </div>
+    </div>
+    
+    <div style="font-size:12px;color:var(--text2);line-height:2">
+      <div style="margin-bottom:4px">۱. وارد Cloudflare شوید</div>
+      <div style="margin-bottom:4px">۲. دامنه خود را انتخاب کنید</div>
+      <div style="margin-bottom:4px">۳. بخش DNS → Records بروید</div>
+      <div style="margin-bottom:4px">۴. رکورد A با مقدار <code style="background:#f0f0f0;padding:2px 6px;border-radius:4px">76.76.21.21</code> اضافه کنید</div>
+      <div style="margin-bottom:4px">۵. رکورد CNAME برای www با مقدار دامنه اصلی</div>
+      <div>۶. SSL/TLS → Full (Strict) انتخاب کنید</div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom NS -->
+<div class="section">
+  <div class="panel" style="padding:16px">
+    <form method="POST" action="/admin/settings/domain">
+      <div style="font-size:14px;font-weight:700;margin-bottom:12px">🔧 نیم‌سرورهای اختصاصی</div>
+      <div style="font-size:11px;color:var(--text2);margin-bottom:10px">اگه نیم‌سرورهای اختصاصی دارید وارد کنید:</div>
+      
+      <div style="margin-bottom:8px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">نیم‌سرور ۱</label>
+        <input type="text" name="ns1" value="{{ settings.get('ns1', '') }}" placeholder="مثلاً: ns1.example.com" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace" dir="ltr">
+      </div>
+      
+      <div style="margin-bottom:12px">
+        <label style="font-size:11px;color:var(--text2);display:block;margin-bottom:4px">نیم‌سرور ۲</label>
+        <input type="text" name="ns2" value="{{ settings.get('ns2', '') }}" placeholder="مثلاً: ns2.example.com" style="width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:12px;font-family:monospace" dir="ltr">
+      </div>
+      
+      <button type="submit" style="width:100%;padding:12px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💾 ذخیره نیم‌سرورها</button>
+    </form>
+  </div>
+</div>
+
+<!-- SSL Info -->
+<div class="section">
+  <div class="panel" style="padding:16px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+      <span style="font-size:18px">🔒</span>
+      <div>
+        <div style="font-size:14px;font-weight:700">گواهی SSL</div>
+        <div style="font-size:11px;color:var(--text2)">امنیت سایت شما</div>
+      </div>
+    </div>
+    
+    <div style="display:flex;align-items:center;gap:8px;padding:10px;background:#E8F5E9;border-radius:8px">
+      <span style="font-size:16px">✅</span>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:#2E7D32">SSL فعال است</div>
+        <div style="font-size:11px;color:var(--text2)">اتصال HTTPS امن برقرار است</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section" style="margin-bottom:80px">
+  <div class="panel" style="padding:16px">
+    <div style="font-size:14px;font-weight:700;margin-bottom:12px">❓ سوالات متداول</div>
+    
+    <div style="margin-bottom:8px;padding:10px;background:var(--bg);border-radius:8px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">آیا می‌تونم چند دامنه داشته باشم؟</div>
+      <div style="font-size:11px;color:var(--text2)">بله، می‌تونید چندین دامنه به فروشگاه متصل کنید.</div>
+    </div>
+    
+    <div style="margin-bottom:8px;padding:10px;background:var(--bg);border-radius:8px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">چقدر طول میکشه دامنه فعال بشه؟</div>
+      <div style="font-size:11px;color:var(--text2)">معمولاً ۲۴ تا ۴۸ ساعت. در برخی موارد سریع‌تر.</div>
+    </div>
+    
+    <div style="padding:10px;background:var(--bg);border-radius:8px">
+      <div style="font-size:12px;font-weight:600;margin-bottom:4px">آیا SSL رایگان فعال میشه؟</div>
+      <div style="font-size:11px;color:var(--text2)">بله، بعد از اتصال دامنه، SSL به صورت خودکار فعال میشه.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function copyText(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        alert('کپی شد! ✓');
+    });
+}
+</script>
+
+{% endblock %}
