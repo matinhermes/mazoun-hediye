@@ -171,7 +171,7 @@
       <div style="font-size:11px;color:var(--text2);margin-top:4px">کاربر</div>
     </div>
     <div style="background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;text-align:center">
-      <div style="font-size:24px;font-weight:700;color:var(--yellow)">{{ '%,d'.format(total_sales|int) if total_sales else '۰' }}</div>
+      <div style="font-size:24px;font-weight:700;color:var(--yellow)">{{ '{:,}'.format(total_sales|int) if total_sales else '۰' }}</div>
       <div style="font-size:11px;color:var(--text2);margin-top:4px">تومان فروش</div>
     </div>
   </div>

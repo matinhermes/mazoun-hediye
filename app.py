@@ -199,7 +199,7 @@ def init_db():
         'shop_address': 'قم، ایران',
         'shop_email': 'info@mezonehediye.ir',
         'instagram': 'mezonehediye.qom',
-        'default_shipping_cost': '30000',
+        'shipping_cost': '30000',
         'free_shipping_min': '500000',
         'currency': 'تومان',
     }
@@ -481,7 +481,7 @@ def cart():
             })
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    shipping = int(settings.get('default_shipping_cost', settings.get('shipping_cost', 30000)))
+    shipping = int(settings.get('shipping_cost', 30000))
     free_min = int(settings.get('free_shipping_min', 10000000))
     
     if total >= free_min:
@@ -570,7 +570,7 @@ def checkout():
                 'total': item_total
             })
     
-    shipping = int(settings.get('default_shipping_cost', settings.get('shipping_cost', 30000)))
+    shipping = int(settings.get('shipping_cost', 30000))
     free_min = int(settings.get('free_shipping_min', 10000000))
     if total >= free_min:
         shipping = 0
@@ -612,7 +612,7 @@ def checkout_confirm():
             total += product['price'] * item['quantity']
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    shipping = int(settings.get('default_shipping_cost', settings.get('shipping_cost', 30000)))
+    shipping = int(settings.get('shipping_cost', 30000))
     free_min = int(settings.get('free_shipping_min', 10000000))
     if total >= free_min:
         shipping = 0
@@ -2042,7 +2042,7 @@ def admin_settings_shipping():
         section='shipping', title='روش‌های ارسال', icon='🚚',
         fields=[
             {'key':'free_shipping_min','label':'حداقل خرید ارسال رایگان (تومان)','icon':'🎁','default':'10000000','dir':'ltr','type':'number'},
-            {'key':'default_shipping_cost','label':'هزینه ارسال پیش‌فرض (تومان)','icon':'💰','default':'30000','dir':'ltr','type':'number'},
+            {'key':'shipping_cost','label':'هزینه ارسال پیش‌فرض (تومان)','icon':'💰','default':'30000','dir':'ltr','type':'number'},
             {'key':'shipping_tipax','label':'ارسال تیپاکس','icon':'📦','default':'1','type':'toggle','hint':'تیپاکس فعال باشد'},
             {'key':'shipping_post','label':'ارسال پستی','icon':'📮','default':'1','type':'toggle','hint':'پست فعال باشد'},
             {'key':'shipping_peyk','label':'ارسال پیک','icon':'🏍️','default':'0','type':'toggle','hint':'پیک فعال باشد'},
