@@ -1771,6 +1771,10 @@ def health():
 def enamad_verify():
     return '7156027', 200, {'Content-Type': 'text/plain'}
 
+@app.route('/7194027.txt')
+def enamad_verify2():
+    return '7194027', 200, {'Content-Type': 'text/plain'}
+
 
 @app.route('/admin/fix-images')
 @admin_required
