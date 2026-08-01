@@ -1,5 +1,4 @@
 import os
-import re
 import sqlite3
 import hashlib
 import secrets
@@ -638,7 +637,14 @@ def checkout_confirm():
                 (order_id, product['id'], product['name'], 
                  item.get('size', ''), item.get('color', ''), item['quantity'], product['price']))
     
-    # Stock will be decremented after payment confirmation
+    # Decrease stock (with re-check)
+    for item in cart_items:
+        product = db.execute('SELECT * FROM products WHERE id = ?', (item['product_id'],)).fetchone()
+        if product:
+            new_stock = product['stock'] - item['quantity']
+            if new_stock < 0:
+                new_stock = 0
+            db.execute('UPDATE products SET stock = ? WHERE id = ?', (new_stock, product['id']))
     
     db.commit()
     
@@ -1004,16 +1010,7 @@ def admin_category_add():
     db = get_db()
     name = request.form.get('name', '').strip()
     if name:
-        # Generate slug from name
-        slug = re.sub(r'[^\w\s-]', '', name.lower().strip())
-        slug = re.sub(r'[\s]+', '-', slug)
-        if not slug:
-            slug = f'cat-{int(time.time())}'
-        # Ensure unique slug
-        existing = db.execute('SELECT id FROM categories WHERE slug = ?', (slug,)).fetchone()
-        if existing:
-            slug = f'{slug}-{int(time.time())}'
-        db.execute('INSERT INTO categories (name, slug) VALUES (?, ?)', (name, slug))
+        db.execute('INSERT INTO categories (name) VALUES (?)', (name,))
         db.commit()
         flash(f'دسته \"{name}\" اضافه شد ✓', 'success')
     return redirect(url_for('admin_categories'))
@@ -1029,7 +1026,7 @@ def admin_category_edit(cat_id):
         flash('دسته بروزرسانی شد ✓', 'success')
     return redirect(url_for('admin_categories'))
 
-@app.route('/admin/categories/<int:cat_id>/delete', methods=['POST'])
+@app.route('/admin/categories/<int:cat_id>/delete')
 @admin_required
 def admin_category_delete(cat_id):
     db = get_db()
@@ -1729,7 +1726,15 @@ try:
         except Exception as e:
             print(f'[WARN] Banner fix failed: {e}')
         
-        # Settings are managed via admin panel only - no auto-reset
+        # Fix settings
+        try:
+            db.execute("DELETE FROM settings WHERE key = 'shop_email'")
+            db.execute("UPDATE settings SET value = '۰۹۱۰۰۵۹۹۸۰۵' WHERE key = 'shop_phone'")
+            db.execute("UPDATE settings SET value = 'قم، سالاریه، میدان میثم، پاساژ عصر جدید، طبقه ۲، واحد ۲۰۶' WHERE key = 'shop_address'")
+            db.execute("UPDATE settings SET value = '10000000' WHERE key = 'free_shipping_min'")
+            print('[FIX] Settings fixed')
+        except Exception as e:
+            print(f'[WARN] Settings fix failed: {e}')
         
         db.commit()
 except Exception as e:

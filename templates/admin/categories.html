@@ -35,7 +35,7 @@
     <input type="text" name="name" value="{{ cat.name }}" style="width:120px;padding:6px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit">
     <button type="submit" style="padding:6px 10px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">✓</button>
   </form>
-  <a href="/admin/categories/{{ cat.id }}/delete" style="padding:6px 10px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer;text-decoration:none" onclick="return confirm('حذف شود؟')">🗑️</a>
+  <form method="POST" action="/admin/categories/{{ cat.id }}/delete" style="display:inline" onsubmit="return confirm('آیا از حذف این دسته‌بندی مطمئن هستید؟')"><button type="submit" style="padding:6px 10px;background:var(--red);color:#fff;border:none;border-radius:6px;font-size:11px;cursor:pointer">🗑️</button></form>
 </div>
 {% endfor %}
 </div>
