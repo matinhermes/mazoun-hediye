@@ -1145,7 +1145,31 @@ def admin_change_username():
     flash('نام کاربری با موفقیت تغییر کرد ✓', 'success')
     return redirect(url_for('admin_settings'))
 
-# /admin/add-category removed - use /admin/categories/add instead
+@app.route('/admin/add-category', methods=['POST'])
+@admin_required
+def admin_add_category():
+    import re
+    name = request.form.get('name', '').strip()
+    icon = request.form.get('icon', '📁').strip()
+    
+    if not name:
+        flash('نام دسته‌بندی را وارد کنید', 'warning')
+        return redirect(url_for('admin_settings'))
+    
+    db = get_db()
+    
+    # Build a unique slug from the name (categories.slug is UNIQUE NOT NULL)
+    base_slug = re.sub(r'[^a-z0-9\u0600-\u06FF]+', '-', name.lower()).strip('-') or 'category'
+    slug = base_slug
+    counter = 1
+    while db.execute('SELECT id FROM categories WHERE slug = ?', (slug,)).fetchone():
+        counter += 1
+        slug = f'{base_slug}-{counter}'
+    
+    db.execute('INSERT INTO categories (name, slug, icon) VALUES (?, ?, ?)', (name, slug, icon))
+    db.commit()
+    flash(f'دسته‌بندی "{name}" اضافه شد ✓', 'success')
+    return redirect(url_for('admin_settings'))
 
 @app.route('/admin/delete-category/<int:cat_id>', methods=['POST'])
 @admin_required
@@ -1470,9 +1494,7 @@ def zarinpal_request(order_id):
         flash('این سفارش قبلاً پرداخت شده', 'info')
         return redirect(url_for('order_detail', order_id=order_id))
     
-    # Read merchant ID from DB first, fallback to env var
-    db_settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    merchant_id = db_settings.get('zarinpal_merchant_id', '') or ZARINPAL_MERCHANT_ID
+    merchant_id = ZARINPAL_MERCHANT_ID
     if not merchant_id or 'XXXX' in merchant_id:
         flash('درگاه پرداخت هنوز فعال نشده. لطفاً با مدیر سایت تماس بگیرید.', 'warning')
         return redirect(url_for('order_detail', order_id=order_id))
@@ -1621,16 +1643,9 @@ def admin_banner_add():
     if 'image' in request.files:
         file = request.files['image']
         if file.filename:
-            allowed = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-            ext = file.filename.rsplit('.', 1)[-1].lower()
-            if ext not in allowed:
-                flash('فقط فایل‌های تصویری مجاز هستند (png, jpg, gif, webp)', 'danger')
-                return redirect(url_for('admin_banners'))
             import base64 as b64
+            ext = file.filename.rsplit('.', 1)[-1].lower()
             data = file.read()
-            if len(data) > 5 * 1024 * 1024:  # 5MB max
-                flash('حجم فایل نباید بیشتر از ۵ مگابایت باشد', 'danger')
-                return redirect(url_for('admin_banners'))
             b64_string = b64.b64encode(data).decode()
             image_url = f'data:image/{ext};base64,{b64_string}'
     
@@ -1737,10 +1752,10 @@ def enamad_verify():
 @app.route('/admin/fix-images')
 @admin_required
 def fix_images():
-    """Fix products that have gradient images - only replaces gradient/placeholder images"""
+    """Fix all products - replace CSS gradients with actual image paths"""
     db = get_db()
     
-    # Map product IDs to correct image paths - ONLY for gradient images
+    # Map product IDs to correct image paths
     image_map = {
         1: '/static/images/products/1_shomiz.jpg',
         2: '/static/images/products/2_manto.jpg',
@@ -1803,11 +1818,31 @@ def fix_all():
         db.execute("INSERT INTO banners (title, subtitle, image, link, sort_order) VALUES (?, ?, ?, ?, ?)",
                    ('ارسال رایگان', 'برای خریدهای بالای ۱۰ میلیون تومان', '', '/products', 2))
     
+    # 3. Fix settings
+    db.execute("DELETE FROM settings WHERE key = 'shop_email'")
+    
     db.commit()
-    flash('تصاویر محصولات بروزرسانی شد ✓', 'success')
+    flash('همه مشکلات سایت برطرف شد ✓', 'success')
     return redirect(url_for('admin_dashboard'))
 
-# download_images_old() removed - legacy dead code
+# Legacy route
+def download_images_old():
+    pass
+    for pid, url in image_urls.items():
+        try:
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                data = resp.read()
+                ext = 'jpeg'
+                b64_str = 'data:image/' + ext + ';base64,' + b64.b64encode(data).decode('utf-8')
+                db.execute('UPDATE products SET image = ? WHERE id = ?', (b64_str, pid))
+                downloaded += 1
+        except Exception as e:
+            errors += 1
+    
+    db.commit()
+    flash(f'{downloaded} عکس دانلود شد، {errors} خطا ✓', 'success')
+    return redirect(url_for('admin_products'))
 
 
 # ==================== MAIN ====================

@@ -8,3 +8,9 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: "3.11"
+      - key: SECRET_KEY
+        sync: false
+    disk:
+      name: data
+      mountPath: /data
+      sizeGB: 1
