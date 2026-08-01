@@ -1345,7 +1345,7 @@ def snapp_pay_verify():
             result = response.json()
             
             if result.get('status') in [200, 201]:
-                db.execute("UPDATE orders SET payment_status = 'paid', status = 'confirmed' WHERE id = ?", (order_id,))
+                db.execute("UPDATE orders SET payment_status = 'paid', status = 'paid' WHERE id = ?", (order_id,))
                 db.commit()
                 flash('پرداخت موفقیت‌آمیز بود! 🎉', 'success')
             else:
@@ -1432,7 +1432,7 @@ def digipay_verify():
             result = response.json()
             
             if result.get('status') == 1 or result.get('data', {}).get('verified'):
-                db.execute("UPDATE orders SET payment_status = 'paid', status = 'confirmed' WHERE id = ?", (order_id,))
+                db.execute("UPDATE orders SET payment_status = 'paid', status = 'paid' WHERE id = ?", (order_id,))
                 db.commit()
                 flash('پرداخت موفقیت‌آمیز بود! 🎉', 'success')
             else:
@@ -1559,7 +1559,7 @@ def zarinpal_verify():
         
         if result.get('Status') in [100, 101]:
             # Payment successful
-            db.execute("UPDATE orders SET payment_status = 'paid', status = 'confirmed' WHERE id = ?", (order_id,))
+            db.execute("UPDATE orders SET payment_status = 'paid', status = 'paid' WHERE id = ?", (order_id,))
             db.commit()
             flash('پرداخت موفقیت‌آمیز بود! 🎉', 'success')
         else:
