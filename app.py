@@ -1472,7 +1472,7 @@ def zarinpal_request(order_id):
     
     # Read merchant ID from DB first, fallback to env var
     db_settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    merchant_id = db_settings.get('zarinpal_merchant_id', '') or ZARINPAL_MERCHANT_ID
+    merchant_id = db_settings.get('zarinpal_merchant', '') or ZARINPAL_MERCHANT_ID
     if not merchant_id or 'XXXX' in merchant_id:
         flash('درگاه پرداخت هنوز فعال نشده. لطفاً با مدیر سایت تماس بگیرید.', 'warning')
         return redirect(url_for('order_detail', order_id=order_id))
@@ -1539,7 +1539,8 @@ def zarinpal_verify():
         flash('پرداخت لغو شد', 'warning')
         return redirect(url_for('order_detail', order_id=order_id))
     
-    merchant_id = ZARINPAL_MERCHANT_ID
+    db_settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
+    merchant_id = db_settings.get('zarinpal_merchant', '') or ZARINPAL_MERCHANT_ID
     amount = order['total_amount']
     
     if ZARINPAL_SANDBOX:
