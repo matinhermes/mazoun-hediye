@@ -394,7 +394,7 @@ def admin_add_all_banners():
 
 @app.route('/7156027.txt')
 def enamad_verify_file():
-    return '7156027', 200, {'Content-Type': 'text/plain'}
+    return '', 200, {'Content-Type': 'text/plain'}
 
 @app.route('/')
 def home():
