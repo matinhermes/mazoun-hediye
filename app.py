@@ -391,6 +391,11 @@ def admin_add_all_banners():
     flash(f'{count} بنر پیش‌فرض اضافه شد ✓', 'success')
     return redirect(url_for('admin_banners'))
 
+
+@app.route('/7156027.txt')
+def enamad_verify_file():
+    return '7156027', 200, {'Content-Type': 'text/plain'}
+
 @app.route('/')
 def home():
     db = get_db()
@@ -1767,13 +1772,7 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok', 'version': '2.0'})
 
-@app.route('/7156027.txt')
-def enamad_verify():
-    return redirect(url_for('home'))
 
-@app.route('/7194027.txt')
-def enamad_verify2():
-    return redirect(url_for('home'))
 
 
 @app.route('/admin/fix-images')
