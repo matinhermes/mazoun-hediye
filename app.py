@@ -1769,11 +1769,11 @@ def health():
 
 @app.route('/7156027.txt')
 def enamad_verify():
-    return '7156027', 200, {'Content-Type': 'text/plain'}
+    return '<!DOCTYPE html><html><head><title>7156027</title><meta name=\"enamad\" content=\"7156027\"></head><body><h1>7156027</h1></body></html>', 200, {'Content-Type': 'text/html; charset=utf-8'}
 
 @app.route('/7194027.txt')
 def enamad_verify2():
-    return '7194027', 200, {'Content-Type': 'text/plain'}
+    return '<!DOCTYPE html><html><head><title>7194027</title><meta name=\"enamad\" content=\"7194027\"></head><body><h1>7194027</h1></body></html>', 200, {'Content-Type': 'text/html; charset=utf-8'}
 
 
 @app.route('/admin/fix-images')
