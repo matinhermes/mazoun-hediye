@@ -485,10 +485,21 @@ def cart():
     shipping = int(settings.get('shipping_cost', 30000))
     free_min = int(settings.get('free_shipping_min', 10000000))
     
+    # Get available shipping methods
+    shipping_methods = []
+    if settings.get('shipping_tipax', '1') == '1':
+        shipping_methods.append({'key': 'tipax', 'name': 'تیپاکس', 'cost': int(settings.get('shipping_tipax_cost', 50000))})
+    if settings.get('shipping_post', '1') == '1':
+        shipping_methods.append({'key': 'post', 'name': 'پست پیشتاز', 'cost': int(settings.get('shipping_post_cost', 35000))})
+    if settings.get('shipping_tnt', '1') == '1':
+        shipping_methods.append({'key': 'tnt', 'name': 'TNT', 'cost': int(settings.get('shipping_tnt_cost', 45000))})
+    if not shipping_methods:
+        shipping_methods.append({'key': 'default', 'name': 'ارسال عادی', 'cost': shipping})
+    
     if total >= free_min:
         shipping = 0
     
-    return render_template('cart.html', items=items, total=total, shipping=shipping, settings=settings)
+    return render_template('cart.html', items=items, total=total, shipping=shipping, settings=settings, shipping_methods=shipping_methods)
 
 @app.route('/cart/add', methods=['POST'])
 def cart_add():
@@ -613,8 +624,19 @@ def checkout_confirm():
             total += product['price'] * item['quantity']
     
     settings = {row['key']: row['value'] for row in db.execute('SELECT * FROM settings').fetchall()}
-    shipping = int(settings.get('shipping_cost', 30000))
     free_min = int(settings.get('free_shipping_min', 10000000))
+    
+    # Get selected shipping method cost
+    shipping_method = request.form.get('shipping_method', 'default')
+    if shipping_method == 'tipax':
+        shipping = int(settings.get('shipping_tipax_cost', 50000))
+    elif shipping_method == 'post':
+        shipping = int(settings.get('shipping_post_cost', 35000))
+    elif shipping_method == 'tnt':
+        shipping = int(settings.get('shipping_tnt_cost', 45000))
+    else:
+        shipping = int(settings.get('shipping_cost', 30000))
+    
     if total >= free_min:
         shipping = 0
     
@@ -1771,8 +1793,11 @@ def fix_images():
     
     fixed = 0
     for pid, img_path in image_map.items():
-        db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
-        fixed += 1
+        # Only fix if current image is gradient, empty, or missing
+        current = db.execute('SELECT image FROM products WHERE id = ?', (pid,)).fetchone()
+        if current and (not current['image'] or 'gradient' in str(current['image']) or current['image'] == ''):
+            db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
+            fixed += 1
     
     # Also fix any products with gradient images
     db.execute("UPDATE products SET image = '/static/images/products/1_shomiz.jpg' WHERE image LIKE '%gradient%'")
@@ -1806,8 +1831,12 @@ def fix_all():
         9: '/static/images/products/9_manto3.jpg',
         10: '/static/images/products/10_shalvar2.jpg',
     }
+    fixed = 0
     for pid, img_path in image_map.items():
-        db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
+        current = db.execute('SELECT image FROM products WHERE id = ?', (pid,)).fetchone()
+        if current and (not current['image'] or 'gradient' in str(current['image']) or current['image'] == ''):
+            db.execute('UPDATE products SET image = ? WHERE id = ?', (img_path, pid))
+            fixed += 1
     db.execute("UPDATE products SET image = '/static/images/products/1_shomiz.jpg' WHERE image LIKE '%gradient%'")
     
     # 2. Add default banners if empty
@@ -1824,6 +1853,38 @@ def fix_all():
 
 # download_images_old() removed - legacy dead code
 
+
+# ==================== CHANGE PASSWORD ====================
+@app.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    db = get_db()
+    user = db.execute('SELECT * FROM users WHERE id = ?', (session['user_id'],)).fetchone()
+    
+    if request.method == 'POST':
+        current_password = request.form.get('current_password', '')
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
+        
+        if not check_password_hash(user['password'], current_password):
+            flash('رمز فعلی اشتباه است', 'danger')
+            return redirect(url_for('change_password'))
+        
+        if new_password != confirm_password:
+            flash('رمز جدید و تکرار آن مطابقت ندارند', 'danger')
+            return redirect(url_for('change_password'))
+        
+        if len(new_password) < 6:
+            flash('رمز جدید باید حداقل ۶ کاراکتر باشد', 'danger')
+            return redirect(url_for('change_password'))
+        
+        db.execute('UPDATE users SET password = ? WHERE id = ?', 
+                   (generate_password_hash(new_password), session['user_id']))
+        db.commit()
+        flash('رمز عبور با موفقیت تغییر کرد ✓', 'success')
+        return redirect(url_for('admin_dashboard'))
+    
+    return render_template('change_password.html', user=user)
 
 # ==================== MAIN ====================
 import os
