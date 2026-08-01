@@ -1767,13 +1767,13 @@ except Exception as e:
 def health():
     return jsonify({'status': 'ok', 'version': '2.0'})
 
-@app.route('/7194027.txt')
+@app.route('/7156027.txt')
 def enamad_verify():
     from flask import send_from_directory
     try:
-        return send_from_directory('static', '7194027.txt')
+        return send_from_directory('static', '7156027.txt')
     except:
-        return '7194027', 200, {'Content-Type': 'text/plain'}
+        return '7156027', 200, {'Content-Type': 'text/plain'}
 
 
 @app.route('/admin/fix-images')
@@ -2103,7 +2103,7 @@ def admin_settings_badges():
     return render_template('admin/settings_form.html', settings=settings,
         section='badges', title='نمادها و مجوزها', icon='🏅',
         fields=[
-            {'key':'enamad_id','label':'کد اینماد','icon':'🏅','default':'7194027','dir':'ltr'},
+            {'key':'enamad_id','label':'کد اینماد','icon':'🏅','default':'7156027','dir':'ltr'},
             {'key':'enamad_enabled','label':'فعال‌سازی اینماد','icon':'✅','default':'1','type':'toggle'},
             {'key':'samandehi_id','label':'کد ساماندهی','icon':'📋','default':'','dir':'ltr'},
             {'key':'samandehi_enabled','label':'فعال‌سازی ساماندهی','icon':'✅','default':'0','type':'toggle'},
