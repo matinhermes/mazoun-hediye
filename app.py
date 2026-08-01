@@ -1670,6 +1670,13 @@ def get_banners():
 
 # ==================== INIT DB ON STARTUP ====================
 try:
+    # Try to restore from GitHub backup first
+    try:
+        from backup_db import restore_from_github
+        restore_from_github()
+    except Exception as e:
+        print(f'[RESTORE] Skip: {e}')
+    
     with app.app_context():
         init_db()
         
@@ -1717,6 +1724,13 @@ try:
         # Settings are managed via admin panel only - no auto-reset
         
         db.commit()
+        
+        # Auto-backup to GitHub
+        try:
+            from backup_db import backup_to_github
+            backup_to_github()
+        except Exception as e:
+            print(f'[BACKUP] Skip: {e}')
 except Exception as e:
     print(f'[ERROR] Startup migration failed: {e}')
 

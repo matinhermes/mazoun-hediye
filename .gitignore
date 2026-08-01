@@ -1,8 +1,11 @@
 __pycache__/
 *.pyc
-*.db
 uploads/
 .env
 venv/
 *.egg-info/
 uploads/
+*.db
+
+# Keep database in git for backup
+!mazoun_hediye.db
