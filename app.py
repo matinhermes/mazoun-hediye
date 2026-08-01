@@ -256,6 +256,11 @@ def admin_required(f):
         if not user or not user['is_admin']:
             flash('دسترسی غیرمجاز', 'danger')
             return redirect(url_for('home'))
+        # Check if using default password - force change
+        if user and user['password'] and check_password_hash(user['password'], 'admin123'):
+            if request.endpoint != 'change_password':
+                flash('⚠️ رمز پیش‌فرض فعال است! لطفاً ابتدا رمز را تغییر دهید.', 'warning')
+                return redirect(url_for('change_password'))
         return f(*args, **kwargs)
     return decorated_function
 
